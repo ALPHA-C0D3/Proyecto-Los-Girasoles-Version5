@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Regístrate en nuestro hostal para hacer reservas fácilmente">
+    <title>Hostal - Registro</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-light">
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-warning">
+        <div class="container">
+            <!-- Logo del hostal (colocar imagen en assets/logo.png) -->
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/logo.png" alt="Logo Hostal" height="40">
+                Hostal El Refugio
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="habitaciones.html">Habitaciones</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="login.html">Iniciar Sesión</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="registro.html">Registrarse</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Formulario de Registro -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">Crear Cuenta Nueva</h2>
+                        <p class="text-muted">Completa el formulario para registrarte</p>
+                    </div>
+
+                    <div class="card shadow-lg border-0">
+                        <div class="card-header bg-warning text-center py-3">
+                            <h4 class="mb-0 fw-bold">Registro de Usuario</h4>
+                        </div>
+                        <div class="card-body p-4">
+                            <!-- Alerta de errores -->
+                            <div id="alertaRegistro" class="alert alert-danger d-none" role="alert">
+                                <strong>⚠️ Error:</strong> <span id="mensajeError"></span>
+                            </div>
+
+                            <form id="formRegistro" novalidate>
+                                <div class="row">
+                                    <!-- Nombre -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="nombre" class="form-label fw-bold">
+                                            Nombre <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="nombre" 
+                                               name="nombre" 
+                                               placeholder="Juan"
+                                               required>
+                                        <div class="invalid-feedback">Por favor ingrese su nombre.</div>
+                                    </div>
+
+                                    <!-- Apellido -->
+                                    <div class="col-md-6 mb-3">
+                                        <label for="apellido" class="form-label fw-bold">
+                                            Apellido <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="apellido" 
+                                               name="apellido" 
+                                               placeholder="Pérez"
+                                               required>
+                                        <div class="invalid-feedback">Por favor ingrese su apellido.</div>
+                                    </div>
+                                </div>
+
+                                <!-- Teléfono -->
+                                <div class="mb-3">
+                                    <label for="telefono" class="form-label fw-bold">
+                                        Teléfono <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="tel" 
+                                           class="form-control" 
+                                           id="telefono" 
+                                           name="telefono" 
+                                           placeholder="0987654321"
+                                           maxlength="15"
+                                           required>
+                                    <div class="invalid-feedback">Ingrese un número de teléfono válido (solo números).</div>
+                                    <small class="form-text text-muted">Solo números, sin espacios ni guiones</small>
+                                </div>
+
+                                <!-- Correo -->
+                                <div class="mb-3">
+                                    <label for="correo" class="form-label fw-bold">
+                                        Correo Electrónico <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="email" 
+                                           class="form-control" 
+                                           id="correo" 
+                                           name="correo" 
+                                           placeholder="tu@email.com"
+                                           required>
+                                    <div class="invalid-feedback">Ingrese un correo electrónico válido.</div>
+                                </div>
+
+                                <!-- Contraseña -->
+                                <div class="mb-3">
+                                    <label for="password" class="form-label fw-bold">
+                                        Contraseña <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="password" 
+                                           class="form-control" 
+                                           id="password" 
+                                           name="password" 
+                                           minlength="6"
+                                           placeholder="Mínimo 6 caracteres"
+                                           required>
+                                    <div class="invalid-feedback">La contraseña debe tener al menos 6 caracteres.</div>
+                                    <div class="form-text">
+                                        <small>
+                                            <span id="lengthCheck" class="text-muted">⚪ Mínimo 6 caracteres</span>
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- Confirmar Contraseña -->
+                                <div class="mb-3">
+                                    <label for="confirmarPassword" class="form-label fw-bold">
+                                        Confirmar Contraseña <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="password" 
+                                           class="form-control" 
+                                           id="confirmarPassword" 
+                                           name="confirmarPassword"
+                                           placeholder="Repite tu contraseña"
+                                           required>
+                                    <div class="invalid-feedback">Las contraseñas no coinciden.</div>
+                                </div>
+
+                                <!-- Tipo de Usuario -->
+                                <div class="mb-4">
+                                    <label for="tipoUsuario" class="form-label fw-bold">
+                                        Tipo de Usuario
+                                    </label>
+                                    <select class="form-select" id="tipoUsuario" name="tipoUsuario">
+                                        <option value="cliente" selected>Cliente</option>
+                                        <option value="admin">Administrador</option>
+                                    </select>
+                                    <small class="form-text text-muted">
+                                        Selecciona "Administrador" solo si tienes permisos especiales
+                                    </small>
+                                </div>
+
+                                <!-- Términos y Condiciones -->
+                                <div class="mb-4">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="terminos" required>
+                                        <label class="form-check-label" for="terminos">
+                                            Acepto los <a href="#" class="text-warning">términos y condiciones</a> 
+                                            y la <a href="#" class="text-warning">política de privacidad</a> 
+                                            <span class="text-danger">*</span>
+                                        </label>
+                                        <div class="invalid-feedback">Debe aceptar los términos y condiciones.</div>
+                                    </div>
+                                </div>
+
+                                <!-- Botón de Registro -->
+                                <button type="submit" class="btn btn-warning w-100 btn-lg fw-bold">
+                                    Crear Cuenta
+                                </button>
+                            </form>
+
+                            <hr class="my-4">
+                            
+                            <p class="text-center mb-0">
+                                ¿Ya tienes cuenta? 
+                                <a href="login.html" class="text-warning fw-bold text-decoration-none">
+                                    Inicia sesión aquí
+                                </a>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Nota de seguridad -->
+                    <div class="alert alert-info mt-4" role="alert">
+                        <strong>🔒 Tu información está segura:</strong> Nunca compartiremos tus datos personales con terceros.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-3 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2024 Hostal El Refugio. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/validaciones.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const formRegistro = document.getElementById('formRegistro');
+            
+            // Validación de longitud de contraseña en tiempo real
+            const password = document.getElementById('password');
+            const lengthCheck = document.getElementById('lengthCheck');
+            
+            password.addEventListener('input', function() {
+                if (this.value.length >= 6) {
+                    lengthCheck.innerHTML = '✅ Mínimo 6 caracteres';
+                    lengthCheck.classList.remove('text-muted');
+                    lengthCheck.classList.add('text-success');
+                } else {
+                    lengthCheck.innerHTML = '⚪ Mínimo 6 caracteres';
+                    lengthCheck.classList.remove('text-success');
+                    lengthCheck.classList.add('text-muted');
+                }
+            });
+            
+            // Validar que solo se ingresen números en teléfono
+            document.getElementById('telefono').addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+            
+            // Manejar el envío del formulario
+            if (formRegistro) {
+                formRegistro.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    // Limpiar validaciones previas
+                    const campos = formRegistro.querySelectorAll('.form-control, .form-select, .form-check-input');
+                    campos.forEach(campo => campo.classList.remove('is-invalid'));
+                    document.getElementById('alertaRegistro').classList.add('d-none');
+
+                    // Obtener valores
+                    const nombre = document.getElementById('nombre').value.trim();
+                    const apellido = document.getElementById('apellido').value.trim();
+                    const telefono = document.getElementById('telefono').value.trim();
+                    const correo = document.getElementById('correo').value.trim();
+                    const passwordVal = document.getElementById('password').value;
+                    const confirmarPass = document.getElementById('confirmarPassword').value;
+                    const tipoUsuario = document.getElementById('tipoUsuario').value;
+                    const terminos = document.getElementById('terminos').checked;
+
+                    // Validaciones
+                    if (!nombre || !apellido || !telefono || !correo || !passwordVal) {
+                        document.getElementById('mensajeError').textContent = 'Todos los campos son obligatorios.';
+                        document.getElementById('alertaRegistro').classList.remove('d-none');
+                        return;
+                    }
+
+                    if (!validarEmail(correo)) {
+                        document.getElementById('mensajeError').textContent = 'Ingrese un correo electrónico válido.';
+                        document.getElementById('alertaRegistro').classList.remove('d-none');
+                        document.getElementById('correo').classList.add('is-invalid');
+                        return;
+                    }
+
+                    if (!validarTelefono(telefono)) {
+                        document.getElementById('mensajeError').textContent = 'Ingrese un número de teléfono válido (solo números, 7-15 dígitos).';
+                        document.getElementById('alertaRegistro').classList.remove('d-none');
+                        document.getElementById('telefono').classList.add('is-invalid');
+                        return;
+                    }
+
+                    if (passwordVal.length < 6) {
+                        document.getElementById('mensajeError').textContent = 'La contraseña debe tener al menos 6 caracteres.';
+                        document.getElementById('alertaRegistro').classList.remove('d-none');
+                        document.getElementById('password').classList.add('is-invalid');
+                        return;
+                    }
+
+                    if (passwordVal !== confirmarPass) {
+                        document.getElementById('mensajeError').textContent = 'Las contraseñas no coinciden.';
+                        document.getElementById('alertaRegistro').classList.remove('d-none');
+                        document.getElementById('confirmarPassword').classList.add('is-invalid');
+                        return;
+                    }
+
+                    if (!terminos) {
+                        document.getElementById('mensajeError').textContent = 'Debe aceptar los términos y condiciones.';
+                        document.getElementById('alertaRegistro').classList.remove('d-none');
+                        document.getElementById('terminos').classList.add('is-invalid');
+                        return;
+                    }
+
+                    // Preparar datos para enviar al backend Node.js
+                    const datosRegistro = {
+                        nombre: nombre,
+                        apellido: apellido,
+                        telefono: telefono,
+                        correo: correo,
+                        password: passwordVal,
+                        tipoUsuario: tipoUsuario
+                    };
+
+                    try {
+                        // Enviar al backend Node.js
+                        const response = await fetch('http://localhost:3000/api/auth/registro', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(datosRegistro)
+                        });
+
+                        const resultado = await response.json();
+
+                        if (response.ok) {
+                            // Registro exitoso
+                            alert('¡Registro exitoso! Será redirigido al login.');
+                            window.location.href = 'login.html?registro=exitoso';
+                        } else {
+                            // Error del servidor
+                            document.getElementById('mensajeError').textContent = 
+                                resultado.mensaje || 'Error en el registro. Intente nuevamente.';
+                            document.getElementById('alertaRegistro').classList.remove('d-none');
+                        }
+                    } catch (error) {
+                        console.error('Error de conexión:', error);
+                        document.getElementById('mensajeError').textContent = 
+                            'Error de conexión. Inténtelo de nuevo en unos segundos.';
+                        document.getElementById('alertaRegistro').classList.remove('d-none');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

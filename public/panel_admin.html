@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Panel administrativo para gestión del hostal">
+    <title>Hostal - Panel Administrador</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/logo.png" alt="Logo Hostal" height="40">
+                Panel Administrador
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="navbar-text text-warning me-3">
+                            <strong id="nombreAdmin">Administrador</strong>
+                        </span>
+                    </li>
+                    <li class="nav-item">
+                        <button class="btn btn-outline-warning" id="btnCerrarSesionAdmin">Cerrar Sesión</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link text-white active" href="#dashboard" data-bs-toggle="pill">
+                                <span class="me-2">📊</span> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="#gestionReservas" data-bs-toggle="pill">
+                                <span class="me-2">📋</span> Gestión de Reservas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="#gestionHabitaciones" data-bs-toggle="pill">
+                                <span class="me-2">🏠</span> Habitaciones
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Contenido Principal -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="tab-content pt-4">
+                    <!-- Dashboard -->
+                    <div class="tab-pane fade show active" id="dashboard">
+                        <h2 class="mb-4">Dashboard</h2>
+                        
+                        <div class="row">
+                            <div class="col-md-3 mb-4">
+                                <div class="card bg-warning text-dark">
+                                    <div class="card-body text-center">
+                                        <h3 id="totalReservas">12</h3>
+                                        <p class="mb-0">Reservas Totales</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center">
+                                        <h3 id="reservasAprobadas">8</h3>
+                                        <p class="mb-0">Aprobadas</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="card bg-danger text-white">
+                                    <div class="card-body text-center">
+                                        <h3 id="reservasPendientes">4</h3>
+                                        <p class="mb-0">Pendientes</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 mb-4">
+                                <div class="card bg-info text-white">
+                                    <div class="card-body text-center">
+                                        <h3 id="habitacionesDisponibles">6</h3>
+                                        <p class="mb-0">Disponibles</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gestión de Reservas -->
+                    <div class="tab-pane fade" id="gestionReservas">
+                        <h2 class="mb-4">Gestión de Reservas</h2>
+                        
+                        <!-- Alertas -->
+                        <div id="alertaAdmin" class="alert d-none" role="alert"></div>
+
+                        <div class="card shadow">
+                            <div class="card-header bg-warning">
+                                <h5 class="mb-0">Reservas Pendientes de Aprobación</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Cliente</th>
+                                                <th>Habitación</th>
+                                                <th>Entrada</th>
+                                                <th>Salida</th>
+                                                <th>Total</th>
+                                                <th>Comprobante</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tablaReservasAdmin">
+                                            <!-- Ejemplo de reserva -->
+                                            <tr>
+                                                <td>001</td>
+                                                <td>Juan Pérez</td>
+                                                <td>Doble</td>
+                                                <td>2024-12-25</td>
+                                                <td>2024-12-27</td>
+                                                <td>$100</td>
+                                                <td><button class="btn btn-sm btn-info" onclick="verComprobante('001')">Ver</button></td>
+                                                <td><span class="badge estado-pendiente">Pendiente</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-success" onclick="aprobarReserva('001')">Aprobar</button>
+                                                    <button class="btn btn-sm btn-danger" onclick="rechazarReserva('001')">Rechazar</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gestión de Habitaciones -->
+                    <div class="tab-pane fade" id="gestionHabitaciones">
+                        <h2 class="mb-4">Inventario de Habitaciones</h2>
+                        
+                        <button class="btn btn-warning mb-3" data-bs-toggle="modal" data-bs-target="#modalNuevaHabitacion">
+                            + Agregar Habitación
+                        </button>
+
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-striped">
+                                        <thead class="table-warning">
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Tipo</th>
+                                                <th>Capacidad</th>
+                                                <th>Precio/Noche</th>
+                                                <th>Estado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tablaHabitaciones">
+                                            <tr>
+                                                <td>H001</td>
+                                                <td>Individual</td>
+                                                <td>1 persona</td>
+                                                <td>$30</td>
+                                                <td><span class="badge bg-success">Disponible</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-primary">Editar</button>
+                                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>H002</td>
+                                                <td>Doble</td>
+                                                <td>2 personas</td>
+                                                <td>$50</td>
+                                                <td><span class="badge bg-danger">Ocupada</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-primary">Editar</button>
+                                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>H003</td>
+                                                <td>Suite</td>
+                                                <td>2 personas</td>
+                                                <td>$120</td>
+                                                <td><span class="badge bg-success">Disponible</span></td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-primary">Editar</button>
+                                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal Nueva Habitación -->
+    <div class="modal fade" id="modalNuevaHabitacion" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">Agregar Nueva Habitación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formNuevaHabitacion">
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Habitación</label>
+                            <input type="text" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Capacidad</label>
+                            <input type="number" class="form-control" min="1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Precio por Noche</label>
+                            <input type="number" class="form-control" min="0" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Ver Comprobante -->
+    <div class="modal fade" id="modalComprobante" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">Comprobante de Pago</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <!-- La imagen del comprobante se mostrará aquí -->
+                    <img id="imagenComprobante" src="" class="img-fluid" alt="Comprobante">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
