@@ -81,17 +81,17 @@ app.listen(PORT, () => {
     console.log('📌 Endpoints disponibles:');
     console.log(`   - POST /api/auth/registro`);
     console.log(`   - POST /api/auth/login`);
+    console.log(`   - GET  /api/auth/perfil`);
+    console.log(`   - PUT  /api/auth/cambiar-password`);
     console.log(`   - GET  /api/habitaciones`);
     console.log(`   - POST /api/reservas`);
-    console.log(`   - GET  /api/reservas/cliente`);
-    console.log(`   - GET  /api/reservas/todas (admin)`);
     console.log('');
     console.log('⏳ Presiona Ctrl+C para detener el servidor');
     console.log('');
 });
 
 process.on('SIGINT', () => {
-    console.log('\n\n Cerrando servidor...');
+    console.log('\n\n👋 Cerrando servidor...');
     process.exit(0);
 });
 

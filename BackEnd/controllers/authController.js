@@ -5,7 +5,7 @@ const { runQuery, getOne } = require('../config/database');
 
 const registro = async (req, res) => {
     try {
-        const { nombre, apellido, telefono, correo, password, tipoUsuario } = req.body;
+        const { nombre, apellido, telefono, correo, password } = req.body;
 
         if (!nombre || !apellido || !telefono || !correo || !password) {
             return res.status(400).json({
@@ -32,7 +32,7 @@ const registro = async (req, res) => {
         const resultado = await runQuery(
             `INSERT INTO usuarios (nombre, apellido, telefono, correo, password, tipoUsuario) 
              VALUES (?, ?, ?, ?, ?, ?)`,
-            [nombre, apellido, telefono, correo, passwordHash, tipoUsuario || 'cliente']
+            [nombre, apellido, telefono, correo, passwordHash, 'cliente']
         );
 
         res.status(201).json({
@@ -146,4 +146,60 @@ const obtenerPerfil = async (req, res) => {
     }
 };
 
-module.exports = { registro, login, obtenerPerfil };
+const cambiarPassword = async (req, res) => {
+    try {
+        const { passwordActual, passwordNueva } = req.body;
+        const usuarioId = req.usuario.id;
+
+        if (!passwordActual || !passwordNueva) {
+            return res.status(400).json({
+                success: false,
+                mensaje: 'Todos los campos son obligatorios'
+            });
+        }
+
+        const usuario = await getOne(
+            'SELECT * FROM usuarios WHERE id = ?',
+            [usuarioId]
+        );
+
+        if (!usuario) {
+            return res.status(404).json({
+                success: false,
+                mensaje: 'Usuario no encontrado'
+            });
+        }
+
+        const passwordValido = await bcrypt.compare(passwordActual, usuario.password);
+
+        if (!passwordValido) {
+            return res.status(401).json({
+                success: false,
+                mensaje: 'La contraseña actual es incorrecta'
+            });
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const passwordHash = await bcrypt.hash(passwordNueva, salt);
+
+        await runQuery(
+            'UPDATE usuarios SET password = ? WHERE id = ?',
+            [passwordHash, usuarioId]
+        );
+
+        res.json({
+            success: true,
+            mensaje: 'Contraseña actualizada exitosamente'
+        });
+
+    } catch (error) {
+        console.error('Error al cambiar contraseña:', error);
+        res.status(500).json({
+            success: false,
+            mensaje: 'Error al cambiar contraseña',
+            error: error.message
+        });
+    }
+};
+
+module.exports = { registro, login, obtenerPerfil, cambiarPassword };

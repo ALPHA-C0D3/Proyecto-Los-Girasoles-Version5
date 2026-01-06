@@ -1,445 +1,633 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Panel de cliente para gestionar reservas">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Panel de cliente para gestionar reservas"
+    />
     <title>Hostal - Panel Cliente</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+    <link rel="stylesheet" href="css/bootstrap.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
     <!-- Navegación -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
-        <div class="container-fluid">
-            <!-- Logo del hostal (colocar imagen en assets/logo.png) -->
-            <a class="navbar-brand" href="index.html">
-                <img src="assets/logo.png" alt="Logo Hostal" height="40">
-                Panel Cliente
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
-                    <li class="nav-item me-3">
-                        <span class="navbar-text text-warning">
-                            👤 Bienvenido, <strong id="nombreCliente">Cliente</strong>
-                        </span>
-                    </li>
-                    <li class="nav-item">
-                        <button class="btn btn-outline-warning btn-sm" id="btnCerrarSesion">
-                            Cerrar Sesión
-                        </button>
-                    </li>
-                </ul>
-            </div>
+      <div class="container-fluid">
+        <!-- Logo del hostal (colocar imagen en assets/logo.png) -->
+        <a class="navbar-brand" href="index.html">
+          <img src="assets/girasol.png" alt="Logo Hostal" height="40" />
+          Panel Cliente
+        </a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto align-items-center">
+            <li class="nav-item me-3">
+              <span class="navbar-text text-warning">
+                👤 Bienvenido, <strong id="nombreCliente">Cliente</strong>
+              </span>
+            </li>
+            <li class="nav-item">
+              <button
+                class="btn btn-outline-warning btn-sm"
+                id="btnCerrarSesion"
+              >
+                Cerrar Sesión
+              </button>
+            </li>
+          </ul>
         </div>
+      </div>
     </nav>
 
     <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar py-3">
-                <div class="position-sticky">
-                    <h6 class="sidebar-heading px-3 mt-3 mb-2 text-muted">
-                        <span>MENÚ PRINCIPAL</span>
-                    </h6>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#nuevaReserva" data-bs-toggle="pill">
-                                <span class="me-2">📝</span> Nueva Reserva
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#misReservas" data-bs-toggle="pill">
-                                <span class="me-2">📋</span> Mis Reservas
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#miPerfil" data-bs-toggle="pill">
-                                <span class="me-2">👤</span> Mi Perfil
-                            </a>
-                        </li>
-                    </ul>
-                    <hr>
-                    <h6 class="sidebar-heading px-3 mt-3 mb-2 text-muted">
-                        <span>ENLACES RÁPIDOS</span>
-                    </h6>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link" href="habitaciones.html" target="_blank">
-                                <span class="me-2">🏠</span> Ver Habitaciones
-                            </a>
-                        </li>
-                    </ul>
+      <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar py-3">
+          <div class="position-sticky">
+            <h6 class="sidebar-heading px-3 mt-3 mb-2 text-muted">
+              <span>MENÚ PRINCIPAL</span>
+            </h6>
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a
+                  class="nav-link active"
+                  href="#nuevaReserva"
+                  data-bs-toggle="pill"
+                >
+                  <span class="me-2">📝</span> Nueva Reserva
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#misReservas" data-bs-toggle="pill">
+                  <span class="me-2">📋</span> Mis Reservas
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#miPerfil" data-bs-toggle="pill">
+                  <span class="me-2">👤</span> Mi Perfil
+                </a>
+              </li>
+            </ul>
+            <hr />
+            <h6 class="sidebar-heading px-3 mt-3 mb-2 text-muted">
+              <span>ENLACES RÁPIDOS</span>
+            </h6>
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link" href="habitaciones.html" target="_blank">
+                  <span class="me-2">🏠</span> Ver Habitaciones
+                </a>
+              </li>
+            </ul>
+          </div>
+        </nav>
+
+        <!-- Contenido Principal -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+          <div class="tab-content">
+            <!-- Nueva Reserva -->
+            <div class="tab-pane fade show active" id="nuevaReserva">
+              <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom"
+              >
+                <h2 class="h2">📝 Nueva Reserva</h2>
+              </div>
+
+              <!-- Alerta de mensajes -->
+              <div id="alertaReserva" class="alert d-none" role="alert"></div>
+
+              <div class="card shadow">
+                <div class="card-header bg-warning">
+                  <h5 class="mb-0">Formulario de Reserva</h5>
                 </div>
-            </nav>
-
-            <!-- Contenido Principal -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-                <div class="tab-content">
-                    
-                    <!-- Nueva Reserva -->
-                    <div class="tab-pane fade show active" id="nuevaReserva">
-                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-                            <h2 class="h2">📝 Nueva Reserva</h2>
+                <div class="card-body">
+                  <form id="formReserva" novalidate>
+                    <div class="row">
+                      <!-- Tipo de Habitación -->
+                      <div class="col-md-6 mb-3">
+                        <label for="tipoHabitacion" class="form-label fw-bold">
+                          Tipo de Habitación <span class="text-danger">*</span>
+                        </label>
+                        <select
+                          class="form-select"
+                          id="tipoHabitacion"
+                          name="tipoHabitacion"
+                          required
+                        >
+                          <option value="">Seleccione una habitación...</option>
+                          <option value="economica" data-precio="25">
+                            Económica - $25/noche
+                          </option>
+                          <option value="individual" data-precio="30">
+                            Individual - $30/noche
+                          </option>
+                          <option value="doble" data-precio="50">
+                            Doble - $50/noche
+                          </option>
+                          <option value="triple" data-precio="65">
+                            Triple - $65/noche
+                          </option>
+                          <option value="familiar" data-precio="80">
+                            Familiar - $80/noche
+                          </option>
+                          <option value="suite" data-precio="120">
+                            Suite Premium - $120/noche
+                          </option>
+                        </select>
+                        <div class="invalid-feedback">
+                          Seleccione un tipo de habitación.
                         </div>
-                        
-                        <!-- Alerta de mensajes -->
-                        <div id="alertaReserva" class="alert d-none" role="alert"></div>
+                      </div>
 
-                        <div class="card shadow">
-                            <div class="card-header bg-warning">
-                                <h5 class="mb-0">Formulario de Reserva</h5>
-                            </div>
-                            <div class="card-body">
-                                <form id="formReserva" novalidate>
-                                    <div class="row">
-                                        <!-- Tipo de Habitación -->
-                                        <div class="col-md-6 mb-3">
-                                            <label for="tipoHabitacion" class="form-label fw-bold">
-                                                Tipo de Habitación <span class="text-danger">*</span>
-                                            </label>
-                                            <select class="form-select" id="tipoHabitacion" name="tipoHabitacion" required>
-                                                <option value="">Seleccione una habitación...</option>
-                                                <option value="economica" data-precio="25">Económica - $25/noche</option>
-                                                <option value="individual" data-precio="30">Individual - $30/noche</option>
-                                                <option value="doble" data-precio="50">Doble - $50/noche</option>
-                                                <option value="triple" data-precio="65">Triple - $65/noche</option>
-                                                <option value="familiar" data-precio="80">Familiar - $80/noche</option>
-                                                <option value="suite" data-precio="120">Suite Premium - $120/noche</option>
-                                            </select>
-                                            <div class="invalid-feedback">Seleccione un tipo de habitación.</div>
-                                        </div>
-
-                                        <!-- Número de Personas -->
-                                        <div class="col-md-6 mb-3">
-                                            <label for="numPersonas" class="form-label fw-bold">
-                                                Número de Personas <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="number" 
-                                                   class="form-control" 
-                                                   id="numPersonas" 
-                                                   name="numPersonas" 
-                                                   min="1" 
-                                                   max="6"
-                                                   placeholder="1-6 personas"
-                                                   required>
-                                            <div class="invalid-feedback">Ingrese el número de personas (1-6).</div>
-                                        </div>
-
-                                        <!-- Fecha de Entrada -->
-                                        <div class="col-md-6 mb-3">
-                                            <label for="fechaEntrada" class="form-label fw-bold">
-                                                Fecha de Entrada <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="date" 
-                                                   class="form-control" 
-                                                   id="fechaEntrada" 
-                                                   name="fechaEntrada" 
-                                                   required>
-                                            <div class="invalid-feedback">Ingrese la fecha de entrada.</div>
-                                        </div>
-
-                                        <!-- Fecha de Salida -->
-                                        <div class="col-md-6 mb-3">
-                                            <label for="fechaSalida" class="form-label fw-bold">
-                                                Fecha de Salida <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="date" 
-                                                   class="form-control" 
-                                                   id="fechaSalida" 
-                                                   name="fechaSalida" 
-                                                   required>
-                                            <div class="invalid-feedback">La fecha de salida debe ser posterior a la entrada.</div>
-                                        </div>
-
-                                        <!-- Comprobante de Pago -->
-                                        <div class="col-12 mb-3">
-                                            <label for="comprobante" class="form-label fw-bold">
-                                                Comprobante de Pago <span class="text-danger">*</span>
-                                            </label>
-                                            <input type="file" 
-                                                   class="form-control" 
-                                                   id="comprobante" 
-                                                   name="comprobante" 
-                                                   accept=".jpg,.jpeg,.png,.pdf" 
-                                                   required>
-                                            <div class="invalid-feedback">Debe adjuntar el comprobante (JPG, PNG o PDF).</div>
-                                            <small class="form-text text-muted">
-                                                📎 Formatos permitidos: JPG, PNG, PDF (máx. 5MB)
-                                            </small>
-                                        </div>
-
-                                        <!-- Información de Pago -->
-                                        <div class="col-12 mb-3">
-                                            <div class="alert alert-info">
-                                                <h6 class="alert-heading">💳 Información de Pago</h6>
-                                                <p class="mb-0">Realice el pago a la cuenta: <strong>Banco XYZ - Cuenta: 1234567890</strong></p>
-                                                <p class="mb-0">Una vez realizado el pago, suba el comprobante para validación.</p>
-                                            </div>
-                                        </div>
-
-                                        <!-- Resumen -->
-                                        <div class="col-12 mb-3">
-                                            <div class="card bg-warning">
-                                                <div class="card-body">
-                                                    <h5 class="card-title">📊 Resumen de Reserva</h5>
-                                                    <div class="row">
-                                                        <div class="col-6">
-                                                            <p class="mb-1"><strong>Habitación:</strong> <span id="resumenHabitacion">-</span></p>
-                                                            <p class="mb-1"><strong>Personas:</strong> <span id="resumenPersonas">-</span></p>
-                                                        </div>
-                                                        <div class="col-6">
-                                                            <p class="mb-1"><strong>Noches:</strong> <span id="resumenNoches">0</span></p>
-                                                            <p class="mb-1"><strong>Precio/noche:</strong> $<span id="resumenPrecioNoche">0</span></p>
-                                                        </div>
-                                                    </div>
-                                                    <hr>
-                                                    <h4 class="text-end mb-0">
-                                                        <strong>TOTAL: $<span id="totalEstimado">0</span></strong>
-                                                    </h4>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-grid gap-2">
-                                        <button type="submit" class="btn btn-warning btn-lg fw-bold">
-                                            Enviar Reserva para Aprobación
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
+                      <!-- Número de Personas -->
+                      <div class="col-md-6 mb-3">
+                        <label for="numPersonas" class="form-label fw-bold">
+                          Número de Personas <span class="text-danger">*</span>
+                        </label>
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="numPersonas"
+                          name="numPersonas"
+                          min="1"
+                          max="6"
+                          placeholder="1-6 personas"
+                          required
+                        />
+                        <div class="invalid-feedback">
+                          Ingrese el número de personas (1-6).
                         </div>
+                      </div>
+
+                      <!-- Fecha de Entrada -->
+                      <div class="col-md-6 mb-3">
+                        <label for="fechaEntrada" class="form-label fw-bold">
+                          Fecha de Entrada <span class="text-danger">*</span>
+                        </label>
+                        <input
+                          type="date"
+                          class="form-control"
+                          id="fechaEntrada"
+                          name="fechaEntrada"
+                          required
+                        />
+                        <div class="invalid-feedback">
+                          Ingrese la fecha de entrada.
+                        </div>
+                      </div>
+
+                      <!-- Fecha de Salida -->
+                      <div class="col-md-6 mb-3">
+                        <label for="fechaSalida" class="form-label fw-bold">
+                          Fecha de Salida <span class="text-danger">*</span>
+                        </label>
+                        <input
+                          type="date"
+                          class="form-control"
+                          id="fechaSalida"
+                          name="fechaSalida"
+                          required
+                        />
+                        <div class="invalid-feedback">
+                          La fecha de salida debe ser posterior a la entrada.
+                        </div>
+                      </div>
+
+                      <!-- Comprobante de Pago -->
+                      <div class="col-12 mb-3">
+                        <label for="comprobante" class="form-label fw-bold">
+                          Comprobante de Pago <span class="text-danger">*</span>
+                        </label>
+                        <input
+                          type="file"
+                          class="form-control"
+                          id="comprobante"
+                          name="comprobante"
+                          accept=".jpg,.jpeg,.png,.pdf"
+                          required
+                        />
+                        <div class="invalid-feedback">
+                          Debe adjuntar el comprobante (JPG, PNG o PDF).
+                        </div>
+                        <small class="form-text text-muted">
+                          📎 Formatos permitidos: JPG, PNG, PDF (máx. 5MB)
+                        </small>
+                      </div>
+
+                      <!-- Información de Pago -->
+                      <div class="col-12 mb-3">
+                        <div class="alert alert-info">
+                          <h6 class="alert-heading">💳 Información de Pago</h6>
+                          <p class="mb-0">
+                            Realice el pago a la cuenta:
+                            <strong>Banco XYZ - Cuenta: 1234567890</strong>
+                          </p>
+                          <p class="mb-0">
+                            Una vez realizado el pago, suba el comprobante para
+                            validación.
+                          </p>
+                        </div>
+                      </div>
+
+                      <!-- Resumen -->
+                      <div class="col-12 mb-3">
+                        <div class="card bg-warning">
+                          <div class="card-body">
+                            <h5 class="card-title">📊 Resumen de Reserva</h5>
+                            <div class="row">
+                              <div class="col-6">
+                                <p class="mb-1">
+                                  <strong>Habitación:</strong>
+                                  <span id="resumenHabitacion">-</span>
+                                </p>
+                                <p class="mb-1">
+                                  <strong>Personas:</strong>
+                                  <span id="resumenPersonas">-</span>
+                                </p>
+                              </div>
+                              <div class="col-6">
+                                <p class="mb-1">
+                                  <strong>Noches:</strong>
+                                  <span id="resumenNoches">0</span>
+                                </p>
+                                <p class="mb-1">
+                                  <strong>Precio/noche:</strong> $<span
+                                    id="resumenPrecioNoche"
+                                    >0</span
+                                  >
+                                </p>
+                              </div>
+                            </div>
+                            <hr />
+                            <h4 class="text-end mb-0">
+                              <strong
+                                >TOTAL: $<span id="totalEstimado"
+                                  >0</span
+                                ></strong
+                              >
+                            </h4>
+                          </div>
+                        </div>
+                      </div>
                     </div>
 
-                    <!-- Mis Reservas -->
-                    <div class="tab-pane fade" id="misReservas">
-                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-                            <h2 class="h2">📋 Mis Reservas</h2>
-                            <button class="btn btn-sm btn-outline-secondary" onclick="cargarReservas()">
-                                🔄 Actualizar
-                            </button>
-                        </div>
-                        
-                        <div class="card shadow">
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead class="table-warning">
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Habitación</th>
-                                                <th>Entrada</th>
-                                                <th>Salida</th>
-                                                <th>Personas</th>
-                                                <th>Total</th>
-                                                <th>Estado</th>
-                                                <th>Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tablaReservas">
-                                            <tr>
-                                                <td colspan="8" class="text-center text-muted py-4">
-                                                    No tienes reservas registradas
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="d-grid gap-2">
+                      <button
+                        type="submit"
+                        class="btn btn-warning btn-lg fw-bold"
+                      >
+                        Enviar Reserva para Aprobación
+                      </button>
                     </div>
-
-                    <!-- Mi Perfil -->
-                    <div class="tab-pane fade" id="miPerfil">
-                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-                            <h2 class="h2">👤 Mi Perfil</h2>
-                        </div>
-                        
-                        <div class="card shadow">
-                            <div class="card-body">
-                                <h5>Información Personal</h5>
-                                <div class="row mt-3">
-                                    <div class="col-md-6">
-                                        <p><strong>Nombre:</strong> <span id="perfilNombre">-</span></p>
-                                        <p><strong>Correo:</strong> <span id="perfilCorreo">-</span></p>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <p><strong>Teléfono:</strong> <span id="perfilTelefono">-</span></p>
-                                        <p><strong>Tipo:</strong> <span id="perfilTipo">-</span></p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+                  </form>
                 </div>
-            </main>
-        </div>
+              </div>
+            </div>
+
+            <!-- Mis Reservas -->
+            <div class="tab-pane fade" id="misReservas">
+              <div
+                class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom"
+              >
+                <h2 class="h2">📋 Mis Reservas</h2>
+                <button
+                  class="btn btn-sm btn-outline-secondary"
+                  onclick="cargarReservas()"
+                >
+                  🔄 Actualizar
+                </button>
+              </div>
+
+              <div class="card shadow">
+                <div class="card-body">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class="table-warning">
+                        <tr>
+                          <th>ID</th>
+                          <th>Habitación</th>
+                          <th>Entrada</th>
+                          <th>Salida</th>
+                          <th>Personas</th>
+                          <th>Total</th>
+                          <th>Estado</th>
+                          <th>Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tablaReservas">
+                        <tr>
+                          <td colspan="8" class="text-center text-muted py-4">
+                            No tienes reservas registradas
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+<!-- Mi Perfil -->
+<div class="tab-pane fade" id="miPerfil">
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+        <h2 class="h2">👤 Mi Perfil</h2>
     </div>
-
-    <!-- Modal de Confirmación -->
-    <div class="modal fade" id="modalConfirmacion" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title">✅ Confirmación</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    
+    <!-- Información Personal -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-warning">
+            <h5 class="mb-0">Información Personal</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Nombre:</strong> <span id="perfilNombre">-</span></p>
+                    <p><strong>Correo:</strong> <span id="perfilCorreo">-</span></p>
                 </div>
-                <div class="modal-body">
-                    <p id="mensajeModal"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Entendido</button>
+                <div class="col-md-6">
+                    <p><strong>Teléfono:</strong> <span id="perfilTelefono">-</span></p>
+                    <p><strong>Tipo:</strong> <span id="perfilTipo">-</span></p>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Cambiar Contraseña -->
+    <div class="card shadow">
+        <div class="card-header bg-warning">
+            <h5 class="mb-0">🔐 Cambiar Contraseña</h5>
+        </div>
+        <div class="card-body">
+            <div id="alertaCambioPassword" class="alert d-none" role="alert"></div>
+            
+            <form id="formCambiarPassword">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="passwordActual" class="form-label fw-bold">
+                            Contraseña Actual <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="passwordActual" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('passwordActual', this)">
+                                👁️
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-md-6"></div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="passwordNueva" class="form-label fw-bold">
+                            Nueva Contraseña <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="passwordNueva" minlength="6" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('passwordNueva', this)">
+                                👁️
+                            </button>
+                        </div>
+                        <small class="form-text text-muted">Mínimo 6 caracteres</small>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="passwordConfirmar" class="form-label fw-bold">
+                            Confirmar Nueva Contraseña <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="password" class="form-control" id="passwordConfirmar" required>
+                            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility('passwordConfirmar', this)">
+                                👁️
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-warning">Cambiar Contraseña</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+    <!-- Modal de Confirmación -->
+    <div class="modal fade" id="modalConfirmacion" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-warning">
+            <h5 class="modal-title">✅ Confirmación</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p id="mensajeModal"></p>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-warning"
+              data-bs-dismiss="modal"
+            >
+              Entendido
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/validaciones.js"></script>
     <script>
-        // Verificar autenticación al cargar
-        document.addEventListener('DOMContentLoaded', function() {
-            const usuario = JSON.parse(sessionStorage.getItem('usuario') || 'null');
-            
-            if (!usuario) {
-                alert('Debe iniciar sesión para acceder.');
-                window.location.href = 'login.html';
-                return;
-            }
+      // Verificar autenticación al cargar
+      document.addEventListener("DOMContentLoaded", function () {
+        const usuario = JSON.parse(sessionStorage.getItem("usuario") || "null");
 
-            // Mostrar nombre del usuario
-            document.getElementById('nombreCliente').textContent = usuario.nombre;
-            document.getElementById('perfilNombre').textContent = `${usuario.nombre} ${usuario.apellido}`;
-            document.getElementById('perfilCorreo').textContent = usuario.correo;
-            document.getElementById('perfilTelefono').textContent = usuario.telefono;
-            document.getElementById('perfilTipo').textContent = usuario.tipoUsuario === 'admin' ? 'Administrador' : 'Cliente';
-
-            // Establecer fecha mínima como hoy
-            const hoy = new Date().toISOString().split('T')[0];
-            document.getElementById('fechaEntrada').setAttribute('min', hoy);
-            document.getElementById('fechaSalida').setAttribute('min', hoy);
-
-            cargarReservas();
-        });
-
-        // Cerrar sesión
-        document.getElementById('btnCerrarSesion').addEventListener('click', function() {
-            if (confirm('¿Está seguro que desea cerrar sesión?')) {
-                sessionStorage.clear();
-                window.location.href = 'index.html';
-            }
-        });
-
-        // Calcular total automáticamente
-        function actualizarResumen() {
-            const tipoSelect = document.getElementById('tipoHabitacion');
-            const tipo = tipoSelect.options[tipoSelect.selectedIndex];
-            const numPersonas = document.getElementById('numPersonas').value;
-            const fechaEntrada = document.getElementById('fechaEntrada').value;
-            const fechaSalida = document.getElementById('fechaSalida').value;
-
-            document.getElementById('resumenHabitacion').textContent = tipo.text.split(' - ')[0] || '-';
-            document.getElementById('resumenPersonas').textContent = numPersonas || '-';
-
-            if (fechaEntrada && fechaSalida) {
-                const entrada = new Date(fechaEntrada);
-                const salida = new Date(fechaSalida);
-                const noches = Math.ceil((salida - entrada) / (1000 * 60 * 60 * 24));
-                
-                document.getElementById('resumenNoches').textContent = noches > 0 ? noches : 0;
-                
-                if (tipo.value && noches > 0) {
-                    const precio = parseInt(tipo.getAttribute('data-precio'));
-                    document.getElementById('resumenPrecioNoche').textContent = precio;
-                    document.getElementById('totalEstimado').textContent = precio * noches;
-                }
-            }
+        if (!usuario) {
+          alert("Debe iniciar sesión para acceder.");
+          window.location.href = "login.html";
+          return;
         }
 
-        document.getElementById('tipoHabitacion').addEventListener('change', actualizarResumen);
-        document.getElementById('numPersonas').addEventListener('input', actualizarResumen);
-        document.getElementById('fechaEntrada').addEventListener('change', actualizarResumen);
-        document.getElementById('fechaSalida').addEventListener('change', actualizarResumen);
+        // Mostrar nombre del usuario
+        document.getElementById("nombreCliente").textContent = usuario.nombre;
+        document.getElementById(
+          "perfilNombre"
+        ).textContent = `${usuario.nombre} ${usuario.apellido}`;
+        document.getElementById("perfilCorreo").textContent = usuario.correo;
+        document.getElementById("perfilTelefono").textContent =
+          usuario.telefono;
+        document.getElementById("perfilTipo").textContent =
+          usuario.tipoUsuario === "admin" ? "Administrador" : "Cliente";
 
-        // Enviar reserva
-        document.getElementById('formReserva').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const fechaEntrada = document.getElementById('fechaEntrada').value;
-            const fechaSalida = document.getElementById('fechaSalida').value;
-            const comprobante = document.getElementById('comprobante').files[0];
+        // Establecer fecha mínima como hoy
+        const hoy = new Date().toISOString().split("T")[0];
+        document.getElementById("fechaEntrada").setAttribute("min", hoy);
+        document.getElementById("fechaSalida").setAttribute("min", hoy);
 
-            // Validar fechas
-            const validacion = validarFechasReserva(fechaEntrada, fechaSalida);
-            if (!validacion.valido) {
-                document.getElementById('alertaReserva').textContent = validacion.mensaje;
-                document.getElementById('alertaReserva').className = 'alert alert-danger';
-                document.getElementById('alertaReserva').classList.remove('d-none');
-                return;
-            }
+        cargarReservas();
+      });
 
-            // Validar comprobante
-            const validacionComprobante = validarComprobante(comprobante);
-            if (!validacionComprobante.valido) {
-                document.getElementById('alertaReserva').textContent = validacionComprobante.mensaje;
-                document.getElementById('alertaReserva').className = 'alert alert-danger';
-                document.getElementById('alertaReserva').classList.remove('d-none');
-                return;
-            }
-
-            const formData = new FormData(this);
-            formData.append('total', document.getElementById('totalEstimado').textContent);
-            formData.append('usuarioId', JSON.parse(sessionStorage.getItem('usuario')).id);
-
-            try {
-                const response = await fetch('http://localhost:3000/api/reservas', {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                    },
-                    body: formData
-                });
-
-                const resultado = await response.json();
-
-                if (response.ok) {
-                    document.getElementById('mensajeModal').textContent = 
-                        'Su reserva ha sido registrada correctamente. El administrador revisará su pago y le notificará pronto.';
-                    new bootstrap.Modal(document.getElementById('modalConfirmacion')).show();
-                    this.reset();
-                    actualizarResumen();
-                    setTimeout(() => cargarReservas(), 2000);
-                } else {
-                    document.getElementById('alertaReserva').textContent = resultado.mensaje || 'Error al procesar la reserva.';
-                    document.getElementById('alertaReserva').className = 'alert alert-danger';
-                    document.getElementById('alertaReserva').classList.remove('d-none');
-                }
-            } catch (error) {
-                document.getElementById('alertaReserva').textContent = 'Error de conexión. Inténtelo de nuevo.';
-                document.getElementById('alertaReserva').className = 'alert alert-danger';
-                document.getElementById('alertaReserva').classList.remove('d-none');
-            }
+      // Cerrar sesión
+      document
+        .getElementById("btnCerrarSesion")
+        .addEventListener("click", function () {
+          if (confirm("¿Está seguro que desea cerrar sesión?")) {
+            sessionStorage.clear();
+            window.location.href = "index.html";
+          }
         });
 
-        // Cargar reservas
-        async function cargarReservas() {
-            try {
-                const response = await fetch('http://localhost:3000/api/reservas/cliente', {
-                    headers: {
-                        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                    }
-                });
+      // Calcular total automáticamente
+      function actualizarResumen() {
+        const tipoSelect = document.getElementById("tipoHabitacion");
+        const tipo = tipoSelect.options[tipoSelect.selectedIndex];
+        const numPersonas = document.getElementById("numPersonas").value;
+        const fechaEntrada = document.getElementById("fechaEntrada").value;
+        const fechaSalida = document.getElementById("fechaSalida").value;
 
-                const reservas = await response.json();
-                const tbody = document.getElementById('tablaReservas');
+        document.getElementById("resumenHabitacion").textContent =
+          tipo.text.split(" - ")[0] || "-";
+        document.getElementById("resumenPersonas").textContent =
+          numPersonas || "-";
 
-                if (response.ok && reservas.length > 0) {
-                    tbody.innerHTML = reservas.map(r => `
+        if (fechaEntrada && fechaSalida) {
+          const entrada = new Date(fechaEntrada);
+          const salida = new Date(fechaSalida);
+          const noches = Math.ceil((salida - entrada) / (1000 * 60 * 60 * 24));
+
+          document.getElementById("resumenNoches").textContent =
+            noches > 0 ? noches : 0;
+
+          if (tipo.value && noches > 0) {
+            const precio = parseInt(tipo.getAttribute("data-precio"));
+            document.getElementById("resumenPrecioNoche").textContent = precio;
+            document.getElementById("totalEstimado").textContent =
+              precio * noches;
+          }
+        }
+      }
+
+      document
+        .getElementById("tipoHabitacion")
+        .addEventListener("change", actualizarResumen);
+      document
+        .getElementById("numPersonas")
+        .addEventListener("input", actualizarResumen);
+      document
+        .getElementById("fechaEntrada")
+        .addEventListener("change", actualizarResumen);
+      document
+        .getElementById("fechaSalida")
+        .addEventListener("change", actualizarResumen);
+
+      // Enviar reserva
+      document
+        .getElementById("formReserva")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const fechaEntrada = document.getElementById("fechaEntrada").value;
+          const fechaSalida = document.getElementById("fechaSalida").value;
+          const comprobante = document.getElementById("comprobante").files[0];
+
+          // Validar fechas
+          const validacion = validarFechasReserva(fechaEntrada, fechaSalida);
+          if (!validacion.valido) {
+            document.getElementById("alertaReserva").textContent =
+              validacion.mensaje;
+            document.getElementById("alertaReserva").className =
+              "alert alert-danger";
+            document.getElementById("alertaReserva").classList.remove("d-none");
+            return;
+          }
+
+          // Validar comprobante
+          const validacionComprobante = validarComprobante(comprobante);
+          if (!validacionComprobante.valido) {
+            document.getElementById("alertaReserva").textContent =
+              validacionComprobante.mensaje;
+            document.getElementById("alertaReserva").className =
+              "alert alert-danger";
+            document.getElementById("alertaReserva").classList.remove("d-none");
+            return;
+          }
+
+          const formData = new FormData(this);
+          formData.append(
+            "total",
+            document.getElementById("totalEstimado").textContent
+          );
+          formData.append(
+            "usuarioId",
+            JSON.parse(sessionStorage.getItem("usuario")).id
+          );
+
+          try {
+            const response = await fetch("http://localhost:3000/api/reservas", {
+              method: "POST",
+              headers: {
+                Authorization: "Bearer " + sessionStorage.getItem("token"),
+              },
+              body: formData,
+            });
+
+            const resultado = await response.json();
+
+            if (response.ok) {
+              document.getElementById("mensajeModal").textContent =
+                "Su reserva ha sido registrada correctamente. El administrador revisará su pago y le notificará pronto.";
+              new bootstrap.Modal(
+                document.getElementById("modalConfirmacion")
+              ).show();
+              this.reset();
+              actualizarResumen();
+              setTimeout(() => cargarReservas(), 2000);
+            } else {
+              document.getElementById("alertaReserva").textContent =
+                resultado.mensaje || "Error al procesar la reserva.";
+              document.getElementById("alertaReserva").className =
+                "alert alert-danger";
+              document
+                .getElementById("alertaReserva")
+                .classList.remove("d-none");
+            }
+          } catch (error) {
+            document.getElementById("alertaReserva").textContent =
+              "Error de conexión. Inténtelo de nuevo.";
+            document.getElementById("alertaReserva").className =
+              "alert alert-danger";
+            document.getElementById("alertaReserva").classList.remove("d-none");
+          }
+        });
+
+      // Cargar reservas
+      async function cargarReservas() {
+        try {
+          const response = await fetch(
+            "http://localhost:3000/api/reservas/cliente",
+            {
+              headers: {
+                Authorization: "Bearer " + sessionStorage.getItem("token"),
+              },
+            }
+          );
+
+          const reservas = await response.json();
+          const tbody = document.getElementById("tablaReservas");
+
+          if (response.ok && reservas.length > 0) {
+            tbody.innerHTML = reservas
+              .map(
+                (r) => `
                         <tr>
                             <td>${r.id}</td>
                             <td>${r.tipoHabitacion}</td>
@@ -447,41 +635,121 @@
                             <td>${r.fechaSalida}</td>
                             <td>${r.numPersonas}</td>
                             <td>$${r.total}</td>
-                            <td><span class="estado-${r.estado}">${r.estado}</span></td>
+                            <td><span class="estado-${r.estado}">${
+                  r.estado
+                }</span></td>
                             <td>
-                                ${r.estado === 'pendiente' ? 
-                                    `<button class="btn btn-sm btn-danger" onclick="cancelarReserva('${r.id}')">Cancelar</button>` : 
-                                    '-'}
+                                ${
+                                  r.estado === "pendiente"
+                                    ? `<button class="btn btn-sm btn-danger" onclick="cancelarReserva('${r.id}')">Cancelar</button>`
+                                    : "-"
+                                }
                             </td>
                         </tr>
-                    `).join('');
-                } else {
-                    tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted py-4">No tienes reservas registradas</td></tr>';
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
+                    `
+              )
+              .join("");
+          } else {
+            tbody.innerHTML =
+              '<tr><td colspan="8" class="text-center text-muted py-4">No tienes reservas registradas</td></tr>';
+          }
+        } catch (error) {
+          console.error("Error:", error);
         }
+      }
 
-        async function cancelarReserva(id) {
-            if (!confirm('¿Está seguro que desea cancelar esta reserva?')) return;
-            
-            try {
-                const response = await fetch(`http://localhost:3000/api/reservas/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                    }
-                });
+      async function cancelarReserva(id) {
+        if (!confirm("¿Está seguro que desea cancelar esta reserva?")) return;
 
-                if (response.ok) {
-                    alert('Reserva cancelada exitosamente.');
-                    cargarReservas();
-                }
-            } catch (error) {
-                alert('Error al cancelar la reserva.');
+        try {
+          const response = await fetch(
+            `http://localhost:3000/api/reservas/${id}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: "Bearer " + sessionStorage.getItem("token"),
+              },
             }
+          );
+
+          if (response.ok) {
+            alert("Reserva cancelada exitosamente.");
+            cargarReservas();
+          }
+        } catch (error) {
+          alert("Error al cancelar la reserva.");
         }
+      }
     </script>
-</body>
+    <script>
+    // Función para ver/ocultar contraseñas
+    function togglePasswordVisibility(inputId, button) {
+        const input = document.getElementById(inputId);
+        const type = input.type === 'password' ? 'text' : 'password';
+        input.type = type;
+        button.textContent = type === 'password' ? '👁️' : '🙈';
+    }
+
+    // Cambiar contraseña
+    document.getElementById('formCambiarPassword')?.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const passwordActual = document.getElementById('passwordActual').value;
+        const passwordNueva = document.getElementById('passwordNueva').value;
+        const passwordConfirmar = document.getElementById('passwordConfirmar').value;
+        
+        const alerta = document.getElementById('alertaCambioPassword');
+        
+        // Validar que las contraseñas nuevas coincidan
+        if (passwordNueva !== passwordConfirmar) {
+            alerta.textContent = 'Las contraseñas nuevas no coinciden';
+            alerta.className = 'alert alert-danger';
+            alerta.classList.remove('d-none');
+            return;
+        }
+        
+        if (passwordNueva.length < 6) {
+            alerta.textContent = 'La nueva contraseña debe tener al menos 6 caracteres';
+            alerta.className = 'alert alert-danger';
+            alerta.classList.remove('d-none');
+            return;
+        }
+        
+        try {
+            const response = await fetch('http://localhost:3000/api/auth/cambiar-password', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                },
+                body: JSON.stringify({
+                    passwordActual,
+                    passwordNueva
+                })
+            });
+            
+            const resultado = await response.json();
+            
+            if (response.ok) {
+                alerta.textContent = '✅ Contraseña cambiada exitosamente';
+                alerta.className = 'alert alert-success';
+                alerta.classList.remove('d-none');
+                this.reset();
+                
+                setTimeout(() => {
+                    alerta.classList.add('d-none');
+                }, 3000);
+            } else {
+                alerta.textContent = resultado.mensaje || 'Error al cambiar contraseña';
+                alerta.className = 'alert alert-danger';
+                alerta.classList.remove('d-none');
+            }
+        } catch (error) {
+            alerta.textContent = 'Error de conexión';
+            alerta.className = 'alert alert-danger';
+            alerta.classList.remove('d-none');
+        }
+    });
+</script>
+  </body>
 </html>

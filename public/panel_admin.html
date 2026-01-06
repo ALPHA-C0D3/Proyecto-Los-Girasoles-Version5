@@ -10,24 +10,33 @@
 </head>
 <body>
     <!-- Navegación -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.html">
-                <img src="assets/logo.png" alt="Logo Hostal" height="40">
+                <img src="assets/girasol.png" alt="Logo Hostal" height="40">
                 Panel Administrador
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <span class="navbar-text text-warning me-3">
-                            <strong id="nombreAdmin">Administrador</strong>
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item me-3">
+                        <span class="navbar-text text-warning">
+                            👤 <strong id="nombreAdmin">Administrador</strong>
                         </span>
                     </li>
+                    <!-- Botón Cambiar Contraseña -->
+                    <li class="nav-item me-2">
+                        <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalCambiarPassword">
+                            🔐 Cambiar Contraseña
+                        </button>
+                    </li>
+                    <!-- Botón Cerrar Sesión -->
                     <li class="nav-item">
-                        <button class="btn btn-outline-warning" id="btnCerrarSesionAdmin">Cerrar Sesión</button>
+                        <button class="btn btn-outline-warning btn-sm" id="btnCerrarSesionAdmin">
+                            Cerrar Sesión
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -70,7 +79,7 @@
                             <div class="col-md-3 mb-4">
                                 <div class="card bg-warning text-dark">
                                     <div class="card-body text-center">
-                                        <h3 id="totalReservas">12</h3>
+                                        <h3 id="totalReservas">0</h3>
                                         <p class="mb-0">Reservas Totales</p>
                                     </div>
                                 </div>
@@ -78,7 +87,7 @@
                             <div class="col-md-3 mb-4">
                                 <div class="card bg-success text-white">
                                     <div class="card-body text-center">
-                                        <h3 id="reservasAprobadas">8</h3>
+                                        <h3 id="reservasAprobadas">0</h3>
                                         <p class="mb-0">Aprobadas</p>
                                     </div>
                                 </div>
@@ -86,7 +95,7 @@
                             <div class="col-md-3 mb-4">
                                 <div class="card bg-danger text-white">
                                     <div class="card-body text-center">
-                                        <h3 id="reservasPendientes">4</h3>
+                                        <h3 id="reservasPendientes">0</h3>
                                         <p class="mb-0">Pendientes</p>
                                     </div>
                                 </div>
@@ -94,7 +103,7 @@
                             <div class="col-md-3 mb-4">
                                 <div class="card bg-info text-white">
                                     <div class="card-body text-center">
-                                        <h3 id="habitacionesDisponibles">6</h3>
+                                        <h3 id="habitacionesDisponibles">0</h3>
                                         <p class="mb-0">Disponibles</p>
                                     </div>
                                 </div>
@@ -130,19 +139,9 @@
                                             </tr>
                                         </thead>
                                         <tbody id="tablaReservasAdmin">
-                                            <!-- Ejemplo de reserva -->
                                             <tr>
-                                                <td>001</td>
-                                                <td>Juan Pérez</td>
-                                                <td>Doble</td>
-                                                <td>2024-12-25</td>
-                                                <td>2024-12-27</td>
-                                                <td>$100</td>
-                                                <td><button class="btn btn-sm btn-info" onclick="verComprobante('001')">Ver</button></td>
-                                                <td><span class="badge estado-pendiente">Pendiente</span></td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-success" onclick="aprobarReserva('001')">Aprobar</button>
-                                                    <button class="btn btn-sm btn-danger" onclick="rechazarReserva('001')">Rechazar</button>
+                                                <td colspan="9" class="text-center text-muted py-4">
+                                                    No hay reservas registradas
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -176,36 +175,8 @@
                                         </thead>
                                         <tbody id="tablaHabitaciones">
                                             <tr>
-                                                <td>H001</td>
-                                                <td>Individual</td>
-                                                <td>1 persona</td>
-                                                <td>$30</td>
-                                                <td><span class="badge bg-success">Disponible</span></td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-primary">Editar</button>
-                                                    <button class="btn btn-sm btn-danger">Eliminar</button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>H002</td>
-                                                <td>Doble</td>
-                                                <td>2 personas</td>
-                                                <td>$50</td>
-                                                <td><span class="badge bg-danger">Ocupada</span></td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-primary">Editar</button>
-                                                    <button class="btn btn-sm btn-danger">Eliminar</button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>H003</td>
-                                                <td>Suite</td>
-                                                <td>2 personas</td>
-                                                <td>$120</td>
-                                                <td><span class="badge bg-success">Disponible</span></td>
-                                                <td>
-                                                    <button class="btn btn-sm btn-primary">Editar</button>
-                                                    <button class="btn btn-sm btn-danger">Eliminar</button>
+                                                <td colspan="6" class="text-center text-muted py-4">
+                                                    Cargando habitaciones...
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -267,8 +238,166 @@
         </div>
     </div>
 
+    <!-- Modal Cambiar Contraseña -->
+    <div class="modal fade" id="modalCambiarPassword" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">🔐 Cambiar Contraseña</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="alertaPasswordAdmin" class="alert d-none" role="alert"></div>
+                    
+                    <form id="formCambiarPasswordAdmin">
+                        <div class="mb-3">
+                            <label for="passwordActualAdmin" class="form-label fw-bold">
+                                Contraseña Actual <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="passwordActualAdmin" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePass('passwordActualAdmin', this)">
+                                    👁️
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="passwordNuevaAdmin" class="form-label fw-bold">
+                                Nueva Contraseña <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="passwordNuevaAdmin" minlength="6" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePass('passwordNuevaAdmin', this)">
+                                    👁️
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">Mínimo 6 caracteres</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="passwordConfirmarAdmin" class="form-label fw-bold">
+                                Confirmar Nueva Contraseña <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group">
+                                <input type="password" class="form-control" id="passwordConfirmarAdmin" required>
+                                <button class="btn btn-outline-secondary" type="button" onclick="togglePass('passwordConfirmarAdmin', this)">
+                                    👁️
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning" onclick="cambiarPasswordAdmin()">Cambiar Contraseña</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/admin.js"></script>
-    <script src="js/auth.js"></script>
+    
+    <script>
+        // ============================================
+        // VERIFICAR AUTENTICACIÓN Y CARGAR DATOS
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const usuario = JSON.parse(sessionStorage.getItem('usuario') || 'null');
+            
+            // Verificar que esté autenticado y sea admin
+            if (!usuario || usuario.tipoUsuario !== 'admin') {
+                alert('No tiene permisos de administrador.');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Mostrar nombre del admin
+            document.getElementById('nombreAdmin').textContent = usuario.nombre;
+        });
+
+        // ============================================
+        // FUNCIÓN: VER/OCULTAR CONTRASEÑAS
+        // ============================================
+        function togglePass(id, btn) {
+            const input = document.getElementById(id);
+            input.type = input.type === 'password' ? 'text' : 'password';
+            btn.textContent = input.type === 'password' ? '👁️' : '🙈';
+        }
+
+        // ============================================
+        // FUNCIÓN: CAMBIAR CONTRASEÑA
+        // ============================================
+        async function cambiarPasswordAdmin() {
+            const actual = document.getElementById('passwordActualAdmin').value;
+            const nueva = document.getElementById('passwordNuevaAdmin').value;
+            const confirmar = document.getElementById('passwordConfirmarAdmin').value;
+            const alerta = document.getElementById('alertaPasswordAdmin');
+            
+            // Validar que las contraseñas coincidan
+            if (nueva !== confirmar) {
+                alerta.textContent = 'Las contraseñas nuevas no coinciden';
+                alerta.className = 'alert alert-danger';
+                alerta.classList.remove('d-none');
+                return;
+            }
+
+            // Validar longitud
+            if (nueva.length < 6) {
+                alerta.textContent = 'La nueva contraseña debe tener al menos 6 caracteres';
+                alerta.className = 'alert alert-danger';
+                alerta.classList.remove('d-none');
+                return;
+            }
+            
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/cambiar-password', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                    },
+                    body: JSON.stringify({ 
+                        passwordActual: actual, 
+                        passwordNueva: nueva 
+                    })
+                });
+                
+                const resultado = await response.json();
+                
+                if (response.ok) {
+                    alerta.textContent = '✅ Contraseña cambiada exitosamente';
+                    alerta.className = 'alert alert-success';
+                    alerta.classList.remove('d-none');
+                    document.getElementById('formCambiarPasswordAdmin').reset();
+                    
+                    setTimeout(() => {
+                        bootstrap.Modal.getInstance(document.getElementById('modalCambiarPassword')).hide();
+                        alerta.classList.add('d-none');
+                    }, 2000);
+                } else {
+                    alerta.textContent = resultado.mensaje || 'Error al cambiar contraseña';
+                    alerta.className = 'alert alert-danger';
+                    alerta.classList.remove('d-none');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alerta.textContent = 'Error de conexión con el servidor';
+                alerta.className = 'alert alert-danger';
+                alerta.classList.remove('d-none');
+            }
+        }
+
+        // ============================================
+        // FUNCIÓN: CERRAR SESIÓN
+        // ============================================
+        document.getElementById('btnCerrarSesionAdmin')?.addEventListener('click', function() {
+            if (confirm('¿Está seguro que desea cerrar sesión?')) {
+                sessionStorage.clear();
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
 </body>
 </html>
