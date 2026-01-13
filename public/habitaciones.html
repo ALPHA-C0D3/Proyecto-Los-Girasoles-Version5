@@ -8,11 +8,10 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-    <!-- Navegación -->
     <nav class="navbar navbar-expand-lg navbar-light bg-warning">
         <div class="container">
-            <!-- Logo del hostal (colocar imagen en assets/logo.png) -->
             <a class="navbar-brand" href="index.html">
                 <img src="assets/girasol.png" alt="Logo Hostal" height="40">
                 Hostal Los Girasoles
@@ -22,24 +21,15 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="index.html">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link active" href="habitaciones.html">Habitaciones</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="login.html">Iniciar Sesión</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="registro.html">Registrarse</a>
-                    </li>
+                    <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="habitaciones.html">Habitaciones</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login.html">Iniciar Sesión</a></li>
+                    <li class="nav-item"><a class="nav-link" href="registro.html">Registrarse</a></li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <!-- Encabezado -->
     <header class="bg-warning text-dark text-center py-5">
         <div class="container">
             <h1 class="display-4 fw-bold">Nuestras Habitaciones</h1>
@@ -47,7 +37,6 @@
         </div>
     </header>
 
-    <!-- Filtros -->
     <section class="py-4 bg-light">
         <div class="container">
             <div class="row align-items-center">
@@ -71,146 +60,167 @@
         </div>
     </section>
 
-    <!-- Catálogo de Habitaciones -->
     <section class="py-5">
         <div class="container">
             <div class="row g-4" id="contenedorHabitaciones">
                 
-                <!-- Habitación Individual -->
-                <div class="col-md-6 col-lg-4 habitacion-card" data-precio="30" data-capacidad="1">
+                <div class="col-md-6 col-lg-4 habitacion-card" data-precio="35" data-capacidad="2">
                     <div class="card h-100 shadow-sm">
-                        <!-- Colocar imagen en assets/habitacion-individual.jpg -->
-                        <img src="assets/habitacion-individual.jpg" class="card-img-top" alt="Habitación Individual">
+                        <img src="assets/habitacion1.jpg" class="card-img-top" alt="Sol Naciente">
                         <div class="card-body">
-                            <h5 class="card-title text-warning fw-bold">Habitación Individual</h5>
-                            <p class="card-text">Perfecta para viajeros solitarios. Incluye cama individual, escritorio y baño privado.</p>
-                            <ul class="list-unstyled small">
-                                <li><strong>👤 Capacidad:</strong> 1 persona</li>
-                                <li><strong>🛏️ Cama:</strong> Individual</li>
-                                <li><strong>🚿 Baño:</strong> Privado</li>
-                                <li><strong>📶 Servicios:</strong> Wi-Fi, TV, Escritorio</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer bg-warning border-0">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fs-4 fw-bold text-dark">$30<small class="fs-6">/noche</small></span>
-                                <a href="login.html" class="btn btn-dark">Reservar Ahora</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Habitación Doble -->
-                <div class="col-md-6 col-lg-4 habitacion-card" data-precio="50" data-capacidad="2">
-                    <div class="card h-100 shadow-sm">
-                        <!-- Colocar imagen en assets/habitacion-doble.jpg -->
-                        <img src="assets/habitacion-doble.jpg" class="card-img-top" alt="Habitación Doble">
-                        <div class="card-body">
-                            <h5 class="card-title text-warning fw-bold">Habitación Doble</h5>
-                            <p class="card-text">Ideal para parejas o amigos. Cama matrimonial o dos camas individuales según preferencia.</p>
+                            <h5 class="card-title text-warning fw-bold">Sol Naciente</h5>
+                            <p class="card-text">Habitación con cama matrimonial, TV, cable, ducha, wifi, garage y atención 24h</p>
                             <ul class="list-unstyled small">
                                 <li><strong>👥 Capacidad:</strong> 2 personas</li>
-                                <li><strong>🛏️ Cama:</strong> Matrimonial o 2 individuales</li>
-                                <li><strong>🚿 Baño:</strong> Privado</li>
-                                <li><strong>📶 Servicios:</strong> Wi-Fi, TV, Aire acondicionado</li>
+                                <li><strong>🛏️ Cama:</strong> Matrimonial</li>
+                                <li><strong>📶 Servicios:</strong> Wi-Fi, TV, Garage</li>
                             </ul>
                         </div>
                         <div class="card-footer bg-warning border-0">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="fs-4 fw-bold text-dark">$50<small class="fs-6">/noche</small></span>
+                                <span class="fs-4 fw-bold text-dark">$35<small class="fs-6">/noche</small></span>
                                 <a href="login.html" class="btn btn-dark">Reservar Ahora</a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Habitación Triple -->
-                <div class="col-md-6 col-lg-4 habitacion-card" data-precio="65" data-capacidad="3">
+                <div class="col-md-6 col-lg-4 habitacion-card" data-precio="35" data-capacidad="2">
                     <div class="card h-100 shadow-sm">
-                        <!-- Colocar imagen en assets/habitacion-triple.jpg -->
-                        <img src="assets/habitacion-triple.jpg" class="card-img-top" alt="Habitación Triple">
+                        <img src="assets/habitacion2.jpg" class="card-img-top" alt="Amanecer Dorado">
                         <div class="card-body">
-                            <h5 class="card-title text-warning fw-bold">Habitación Triple</h5>
-                            <p class="card-text">Para grupos pequeños o familias. Tres camas cómodas y espacio amplio.</p>
-                            <ul class="list-unstyled small">
-                                <li><strong>👥 Capacidad:</strong> 3 personas</li>
-                                <li><strong>🛏️ Cama:</strong> 3 individuales</li>
-                                <li><strong>🚿 Baño:</strong> Privado</li>
-                                <li><strong>📶 Servicios:</strong> Wi-Fi, TV, Ventilador</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer bg-warning border-0">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fs-4 fw-bold text-dark">$65<small class="fs-6">/noche</small></span>
-                                <a href="login.html" class="btn btn-dark">Reservar Ahora</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Habitación Familiar -->
-                <div class="col-md-6 col-lg-4 habitacion-card" data-precio="80" data-capacidad="4">
-                    <div class="card h-100 shadow-sm">
-                        <!-- Colocar imagen en assets/habitacion-familiar.jpg -->
-                        <img src="assets/habitacion-familiar.jpg" class="card-img-top" alt="Habitación Familiar">
-                        <div class="card-body">
-                            <h5 class="card-title text-warning fw-bold">Habitación Familiar</h5>
-                            <p class="card-text">Amplia habitación para toda la familia. Dos camas matrimoniales y espacio adicional para comodidad.</p>
-                            <ul class="list-unstyled small">
-                                <li><strong>👨‍👩‍👧‍👦 Capacidad:</strong> 4 personas</li>
-                                <li><strong>🛏️ Cama:</strong> 2 matrimoniales</li>
-                                <li><strong>🚿 Baño:</strong> Privado amplio</li>
-                                <li><strong>📶 Servicios:</strong> Wi-Fi, TV, Minibar, Balcón</li>
-                            </ul>
-                        </div>
-                        <div class="card-footer bg-warning border-0">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <span class="fs-4 fw-bold text-dark">$80<small class="fs-6">/noche</small></span>
-                                <a href="login.html" class="btn btn-dark">Reservar Ahora</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Suite Premium -->
-                <div class="col-md-6 col-lg-4 habitacion-card" data-precio="120" data-capacidad="2">
-                    <div class="card h-100 shadow border-warning" style="border-width: 3px;">
-                        <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-3 fs-6">⭐ Premium</span>
-                        <!-- Colocar imagen en assets/habitacion-suite.jpg -->
-                        <img src="assets/habitacion-suite.jpg" class="card-img-top" alt="Suite Premium">
-                        <div class="card-body">
-                            <h5 class="card-title text-warning fw-bold">Suite Premium</h5>
-                            <p class="card-text">Máximo lujo y confort. Jacuzzi privado, sala de estar separada y vista panorámica espectacular.</p>
+                            <h5 class="card-title text-warning fw-bold">Amanecer Dorado</h5>
+                            <p class="card-text">Habitación con cama matrimonial, TV, cable, ducha, wifi, garage y atención 24h</p>
                             <ul class="list-unstyled small">
                                 <li><strong>👥 Capacidad:</strong> 2 personas</li>
-                                <li><strong>🛏️ Cama:</strong> King Size</li>
-                                <li><strong>🛁 Baño:</strong> Jacuzzi privado</li>
-                                <li><strong>📶 Servicios:</strong> Todo incluido + Sala de estar</li>
+                                <li><strong>🛏️ Cama:</strong> Matrimonial</li>
+                                <li><strong>📶 Servicios:</strong> Wi-Fi, TV, Garage</li>
                             </ul>
                         </div>
                         <div class="card-footer bg-warning border-0">
                             <div class="d-flex justify-content-between align-items-center">
-                                <span class="fs-4 fw-bold text-dark">$120<small class="fs-6">/noche</small></span>
+                                <span class="fs-4 fw-bold text-dark">$35<small class="fs-6">/noche</small></span>
                                 <a href="login.html" class="btn btn-dark">Reservar Ahora</a>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Habitación Económica -->
-                <div class="col-md-6 col-lg-4 habitacion-card" data-precio="25" data-capacidad="1">
+                <div class="col-md-6 col-lg-4 habitacion-card" data-precio="35" data-capacidad="2">
                     <div class="card h-100 shadow-sm">
-                        <span class="badge bg-success position-absolute top-0 end-0 m-3 fs-6">💰 Oferta</span>
-                        <!-- Colocar imagen en assets/habitacion-economica.jpg -->
-                        <img src="assets/habitacion-economica.jpg" class="card-img-top" alt="Habitación Económica">
+                        <img src="assets/habitacion3.jpg" class="card-img-top" alt="Rayos de Luz">
                         <div class="card-body">
-                            <h5 class="card-title text-warning fw-bold">Habitación Económica</h5>
-                            <p class="card-text">Precio accesible sin sacrificar comodidad. Perfecta para mochileros y viajeros con presupuesto ajustado.</p>
+                            <h5 class="card-title text-warning fw-bold">Rayos de Luz</h5>
+                            <p class="card-text">Habitación con cama matrimonial, TV, cable, ducha, wifi, garage y atención 24h</p>
                             <ul class="list-unstyled small">
-                                <li><strong>👤 Capacidad:</strong> 1 persona</li>
-                                <li><strong>🛏️ Cama:</strong> Individual</li>
-                                <li><strong>🚿 Baño:</strong> Compartido</li>
-                                <li><strong>📶 Servicios:</strong> Wi-Fi</li>
+                                <li><strong>👥 Capacidad:</strong> 2 personas</li>
+                                <li><strong>🛏️ Cama:</strong> Matrimonial</li>
+                                <li><strong>📶 Servicios:</strong> Wi-Fi, TV, Garage</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer bg-warning border-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fs-4 fw-bold text-dark">$35<small class="fs-6">/noche</small></span>
+                                <a href="login.html" class="btn btn-dark">Reservar Ahora</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 habitacion-card" data-precio="35" data-capacidad="2">
+                    <div class="card h-100 shadow-sm">
+                        <img src="assets/habitacion4.jpg" class="card-img-top" alt="Pétalos de Oro">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning fw-bold">Pétalos de Oro</h5>
+                            <p class="card-text">Habitación con cama matrimonial, TV, cable, ducha, wifi, garage y atención 24h</p>
+                            <ul class="list-unstyled small">
+                                <li><strong>👥 Capacidad:</strong> 2 personas</li>
+                                <li><strong>🛏️ Cama:</strong> Matrimonial</li>
+                                <li><strong>📶 Servicios:</strong> Wi-Fi, TV, Garage</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer bg-warning border-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fs-4 fw-bold text-dark">$35<small class="fs-6">/noche</small></span>
+                                <a href="login.html" class="btn btn-dark">Reservar Ahora</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 habitacion-card" data-precio="35" data-capacidad="2">
+                    <div class="card h-100 shadow-sm">
+                        <img src="assets/habitacion5.jpg" class="card-img-top" alt="Girasol Brillante">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning fw-bold">Girasol Brillante</h5>
+                            <p class="card-text">Habitación con cama matrimonial, TV, cable, ducha, wifi, garage y atención 24h</p>
+                            <ul class="list-unstyled small">
+                                <li><strong>👥 Capacidad:</strong> 2 personas</li>
+                                <li><strong>🛏️ Cama:</strong> Matrimonial</li>
+                                <li><strong>📶 Servicios:</strong> Wi-Fi, TV, Garage</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer bg-warning border-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fs-4 fw-bold text-dark">$35<small class="fs-6">/noche</small></span>
+                                <a href="login.html" class="btn btn-dark">Reservar Ahora</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 habitacion-card" data-precio="35" data-capacidad="2">
+                    <div class="card h-100 shadow-sm">
+                        <img src="assets/Habitacion1.jpg" class="card-img-top" alt="Luz del Día">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning fw-bold">Luz del Día</h5>
+                            <p class="card-text">Habitación con cama matrimonial, TV, cable, ducha, wifi, garage y atención 24h</p>
+                            <ul class="list-unstyled small">
+                                <li><strong>👥 Capacidad:</strong> 2 personas</li>
+                                <li><strong>🛏️ Cama:</strong> Matrimonial</li>
+                                <li><strong>📶 Servicios:</strong> Wi-Fi, TV, Garage</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer bg-warning border-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fs-4 fw-bold text-dark">$35<small class="fs-6">/noche</small></span>
+                                <a href="login.html" class="btn btn-dark">Reservar Ahora</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 habitacion-card" data-precio="25" data-capacidad="2">
+                    <div class="card h-100 shadow-sm">
+                        <img src="assets/Habitacion2.jpg" class="card-img-top" alt="Resplandor">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning fw-bold">Resplandor</h5>
+                            <p class="card-text">Habitación con cama matrimonial, TV, cable, ducha, wifi, garage y atención 24h</p>
+                            <ul class="list-unstyled small">
+                                <li><strong>👥 Capacidad:</strong> 1 personas</li>
+                                <li><strong>🛏️ Cama:</strong> Personal</li>
+                                <li><strong>📶 Servicios:</strong> Wi-Fi, TV, Garage</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer bg-warning border-0">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="fs-4 fw-bold text-dark">$25<small class="fs-6">/noche</small></span>
+                                <a href="login.html" class="btn btn-dark">Reservar Ahora</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4 habitacion-card" data-precio="25" data-capacidad="2">
+                    <div class="card h-100 shadow-sm">
+                        <img src="assets/Habitacion5.jpg" class="card-img-top" alt="Aurora">
+                        <div class="card-body">
+                            <h5 class="card-title text-warning fw-bold">Aurora</h5>
+                            <p class="card-text">Habitación con cama matrimonial, TV, cable, ducha, wifi, garage y atención 24h</p>
+                            <ul class="list-unstyled small">
+                                <li><strong>👥 Capacidad:</strong> 1 personas</li>
+                                <li><strong>🛏️ Cama:</strong> Personal</li>
+                                <li><strong>📶 Servicios:</strong> Wi-Fi, TV, Garage</li>
                             </ul>
                         </div>
                         <div class="card-footer bg-warning border-0">
@@ -224,7 +234,6 @@
 
             </div>
 
-            <!-- Mensaje cuando no hay resultados -->
             <div id="mensajeSinResultados" class="text-center py-5 d-none">
                 <h4 class="text-muted">No se encontraron habitaciones con ese precio</h4>
                 <p>Intenta ajustar el filtro de precio</p>
@@ -232,47 +241,10 @@
         </div>
     </section>
 
-    <!-- Información Adicional -->
-    <section class="py-5 bg-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4 text-center mb-4">
-                    <div class="mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="text-warning" viewBox="0 0 16 16">
-                            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
-                        </svg>
-                    </div>
-                    <h5>Reserva Flexible</h5>
-                    <p class="text-muted">Cancela hasta 24 horas antes sin cargo</p>
-                </div>
-                <div class="col-md-4 text-center mb-4">
-                    <div class="mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="text-warning" viewBox="0 0 16 16">
-                            <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5v-7zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456zM12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12v4zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2zm9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
-                        </svg>
-                    </div>
-                    <h5>Check-in 24/7</h5>
-                    <p class="text-muted">Llegada flexible a cualquier hora</p>
-                </div>
-                <div class="col-md-4 text-center mb-4">
-                    <div class="mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="text-warning" viewBox="0 0 16 16">
-                            <path d="M5 8a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm4 0a1 1 0 1 1-2 0 1 1 0 0 1 2 0zm3 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
-                            <path d="m2.165 15.803.02-.004c1.83-.363 2.948-.842 3.468-1.105A9.06 9.06 0 0 0 8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6a10.437 10.437 0 0 1-.524 2.318l-.003.011a10.722 10.722 0 0 1-.244.637c-.079.186.074.394.273.362a21.673 21.673 0 0 0 .693-.125zm.8-3.108a1 1 0 0 0-.287-.801C1.618 10.83 1 9.468 1 8c0-3.192 3.004-6 7-6s7 2.808 7 6c0 3.193-3.004 6-7 6a8.06 8.06 0 0 1-2.088-.272 1 1 0 0 0-.711.074c-.387.196-1.24.57-2.634.893a10.97 10.97 0 0 0 .398-2z"/>
-                        </svg>
-                    </div>
-                    <h5>Atención Personalizada</h5>
-                    <p class="text-muted">Staff disponible para ayudarte</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
     <footer class="bg-dark text-white py-4">
         <div class="container text-center">
-            <p class="mb-2">&copy; 2024 Hostal El Refugio. Todos los derechos reservados.</p>
-            <p class="mb-0">Contacto: info@hostalrefugio.com | Tel: +123 456 7890</p>
+            <p class="mb-2">&copy; 2026 Hostal Los Girasoles. Todos los derechos reservados.</p>
+            <p class="mb-0">Contacto: info@hostallosgirasoles.com | Tel: +123 456 7890</p>
         </div>
     </footer>
 
@@ -301,7 +273,6 @@
                 }
             });
 
-            // Mostrar mensaje si no hay resultados
             if (habitacionesVisibles === 0) {
                 mensajeSinResultados.classList.remove('d-none');
                 contenedor.classList.add('d-none');
@@ -313,7 +284,6 @@
 
         // Ordenar habitaciones
         document.getElementById('ordenar').addEventListener('change', function() {
-            const contenedor = document.getElementById('contenedorHabitaciones');
             const habArray = Array.from(habitaciones);
 
             habArray.sort((a, b) => {
@@ -329,7 +299,6 @@
                 }
             });
 
-            // Reordenar en el DOM
             habArray.forEach(hab => contenedor.appendChild(hab));
         });
     </script>
