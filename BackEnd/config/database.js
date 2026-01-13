@@ -14,6 +14,7 @@ const db = new sqlite3.Database(DB_PATH, (err) => {
 db.run('PRAGMA foreign_keys = ON');
 
 const inicializarTablas = () => {
+    // Tabla de usuarios
     db.run(`
         CREATE TABLE IF NOT EXISTS usuarios (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,6 +31,7 @@ const inicializarTablas = () => {
         else console.log('Tabla usuarios lista');
     });
 
+    // Tabla de habitaciones
     db.run(`
         CREATE TABLE IF NOT EXISTS habitaciones (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,6 +50,7 @@ const inicializarTablas = () => {
         }
     });
 
+    // Tabla de reservas
     db.run(`
         CREATE TABLE IF NOT EXISTS reservas (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -61,11 +64,36 @@ const inicializarTablas = () => {
             estado TEXT DEFAULT 'pendiente' CHECK(estado IN ('pendiente', 'aprobado', 'rechazado')),
             motivoRechazo TEXT,
             createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+            updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (usuarioId) REFERENCES usuarios(id) ON DELETE CASCADE
         )
     `, (err) => {
         if (err) console.error('Error al crear tabla reservas:', err.message);
         else console.log('Tabla reservas lista');
+    });
+
+    // NUEVA TABLA: Auditoría de Reservas
+    db.run(`
+        CREATE TABLE IF NOT EXISTS auditoria_reservas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            reservaId INTEGER NOT NULL,
+            accion TEXT NOT NULL,
+            estadoAnterior TEXT,
+            estadoNuevo TEXT,
+            usuarioId INTEGER,
+            usuarioNombre TEXT,
+            usuarioTipo TEXT,
+            datosReserva TEXT,
+            comprobanteRespaldo TEXT,
+            observaciones TEXT,
+            ipAddress TEXT,
+            createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (reservaId) REFERENCES reservas(id) ON DELETE CASCADE,
+            FOREIGN KEY (usuarioId) REFERENCES usuarios(id)
+        )
+    `, (err) => {
+        if (err) console.error('Error al crear tabla auditoria_reservas:', err.message);
+        else console.log('Tabla auditoria_reservas lista');
     });
 };
 
@@ -131,4 +159,52 @@ const getAll = (sql, params = []) => {
     });
 };
 
-module.exports = { db, inicializarTablas, runQuery, getOne, getAll };
+// Función para registrar en auditoría
+const registrarAuditoria = async (datos) => {
+    const {
+        reservaId,
+        accion,
+        estadoAnterior,
+        estadoNuevo,
+        usuarioId,
+        usuarioNombre,
+        usuarioTipo,
+        datosReserva,
+        comprobanteRespaldo,
+        observaciones,
+        ipAddress
+    } = datos;
+
+    try {
+        await runQuery(`
+            INSERT INTO auditoria_reservas (
+                reservaId, accion, estadoAnterior, estadoNuevo, 
+                usuarioId, usuarioNombre, usuarioTipo, datosReserva,
+                comprobanteRespaldo, observaciones, ipAddress
+            ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `, [
+            reservaId,
+            accion,
+            estadoAnterior || null,
+            estadoNuevo || null,
+            usuarioId || null,
+            usuarioNombre || 'Sistema',
+            usuarioTipo || 'sistema',
+            JSON.stringify(datosReserva),
+            comprobanteRespaldo || null,
+            observaciones || null,
+            ipAddress || 'N/A'
+        ]);
+    } catch (error) {
+        console.error('Error al registrar auditoría:', error);
+    }
+};
+
+module.exports = { 
+    db, 
+    inicializarTablas, 
+    runQuery, 
+    getOne, 
+    getAll,
+    registrarAuditoria 
+};

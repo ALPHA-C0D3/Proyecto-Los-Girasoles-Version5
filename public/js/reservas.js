@@ -1,11 +1,10 @@
 // ==========================================
-// RESERVAS.JS - HOSTAL EL REFUGIO
+// RESERVAS.JS - HOSTAL LOS GIRASOLES
 // Gestión de reservas del cliente
 // ==========================================
 
-const API_URL = 'http://localhost:3000/api'; // Cambiar por la URL real del backend
+const API_URL = 'http://localhost:3000/api';
 
-// Precios de habitaciones
 const PRECIOS_HABITACIONES = {
     'individual': 30,
     'doble': 50,
@@ -16,9 +15,15 @@ const PRECIOS_HABITACIONES = {
 };
 
 // ==========================================
+// OBTENER TOKEN DE SESIÓN
+// ==========================================
+function obtenerToken() {
+    return sessionStorage.getItem('token');
+}
+
+// ==========================================
 // CALCULAR TOTAL DE RESERVA
 // ==========================================
-
 function calcularTotalReserva() {
     const tipoHabitacion = document.getElementById('tipoHabitacion').value;
     const fechaEntrada = document.getElementById('fechaEntrada').value;
@@ -32,7 +37,6 @@ function calcularTotalReserva() {
     const entrada = new Date(fechaEntrada);
     const salida = new Date(fechaSalida);
     
-    // Calcular número de noches
     const diferenciaTiempo = salida - entrada;
     const noches = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
 
@@ -47,7 +51,6 @@ function calcularTotalReserva() {
     document.getElementById('totalEstimado').textContent = total;
 }
 
-// Event listeners para actualizar el total
 document.addEventListener('DOMContentLoaded', function() {
     const tipoHabitacion = document.getElementById('tipoHabitacion');
     const fechaEntrada = document.getElementById('fechaEntrada');
@@ -65,7 +68,6 @@ document.addEventListener('DOMContentLoaded', function() {
         fechaSalida.addEventListener('change', calcularTotalReserva);
     }
 
-    // Establecer fecha mínima como hoy
     const hoy = new Date().toISOString().split('T')[0];
     if (fechaEntrada) {
         fechaEntrada.setAttribute('min', hoy);
@@ -75,7 +77,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // ==========================================
 // ENVIAR RESERVA
 // ==========================================
-
 document.addEventListener('DOMContentLoaded', function() {
     const formReserva = document.getElementById('formReserva');
     
@@ -83,42 +84,36 @@ document.addEventListener('DOMContentLoaded', function() {
         formReserva.addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            // Limpiar alertas previas
-            ocultarAlerta('alertaReserva');
+            const alertaReserva = document.getElementById('alertaReserva');
+            if (alertaReserva) {
+                alertaReserva.classList.add('d-none');
+            }
 
-            // Obtener datos del formulario
             const tipoHabitacion = document.getElementById('tipoHabitacion').value;
             const numPersonas = document.getElementById('numPersonas').value;
             const fechaEntrada = document.getElementById('fechaEntrada').value;
             const fechaSalida = document.getElementById('fechaSalida').value;
             const comprobante = document.getElementById('comprobante').files[0];
 
-            // Validar campos obligatorios
             if (!tipoHabitacion || !numPersonas || !fechaEntrada || !fechaSalida) {
-                mostrarError('alertaReserva', 'Complete todos los campos obligatorios.');
-                document.getElementById('alertaReserva').classList.remove('d-none');
+                mostrarMensaje('alertaReserva', 'Complete todos los campos obligatorios.', 'danger');
                 return;
             }
 
-            // Validar fechas
             const validacionFechas = validarFechasReserva(fechaEntrada, fechaSalida);
             if (!validacionFechas.valido) {
-                mostrarError('alertaReserva', validacionFechas.mensaje);
-                document.getElementById('alertaReserva').classList.remove('d-none');
+                mostrarMensaje('alertaReserva', validacionFechas.mensaje, 'danger');
                 document.getElementById('fechaSalida').classList.add('is-invalid');
                 return;
             }
 
-            // Validar comprobante
             const validacionComprobante = validarComprobante(comprobante);
             if (!validacionComprobante.valido) {
-                mostrarError('alertaReserva', validacionComprobante.mensaje);
-                document.getElementById('alertaReserva').classList.remove('d-none');
+                mostrarMensaje('alertaReserva', validacionComprobante.mensaje, 'danger');
                 document.getElementById('comprobante').classList.add('is-invalid');
                 return;
             }
 
-            // Preparar datos para enviar
             const formData = new FormData();
             formData.append('tipoHabitacion', tipoHabitacion);
             formData.append('numPersonas', numPersonas);
@@ -127,42 +122,37 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('comprobante', comprobante);
             formData.append('total', document.getElementById('totalEstimado').textContent);
 
-            // Enviar al servidor
             try {
                 const response = await fetch(`${API_URL}/reservas`, {
                     method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + obtenerToken()
+                    },
                     body: formData
                 });
 
                 const resultado = await response.json();
 
                 if (response.ok) {
-                    // Mostrar mensaje de éxito
-                    mostrarExito('alertaReserva', 'Reserva enviada exitosamente. Pendiente de aprobación.');
-                    document.getElementById('alertaReserva').classList.remove('d-none');
+                    mostrarMensaje('alertaReserva', 'Reserva enviada exitosamente. Pendiente de aprobación.', 'success');
                     
-                    // Limpiar formulario
                     formReserva.reset();
                     document.getElementById('totalEstimado').textContent = '0';
 
-                    // Mostrar modal de confirmación
                     const modal = new bootstrap.Modal(document.getElementById('modalConfirmacion'));
                     document.getElementById('mensajeModal').textContent = 
                         'Su reserva ha sido registrada correctamente. El administrador revisará su pago y le notificará pronto.';
                     modal.show();
 
-                    // Recargar lista de reservas
                     setTimeout(() => {
                         cargarReservasCliente();
                     }, 2000);
                 } else {
-                    mostrarError('alertaReserva', resultado.mensaje || 'Error al procesar la reserva.');
-                    document.getElementById('alertaReserva').classList.remove('d-none');
+                    mostrarMensaje('alertaReserva', resultado.mensaje || 'Error al procesar la reserva.', 'danger');
                 }
             } catch (error) {
                 console.error('Error de conexión:', error);
-                mostrarError('alertaReserva', 'Error de conexión. Inténtelo de nuevo en unos segundos.');
-                document.getElementById('alertaReserva').classList.remove('d-none');
+                mostrarMensaje('alertaReserva', 'Error de conexión. Inténtelo de nuevo en unos segundos.', 'danger');
             }
         });
     }
@@ -171,7 +161,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // ==========================================
 // CARGAR RESERVAS DEL CLIENTE
 // ==========================================
-
 async function cargarReservasCliente() {
     const tablaReservas = document.getElementById('tablaReservas');
     
@@ -181,19 +170,19 @@ async function cargarReservasCliente() {
         const response = await fetch(`${API_URL}/reservas/cliente`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + obtenerToken()
             }
         });
 
-        const reservas = await response.json();
+        const data = await response.json();
 
-        if (response.ok && reservas.length > 0) {
+        if (response.ok && data.reservas && data.reservas.length > 0) {
             tablaReservas.innerHTML = '';
             
-            reservas.forEach(reserva => {
+            data.reservas.forEach(reserva => {
                 const fila = document.createElement('tr');
                 
-                // Determinar clase del estado
                 let estadoClase = 'estado-pendiente';
                 if (reserva.estado === 'aprobado') {
                     estadoClase = 'estado-aprobado';
@@ -226,7 +215,6 @@ async function cargarReservasCliente() {
     }
 }
 
-// Cargar reservas al cargar la página
 document.addEventListener('DOMContentLoaded', function() {
     if (document.getElementById('tablaReservas')) {
         cargarReservasCliente();
@@ -236,7 +224,6 @@ document.addEventListener('DOMContentLoaded', function() {
 // ==========================================
 // CANCELAR RESERVA
 // ==========================================
-
 async function cancelarReserva(idReserva) {
     const confirmar = confirm('¿Está seguro que desea cancelar esta reserva?');
     
@@ -246,7 +233,8 @@ async function cancelarReserva(idReserva) {
         const response = await fetch(`${API_URL}/reservas/${idReserva}`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + obtenerToken()
             }
         });
 
@@ -264,5 +252,16 @@ async function cancelarReserva(idReserva) {
     }
 }
 
-// Hacer la función global
+// ==========================================
+// FUNCIÓN AUXILIAR PARA MOSTRAR MENSAJES
+// ==========================================
+function mostrarMensaje(idAlerta, mensaje, tipo) {
+    const alerta = document.getElementById(idAlerta);
+    if (alerta) {
+        alerta.textContent = mensaje;
+        alerta.className = `alert alert-${tipo}`;
+        alerta.classList.remove('d-none');
+    }
+}
+
 window.cancelarReserva = cancelarReserva;

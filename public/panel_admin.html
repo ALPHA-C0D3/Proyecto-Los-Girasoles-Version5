@@ -3,40 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Panel administrativo para gestión del hostal">
-    <title>Hostal - Panel Administrador</title>
+    <title>Panel Admin - Hostal Los Girasoles</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .estado-pendiente { background-color: #ffc107; color: #000; padding: 5px 10px; border-radius: 5px; font-weight: bold; display: inline-block; }
+        .estado-aprobado { background-color: #28a745; color: #fff; padding: 5px 10px; border-radius: 5px; font-weight: bold; display: inline-block; }
+        .estado-rechazado { background-color: #dc3545; color: #fff; padding: 5px 10px; border-radius: 5px; font-weight: bold; display: inline-block; }
+        .sidebar { min-height: 100vh; }
+    </style>
 </head>
 <body>
-    <!-- Navegación -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.html">
-                <img src="assets/girasol.png" alt="Logo Hostal" height="40">
-                Panel Administrador
+                <img src="assets/girasol.png" alt="Logo" height="40"> Panel Admin
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center">
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item me-3">
-                        <span class="navbar-text text-warning">
-                            👤 <strong id="nombreAdmin">Administrador</strong>
-                        </span>
+                        <span class="navbar-text text-warning">👤 <strong id="nombreAdmin">Admin</strong></span>
                     </li>
-                    <!-- Botón Cambiar Contraseña -->
                     <li class="nav-item me-2">
                         <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalCambiarPassword">
                             🔐 Cambiar Contraseña
                         </button>
                     </li>
-                    <!-- Botón Cerrar Sesión -->
                     <li class="nav-item">
-                        <button class="btn btn-outline-warning btn-sm" id="btnCerrarSesionAdmin">
-                            Cerrar Sesión
-                        </button>
+                        <button class="btn btn-outline-warning btn-sm" onclick="cerrarSesion()">Cerrar Sesión</button>
                     </li>
                 </ul>
             </div>
@@ -45,42 +39,33 @@
 
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
             <nav class="col-md-3 col-lg-2 d-md-block bg-dark sidebar">
                 <div class="position-sticky pt-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link text-white active" href="#dashboard" data-bs-toggle="pill">
-                                <span class="me-2">📊</span> Dashboard
-                            </a>
+                            <a class="nav-link text-white active" href="#dashboard" data-bs-toggle="pill">📊 Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#gestionReservas" data-bs-toggle="pill">
-                                <span class="me-2">📋</span> Gestión de Reservas
-                            </a>
+                            <a class="nav-link text-white" href="#gestionReservas" data-bs-toggle="pill">📋 Reservas</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#gestionHabitaciones" data-bs-toggle="pill">
-                                <span class="me-2">🏠</span> Habitaciones
-                            </a>
+                            <a class="nav-link text-white" href="#gestionHabitaciones" data-bs-toggle="pill">🏠 Habitaciones</a>
                         </li>
                     </ul>
                 </div>
             </nav>
 
-            <!-- Contenido Principal -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                 <div class="tab-content pt-4">
                     <!-- Dashboard -->
                     <div class="tab-pane fade show active" id="dashboard">
-                        <h2 class="mb-4">Dashboard</h2>
-                        
+                        <h2>Dashboard</h2>
                         <div class="row">
                             <div class="col-md-3 mb-4">
                                 <div class="card bg-warning text-dark">
                                     <div class="card-body text-center">
                                         <h3 id="totalReservas">0</h3>
-                                        <p class="mb-0">Reservas Totales</p>
+                                        <p>Reservas Totales</p>
                                     </div>
                                 </div>
                             </div>
@@ -88,7 +73,7 @@
                                 <div class="card bg-success text-white">
                                     <div class="card-body text-center">
                                         <h3 id="reservasAprobadas">0</h3>
-                                        <p class="mb-0">Aprobadas</p>
+                                        <p>Aprobadas</p>
                                     </div>
                                 </div>
                             </div>
@@ -96,7 +81,7 @@
                                 <div class="card bg-danger text-white">
                                     <div class="card-body text-center">
                                         <h3 id="reservasPendientes">0</h3>
-                                        <p class="mb-0">Pendientes</p>
+                                        <p>Pendientes</p>
                                     </div>
                                 </div>
                             </div>
@@ -104,7 +89,7 @@
                                 <div class="card bg-info text-white">
                                     <div class="card-body text-center">
                                         <h3 id="habitacionesDisponibles">0</h3>
-                                        <p class="mb-0">Disponibles</p>
+                                        <p>Disponibles</p>
                                     </div>
                                 </div>
                             </div>
@@ -113,75 +98,59 @@
 
                     <!-- Gestión de Reservas -->
                     <div class="tab-pane fade" id="gestionReservas">
-                        <h2 class="mb-4">Gestión de Reservas</h2>
+                        <h2>Gestión de Reservas</h2>
+                        <div id="alertaAdmin" class="alert d-none"></div>
                         
-                        <!-- Alertas -->
-                        <div id="alertaAdmin" class="alert d-none" role="alert"></div>
-
-                        <div class="card shadow">
-                            <div class="card-header bg-warning">
-                                <h5 class="mb-0">Reservas Pendientes de Aprobación</h5>
-                            </div>
+                        <div class="card">
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover">
-                                        <thead class="table-light">
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Cliente</th>
-                                                <th>Habitación</th>
-                                                <th>Entrada</th>
-                                                <th>Salida</th>
-                                                <th>Total</th>
-                                                <th>Comprobante</th>
-                                                <th>Estado</th>
-                                                <th>Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tablaReservasAdmin">
-                                            <tr>
-                                                <td colspan="9" class="text-center text-muted py-4">
-                                                    No hay reservas registradas
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Cliente</th>
+                                            <th>Habitación</th>
+                                            <th>Entrada</th>
+                                            <th>Salida</th>
+                                            <th>Total</th>
+                                            <th>Comprobante</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablaReservasAdmin">
+                                        <tr><td colspan="9" class="text-center">Cargando...</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
 
                     <!-- Gestión de Habitaciones -->
                     <div class="tab-pane fade" id="gestionHabitaciones">
-                        <h2 class="mb-4">Inventario de Habitaciones</h2>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2>Habitaciones</h2>
+                            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#modalNuevaHabitacion">
+                                ➕ Agregar Habitación
+                            </button>
+                        </div>
                         
-                        <button class="btn btn-warning mb-3" data-bs-toggle="modal" data-bs-target="#modalNuevaHabitacion">
-                            + Agregar Habitación
-                        </button>
-
-                        <div class="card shadow">
+                        <div class="card">
                             <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-striped">
-                                        <thead class="table-warning">
-                                            <tr>
-                                                <th>ID</th>
-                                                <th>Tipo</th>
-                                                <th>Capacidad</th>
-                                                <th>Precio/Noche</th>
-                                                <th>Estado</th>
-                                                <th>Acciones</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="tablaHabitaciones">
-                                            <tr>
-                                                <td colspan="6" class="text-center text-muted py-4">
-                                                    Cargando habitaciones...
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Tipo</th>
+                                            <th>Capacidad</th>
+                                            <th>Precio</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tablaHabitaciones">
+                                        <tr><td colspan="6" class="text-center">Cargando...</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -190,48 +159,15 @@
         </div>
     </div>
 
-    <!-- Modal Nueva Habitación -->
-    <div class="modal fade" id="modalNuevaHabitacion" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5 class="modal-title">Agregar Nueva Habitación</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="formNuevaHabitacion">
-                        <div class="mb-3">
-                            <label class="form-label">Tipo de Habitación</label>
-                            <input type="text" class="form-control" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Capacidad</label>
-                            <input type="number" class="form-control" min="1" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Precio por Noche</label>
-                            <input type="number" class="form-control" min="0" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-warning">Guardar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Ver Comprobante -->
+    <!-- Modal Comprobante -->
     <div class="modal fade" id="modalComprobante" tabindex="-1">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
-                    <h5 class="modal-title">Comprobante de Pago</h5>
+                    <h5>Comprobante de Pago</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body text-center">
-                    <!-- La imagen del comprobante se mostrará aquí -->
                     <img id="imagenComprobante" src="" class="img-fluid" alt="Comprobante">
                 </div>
             </div>
@@ -243,161 +179,539 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-warning">
-                    <h5 class="modal-title">🔐 Cambiar Contraseña</h5>
+                    <h5>🔐 Cambiar Contraseña</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div id="alertaPasswordAdmin" class="alert d-none" role="alert"></div>
+                    <div id="alertaPassword" class="alert d-none"></div>
                     
-                    <form id="formCambiarPasswordAdmin">
+                    <form id="formCambiarPassword">
                         <div class="mb-3">
-                            <label for="passwordActualAdmin" class="form-label fw-bold">
-                                Contraseña Actual <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group">
-                                <input type="password" class="form-control" id="passwordActualAdmin" required>
-                                <button class="btn btn-outline-secondary" type="button" onclick="togglePass('passwordActualAdmin', this)">
-                                    👁️
-                                </button>
-                            </div>
+                            <label class="form-label">Contraseña Actual *</label>
+                            <input type="password" class="form-control" id="passwordActual" required>
                         </div>
-                        
                         <div class="mb-3">
-                            <label for="passwordNuevaAdmin" class="form-label fw-bold">
-                                Nueva Contraseña <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group">
-                                <input type="password" class="form-control" id="passwordNuevaAdmin" minlength="6" required>
-                                <button class="btn btn-outline-secondary" type="button" onclick="togglePass('passwordNuevaAdmin', this)">
-                                    👁️
-                                </button>
-                            </div>
-                            <small class="form-text text-muted">Mínimo 6 caracteres</small>
+                            <label class="form-label">Nueva Contraseña *</label>
+                            <input type="password" class="form-control" id="passwordNueva" minlength="6" required>
                         </div>
-                        
                         <div class="mb-3">
-                            <label for="passwordConfirmarAdmin" class="form-label fw-bold">
-                                Confirmar Nueva Contraseña <span class="text-danger">*</span>
-                            </label>
-                            <div class="input-group">
-                                <input type="password" class="form-control" id="passwordConfirmarAdmin" required>
-                                <button class="btn btn-outline-secondary" type="button" onclick="togglePass('passwordConfirmarAdmin', this)">
-                                    👁️
-                                </button>
+                            <label class="form-label">Confirmar Nueva Contraseña *</label>
+                            <input type="password" class="form-control" id="passwordConfirmar" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning" onclick="cambiarPassword()">Cambiar Contraseña</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Nueva Habitación -->
+    <div class="modal fade" id="modalNuevaHabitacion" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5>➕ Agregar Nueva Habitación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="alertaNuevaHabitacion" class="alert d-none"></div>
+                    
+                    <form id="formNuevaHabitacion">
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Habitación *</label>
+                            <input type="text" class="form-control" id="nuevoTipo" placeholder="Ej: Suite Deluxe" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Capacidad (personas) *</label>
+                            <input type="number" class="form-control" id="nuevaCapacidad" min="1" max="10" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Precio por Noche ($) *</label>
+                            <input type="number" class="form-control" id="nuevoPrecio" min="1" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea class="form-control" id="nuevaDescripcion" rows="3" placeholder="Descripción opcional"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="nuevaDisponible" checked>
+                                <label class="form-check-label" for="nuevaDisponible">
+                                    Disponible
+                                </label>
                             </div>
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-warning" onclick="cambiarPasswordAdmin()">Cambiar Contraseña</button>
+                    <button type="button" class="btn btn-warning" onclick="crearHabitacion()">Crear Habitación</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Editar Habitación -->
+    <div class="modal fade" id="modalEditarHabitacion" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5>✏️ Editar Habitación</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="alertaEditarHabitacion" class="alert d-none"></div>
+                    
+                    <form id="formEditarHabitacion">
+                        <input type="hidden" id="editarId">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Tipo de Habitación *</label>
+                            <input type="text" class="form-control" id="editarTipo" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Capacidad (personas) *</label>
+                            <input type="number" class="form-control" id="editarCapacidad" min="1" max="10" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Precio por Noche ($) *</label>
+                            <input type="number" class="form-control" id="editarPrecio" min="1" step="0.01" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea class="form-control" id="editarDescripcion" rows="3"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="editarDisponible">
+                                <label class="form-check-label" for="editarDisponible">
+                                    Disponible
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-warning" onclick="guardarEdicionHabitacion()">Guardar Cambios</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/admin.js"></script>
-    
     <script>
-        // ============================================
-        // VERIFICAR AUTENTICACIÓN Y CARGAR DATOS
-        // ============================================
-        document.addEventListener('DOMContentLoaded', function() {
-            const usuario = JSON.parse(sessionStorage.getItem('usuario') || 'null');
-            
-            // Verificar que esté autenticado y sea admin
-            if (!usuario || usuario.tipoUsuario !== 'admin') {
-                alert('No tiene permisos de administrador.');
-                window.location.href = 'login.html';
-                return;
-            }
-
-            // Mostrar nombre del admin
-            document.getElementById('nombreAdmin').textContent = usuario.nombre;
-        });
-
-        // ============================================
-        // FUNCIÓN: VER/OCULTAR CONTRASEÑAS
-        // ============================================
-        function togglePass(id, btn) {
-            const input = document.getElementById(id);
-            input.type = input.type === 'password' ? 'text' : 'password';
-            btn.textContent = input.type === 'password' ? '👁️' : '🙈';
+        const API = 'http://localhost:3000/api';
+        
+        // VERIFICAR SESIÓN
+        const usuario = JSON.parse(sessionStorage.getItem('usuario') || 'null');
+        const token = sessionStorage.getItem('token');
+        
+        if (!usuario || !token || usuario.tipoUsuario !== 'admin') {
+            alert('No tiene permisos de administrador');
+            window.location.href = 'login.html';
         }
-
-        // ============================================
-        // FUNCIÓN: CAMBIAR CONTRASEÑA
-        // ============================================
-        async function cambiarPasswordAdmin() {
-            const actual = document.getElementById('passwordActualAdmin').value;
-            const nueva = document.getElementById('passwordNuevaAdmin').value;
-            const confirmar = document.getElementById('passwordConfirmarAdmin').value;
-            const alerta = document.getElementById('alertaPasswordAdmin');
-            
-            // Validar que las contraseñas coincidan
-            if (nueva !== confirmar) {
-                alerta.textContent = 'Las contraseñas nuevas no coinciden';
-                alerta.className = 'alert alert-danger';
-                alerta.classList.remove('d-none');
-                return;
+        
+        document.getElementById('nombreAdmin').textContent = usuario.nombre;
+        
+        // CARGAR ESTADÍSTICAS
+        async function cargarEstadisticas() {
+            try {
+                const res = await fetch(`${API}/reservas/estadisticas`, {
+                    headers: {'Authorization': 'Bearer ' + token}
+                });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    document.getElementById('totalReservas').textContent = data.totalReservas || 0;
+                    document.getElementById('reservasAprobadas').textContent = data.aprobadas || 0;
+                    document.getElementById('reservasPendientes').textContent = data.pendientes || 0;
+                    document.getElementById('habitacionesDisponibles').textContent = data.disponibles || 0;
+                }
+            } catch (err) {
+                console.error('Error stats:', err);
             }
-
-            // Validar longitud
-            if (nueva.length < 6) {
-                alerta.textContent = 'La nueva contraseña debe tener al menos 6 caracteres';
+        }
+        
+        // CARGAR RESERVAS
+        async function cargarReservasAdmin() {
+            try {
+                const res = await fetch(`${API}/reservas/todas`, {
+                    headers: {'Authorization': 'Bearer ' + token}
+                });
+                const data = await res.json();
+                const tbody = document.getElementById('tablaReservasAdmin');
+                
+                if (res.ok && data.reservas && data.reservas.length > 0) {
+                    tbody.innerHTML = data.reservas.map(r => {
+                        const botones = r.estado === 'pendiente' 
+                            ? `<button class="btn btn-sm btn-success" onclick="aprobarReserva(${r.id})">Aprobar</button>
+                               <button class="btn btn-sm btn-danger" onclick="rechazarReserva(${r.id})">Rechazar</button>`
+                            : '-';
+                        
+                        return `
+                            <tr>
+                                <td>${r.id}</td>
+                                <td>${r.nombreCliente}</td>
+                                <td>${r.tipoHabitacion}</td>
+                                <td>${r.fechaEntrada}</td>
+                                <td>${r.fechaSalida}</td>
+                                <td>$${r.total}</td>
+                                <td><button class="btn btn-sm btn-info" onclick="verComprobante(${r.id})">Ver</button></td>
+                                <td><span class="estado-${r.estado}">${r.estado}</span></td>
+                                <td>${botones}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="9" class="text-center">No hay reservas</td></tr>';
+                }
+            } catch (err) {
+                console.error('Error reservas:', err);
+                document.getElementById('tablaReservasAdmin').innerHTML = '<tr><td colspan="9" class="text-center text-danger">Error al cargar</td></tr>';
+            }
+        }
+        
+        // CARGAR HABITACIONES
+        async function cargarHabitaciones() {
+            try {
+                const res = await fetch(`${API}/habitaciones`, {
+                    headers: {'Authorization': 'Bearer ' + token}
+                });
+                const data = await res.json();
+                const tbody = document.getElementById('tablaHabitaciones');
+                
+                if (res.ok && data.habitaciones && data.habitaciones.length > 0) {
+                    tbody.innerHTML = data.habitaciones.map(h => `
+                        <tr>
+                            <td>${h.id}</td>
+                            <td>${h.tipo}</td>
+                            <td>${h.capacidad}</td>
+                            <td>$${h.precio}</td>
+                            <td>${h.disponible ? '<span class="badge bg-success">Disponible</span>' : '<span class="badge bg-danger">Ocupada</span>'}</td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" onclick="abrirModalEditar(${h.id})">✏️ Editar</button>
+                                <button class="btn btn-sm btn-danger" onclick="eliminarHabitacion(${h.id})">🗑️ Eliminar</button>
+                            </td>
+                        </tr>
+                    `).join('');
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" class="text-center">No hay habitaciones</td></tr>';
+                }
+            } catch (err) {
+                console.error('Error habitaciones:', err);
+                document.getElementById('tablaHabitaciones').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error al cargar</td></tr>';
+            }
+        }
+        
+        // CREAR HABITACIÓN
+        async function crearHabitacion() {
+            const tipo = document.getElementById('nuevoTipo').value.trim();
+            const capacidad = document.getElementById('nuevaCapacidad').value;
+            const precio = document.getElementById('nuevoPrecio').value;
+            const descripcion = document.getElementById('nuevaDescripcion').value.trim();
+            const disponible = document.getElementById('nuevaDisponible').checked;
+            const alerta = document.getElementById('alertaNuevaHabitacion');
+            
+            if (!tipo || !capacidad || !precio) {
+                alerta.textContent = 'Complete todos los campos obligatorios';
                 alerta.className = 'alert alert-danger';
                 alerta.classList.remove('d-none');
                 return;
             }
             
             try {
-                const response = await fetch('http://localhost:3000/api/auth/cambiar-password', {
+                const res = await fetch(`${API}/habitaciones`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({tipo, capacidad: parseInt(capacidad), precio: parseFloat(precio), descripcion, disponible})
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    alerta.textContent = '✅ Habitación creada exitosamente';
+                    alerta.className = 'alert alert-success';
+                    alerta.classList.remove('d-none');
+                    
+                    document.getElementById('formNuevaHabitacion').reset();
+                    
+                    setTimeout(() => {
+                        bootstrap.Modal.getInstance(document.getElementById('modalNuevaHabitacion')).hide();
+                        alerta.classList.add('d-none');
+                        cargarHabitaciones();
+                        cargarEstadisticas();
+                    }, 1500);
+                } else {
+                    alerta.textContent = data.mensaje || 'Error al crear habitación';
+                    alerta.className = 'alert alert-danger';
+                    alerta.classList.remove('d-none');
+                }
+            } catch (err) {
+                alerta.textContent = 'Error de conexión';
+                alerta.className = 'alert alert-danger';
+                alerta.classList.remove('d-none');
+            }
+        }
+        
+        // ABRIR MODAL EDITAR (cargar datos existentes)
+        async function abrirModalEditar(id) {
+            try {
+                const res = await fetch(`${API}/habitaciones/${id}`, {
+                    headers: {'Authorization': 'Bearer ' + token}
+                });
+                const data = await res.json();
+                
+                if (res.ok && data.habitacion) {
+                    const h = data.habitacion;
+                    document.getElementById('editarId').value = h.id;
+                    document.getElementById('editarTipo').value = h.tipo;
+                    document.getElementById('editarCapacidad').value = h.capacidad;
+                    document.getElementById('editarPrecio').value = h.precio;
+                    document.getElementById('editarDescripcion').value = h.descripcion || '';
+                    document.getElementById('editarDisponible').checked = h.disponible == 1;
+                    
+                    new bootstrap.Modal(document.getElementById('modalEditarHabitacion')).show();
+                } else {
+                    alert('Error al cargar datos de la habitación');
+                }
+            } catch (err) {
+                alert('Error de conexión');
+            }
+        }
+        
+        // GUARDAR EDICIÓN
+        async function guardarEdicionHabitacion() {
+            const id = document.getElementById('editarId').value;
+            const tipo = document.getElementById('editarTipo').value.trim();
+            const capacidad = document.getElementById('editarCapacidad').value;
+            const precio = document.getElementById('editarPrecio').value;
+            const descripcion = document.getElementById('editarDescripcion').value.trim();
+            const disponible = document.getElementById('editarDisponible').checked;
+            const alerta = document.getElementById('alertaEditarHabitacion');
+            
+            if (!tipo || !capacidad || !precio) {
+                alerta.textContent = 'Complete todos los campos obligatorios';
+                alerta.className = 'alert alert-danger';
+                alerta.classList.remove('d-none');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`${API}/habitaciones/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                        'Authorization': 'Bearer ' + token
                     },
-                    body: JSON.stringify({ 
-                        passwordActual: actual, 
-                        passwordNueva: nueva 
-                    })
+                    body: JSON.stringify({tipo, capacidad: parseInt(capacidad), precio: parseFloat(precio), descripcion, disponible})
                 });
                 
-                const resultado = await response.json();
+                const data = await res.json();
                 
-                if (response.ok) {
+                if (res.ok) {
+                    alerta.textContent = '✅ Habitación actualizada exitosamente';
+                    alerta.className = 'alert alert-success';
+                    alerta.classList.remove('d-none');
+                    
+                    setTimeout(() => {
+                        bootstrap.Modal.getInstance(document.getElementById('modalEditarHabitacion')).hide();
+                        alerta.classList.add('d-none');
+                        cargarHabitaciones();
+                        cargarEstadisticas();
+                    }, 1500);
+                } else {
+                    alerta.textContent = data.mensaje || 'Error al actualizar habitación';
+                    alerta.className = 'alert alert-danger';
+                    alerta.classList.remove('d-none');
+                }
+            } catch (err) {
+                alerta.textContent = 'Error de conexión';
+                alerta.className = 'alert alert-danger';
+                alerta.classList.remove('d-none');
+            }
+        }
+        
+        // APROBAR RESERVA
+        async function aprobarReserva(id) {
+            if (!confirm('¿Aprobar esta reserva?')) return;
+            
+            try {
+                const res = await fetch(`${API}/reservas/${id}/aprobar`, {
+                    method: 'PUT',
+                    headers: {'Authorization': 'Bearer ' + token}
+                });
+                
+                if (res.ok) {
+                    alert('Reserva aprobada');
+                    cargarReservasAdmin();
+                    cargarEstadisticas();
+                } else {
+                    alert('Error al aprobar');
+                }
+            } catch (err) {
+                alert('Error de conexión');
+            }
+        }
+        
+        // RECHAZAR RESERVA
+        async function rechazarReserva(id) {
+            const motivo = prompt('Motivo del rechazo (opcional):');
+            if (motivo === null) return;
+            
+            try {
+                const res = await fetch(`${API}/reservas/${id}/rechazar`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({motivo})
+                });
+                
+                if (res.ok) {
+                    alert('Reserva rechazada');
+                    cargarReservasAdmin();
+                    cargarEstadisticas();
+                } else {
+                    alert('Error al rechazar');
+                }
+            } catch (err) {
+                alert('Error de conexión');
+            }
+        }
+        
+        // VER COMPROBANTE
+        async function verComprobante(id) {
+            try {
+                const res = await fetch(`${API}/reservas/${id}/comprobante`, {
+                    headers: {'Authorization': 'Bearer ' + token}
+                });
+                
+                if (res.ok) {
+                    const blob = await res.blob();
+                    const url = URL.createObjectURL(blob);
+                    document.getElementById('imagenComprobante').src = url;
+                    new bootstrap.Modal(document.getElementById('modalComprobante')).show();
+                } else {
+                    alert('No se pudo cargar el comprobante');
+                }
+            } catch (err) {
+                alert('Error al cargar comprobante');
+            }
+        }
+        
+        // ELIMINAR HABITACIÓN
+        async function eliminarHabitacion(id) {
+            if (!confirm('¿Eliminar esta habitación? Esta acción no se puede deshacer.')) return;
+            
+            try {
+                const res = await fetch(`${API}/habitaciones/${id}`, {
+                    method: 'DELETE',
+                    headers: {'Authorization': 'Bearer ' + token}
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
+                    alert('Habitación eliminada');
+                    cargarHabitaciones();
+                    cargarEstadisticas();
+                } else {
+                    alert(data.mensaje || 'Error al eliminar');
+                }
+            } catch (err) {
+                alert('Error de conexión');
+            }
+        }
+        
+        // CAMBIAR CONTRASEÑA
+        async function cambiarPassword() {
+            const actual = document.getElementById('passwordActual').value;
+            const nueva = document.getElementById('passwordNueva').value;
+            const confirmar = document.getElementById('passwordConfirmar').value;
+            const alerta = document.getElementById('alertaPassword');
+            
+            if (!actual || !nueva || !confirmar) {
+                alerta.textContent = 'Todos los campos son obligatorios';
+                alerta.className = 'alert alert-danger';
+                alerta.classList.remove('d-none');
+                return;
+            }
+            
+            if (nueva !== confirmar) {
+                alerta.textContent = 'Las contraseñas nuevas no coinciden';
+                alerta.className = 'alert alert-danger';
+                alerta.classList.remove('d-none');
+                return;
+            }
+            
+            if (nueva.length < 6) {
+                alerta.textContent = 'La contraseña debe tener al menos 6 caracteres';
+                alerta.className = 'alert alert-danger';
+                alerta.classList.remove('d-none');
+                return;
+            }
+            
+            try {
+                const res = await fetch(`${API}/auth/cambiar-password`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({passwordActual: actual, passwordNueva: nueva})
+                });
+                
+                const data = await res.json();
+                
+                if (res.ok) {
                     alerta.textContent = '✅ Contraseña cambiada exitosamente';
                     alerta.className = 'alert alert-success';
                     alerta.classList.remove('d-none');
-                    document.getElementById('formCambiarPasswordAdmin').reset();
+                    document.getElementById('formCambiarPassword').reset();
                     
                     setTimeout(() => {
                         bootstrap.Modal.getInstance(document.getElementById('modalCambiarPassword')).hide();
                         alerta.classList.add('d-none');
                     }, 2000);
                 } else {
-                    alerta.textContent = resultado.mensaje || 'Error al cambiar contraseña';
+                    alerta.textContent = data.mensaje || 'Error al cambiar contraseña';
                     alerta.className = 'alert alert-danger';
                     alerta.classList.remove('d-none');
                 }
-            } catch (error) {
-                console.error('Error:', error);
-                alerta.textContent = 'Error de conexión con el servidor';
+            } catch (err) {
+                alerta.textContent = 'Error de conexión';
                 alerta.className = 'alert alert-danger';
                 alerta.classList.remove('d-none');
             }
         }
-
-        // ============================================
-        // FUNCIÓN: CERRAR SESIÓN
-        // ============================================
-        document.getElementById('btnCerrarSesionAdmin')?.addEventListener('click', function() {
-            if (confirm('¿Está seguro que desea cerrar sesión?')) {
+        
+        function cerrarSesion() {
+            if (confirm('¿Cerrar sesión?')) {
                 sessionStorage.clear();
                 window.location.href = 'index.html';
             }
-        });
+        }
+        
+        // CARGAR TODO AL INICIO
+        console.log('Cargando datos del panel admin...');
+        cargarEstadisticas();
+        cargarReservasAdmin();
+        cargarHabitaciones();
+        
+        // Auto-actualizar cada 30 segundos
+        setInterval(() => {
+            cargarEstadisticas();
+            cargarReservasAdmin();
+            cargarHabitaciones();
+        }, 30000);
     </script>
 </body>
 </html>

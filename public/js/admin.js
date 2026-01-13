@@ -1,30 +1,37 @@
 // ==========================================
-// ADMIN.JS - HOSTAL EL REFUGIO
+// ADMIN.JS - HOSTAL LOS GIRASOLES
 // Gestión administrativa del hostal
 // ==========================================
 
-const API_URL = 'http://localhost:3000/api'; // Cambiar por la URL real del backend
+const API_URL = 'http://localhost:3000/api';
+
+// ==========================================
+// OBTENER TOKEN DE SESIÓN
+// ==========================================
+function obtenerToken() {
+    return sessionStorage.getItem('token');
+}
 
 // ==========================================
 // CARGAR ESTADÍSTICAS DEL DASHBOARD
 // ==========================================
-
 async function cargarEstadisticas() {
     try {
-        const response = await fetch(`${API_URL}/estadisticas`, {
+        const response = await fetch(`${API_URL}/reservas/estadisticas`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + obtenerToken()
             }
         });
 
-        const stats = await response.json();
+        const data = await response.json();
 
         if (response.ok) {
-            document.getElementById('totalReservas').textContent = stats.totalReservas || 0;
-            document.getElementById('reservasAprobadas').textContent = stats.aprobadas || 0;
-            document.getElementById('reservasPendientes').textContent = stats.pendientes || 0;
-            document.getElementById('habitacionesDisponibles').textContent = stats.disponibles || 0;
+            document.getElementById('totalReservas').textContent = data.totalReservas || 0;
+            document.getElementById('reservasAprobadas').textContent = data.aprobadas || 0;
+            document.getElementById('reservasPendientes').textContent = data.pendientes || 0;
+            document.getElementById('habitacionesDisponibles').textContent = data.disponibles || 0;
         }
     } catch (error) {
         console.error('Error al cargar estadísticas:', error);
@@ -34,7 +41,6 @@ async function cargarEstadisticas() {
 // ==========================================
 // CARGAR TODAS LAS RESERVAS
 // ==========================================
-
 async function cargarReservasAdmin() {
     const tablaReservas = document.getElementById('tablaReservasAdmin');
     
@@ -44,19 +50,19 @@ async function cargarReservasAdmin() {
         const response = await fetch(`${API_URL}/reservas/todas`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + obtenerToken()
             }
         });
 
-        const reservas = await response.json();
+        const data = await response.json();
 
-        if (response.ok && reservas.length > 0) {
+        if (response.ok && data.reservas && data.reservas.length > 0) {
             tablaReservas.innerHTML = '';
             
-            reservas.forEach(reserva => {
+            data.reservas.forEach(reserva => {
                 const fila = document.createElement('tr');
                 
-                // Determinar clase del estado
                 let estadoClase = 'estado-pendiente';
                 if (reserva.estado === 'aprobado') {
                     estadoClase = 'estado-aprobado';
@@ -64,7 +70,6 @@ async function cargarReservasAdmin() {
                     estadoClase = 'estado-rechazado';
                 }
 
-                // Mostrar botones solo si está pendiente
                 const botones = reserva.estado === 'pendiente'
                     ? `<button class="btn btn-sm btn-success" onclick="aprobarReserva('${reserva.id}')">Aprobar</button>
                        <button class="btn btn-sm btn-danger" onclick="rechazarReserva('${reserva.id}')">Rechazar</button>`
@@ -96,7 +101,6 @@ async function cargarReservasAdmin() {
 // ==========================================
 // APROBAR RESERVA
 // ==========================================
-
 async function aprobarReserva(idReserva) {
     const confirmar = confirm('¿Está seguro que desea aprobar esta reserva?');
     
@@ -106,7 +110,8 @@ async function aprobarReserva(idReserva) {
         const response = await fetch(`${API_URL}/reservas/${idReserva}/aprobar`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + obtenerToken()
             }
         });
 
@@ -116,7 +121,6 @@ async function aprobarReserva(idReserva) {
             mostrarExito('alertaAdmin', 'Reserva aprobada exitosamente.');
             document.getElementById('alertaAdmin').classList.remove('d-none');
             
-            // Recargar tablas y estadísticas
             setTimeout(() => {
                 cargarReservasAdmin();
                 cargarEstadisticas();
@@ -136,17 +140,17 @@ async function aprobarReserva(idReserva) {
 // ==========================================
 // RECHAZAR RESERVA
 // ==========================================
-
 async function rechazarReserva(idReserva) {
     const motivo = prompt('Ingrese el motivo del rechazo (opcional):');
     
-    if (motivo === null) return; // Usuario canceló
+    if (motivo === null) return;
 
     try {
         const response = await fetch(`${API_URL}/reservas/${idReserva}/rechazar`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + obtenerToken()
             },
             body: JSON.stringify({ motivo })
         });
@@ -157,7 +161,6 @@ async function rechazarReserva(idReserva) {
             mostrarExito('alertaAdmin', 'Reserva rechazada.');
             document.getElementById('alertaAdmin').classList.remove('d-none');
             
-            // Recargar tablas y estadísticas
             setTimeout(() => {
                 cargarReservasAdmin();
                 cargarEstadisticas();
@@ -177,18 +180,19 @@ async function rechazarReserva(idReserva) {
 // ==========================================
 // VER COMPROBANTE
 // ==========================================
-
 async function verComprobante(idReserva) {
     try {
         const response = await fetch(`${API_URL}/reservas/${idReserva}/comprobante`, {
-            method: 'GET'
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + obtenerToken()
+            }
         });
 
         if (response.ok) {
             const blob = await response.blob();
             const url = URL.createObjectURL(blob);
             
-            // Mostrar en modal
             document.getElementById('imagenComprobante').src = url;
             const modal = new bootstrap.Modal(document.getElementById('modalComprobante'));
             modal.show();
@@ -204,7 +208,6 @@ async function verComprobante(idReserva) {
 // ==========================================
 // CARGAR HABITACIONES
 // ==========================================
-
 async function cargarHabitaciones() {
     const tablaHabitaciones = document.getElementById('tablaHabitaciones');
     
@@ -214,7 +217,8 @@ async function cargarHabitaciones() {
         const response = await fetch(`${API_URL}/habitaciones`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + obtenerToken()
             }
         });
 
@@ -251,18 +255,35 @@ async function cargarHabitaciones() {
 }
 
 // ==========================================
+// FUNCIONES AUXILIARES PARA ALERTAS
+// ==========================================
+function mostrarExito(idAlerta, mensaje) {
+    const alerta = document.getElementById(idAlerta);
+    alerta.textContent = mensaje;
+    alerta.className = 'alert alert-success';
+}
+
+function mostrarError(idAlerta, mensaje) {
+    const alerta = document.getElementById(idAlerta);
+    alerta.textContent = mensaje;
+    alerta.className = 'alert alert-danger';
+}
+
+function ocultarAlerta(idAlerta) {
+    const alerta = document.getElementById(idAlerta);
+    alerta.classList.add('d-none');
+}
+
+// ==========================================
 // EDITAR HABITACIÓN
 // ==========================================
-
 async function editarHabitacion(idHabitacion) {
-    // Esta función requeriría un formulario modal más complejo
     alert('Función de edición: Implementar según necesidades del backend');
 }
 
 // ==========================================
 // ELIMINAR HABITACIÓN
 // ==========================================
-
 async function eliminarHabitacion(idHabitacion) {
     const confirmar = confirm('¿Está seguro que desea eliminar esta habitación?');
     
@@ -272,7 +293,8 @@ async function eliminarHabitacion(idHabitacion) {
         const response = await fetch(`${API_URL}/habitaciones/${idHabitacion}`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + obtenerToken()
             }
         });
 
@@ -292,15 +314,12 @@ async function eliminarHabitacion(idHabitacion) {
 // ==========================================
 // INICIALIZACIÓN
 // ==========================================
-
 document.addEventListener('DOMContentLoaded', function() {
-    // Verificar que estamos en el panel de admin
     if (window.location.pathname.includes('panel_admin.html')) {
         cargarEstadisticas();
         cargarReservasAdmin();
         cargarHabitaciones();
         
-        // Actualizar cada 30 segundos
         setInterval(() => {
             cargarEstadisticas();
             cargarReservasAdmin();
@@ -308,7 +327,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-// Hacer funciones globales
 window.aprobarReserva = aprobarReserva;
 window.rechazarReserva = rechazarReserva;
 window.verComprobante = verComprobante;

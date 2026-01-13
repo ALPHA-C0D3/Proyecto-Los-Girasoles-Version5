@@ -9,7 +9,8 @@ const {
     rechazarReserva,
     cancelarReserva,
     obtenerComprobante,
-    obtenerEstadisticas
+    obtenerEstadisticas,
+    obtenerAuditoriaReserva  // ← AGREGAR ESTO
 } = require('../controllers/reservasController');
 const { verificarToken, esAdmin } = require('../middlewares/auth');
 const { upload, manejarErrorUpload } = require('../middlewares/upload');
@@ -22,5 +23,8 @@ router.put('/:id/aprobar', verificarToken, esAdmin, aprobarReserva);
 router.put('/:id/rechazar', verificarToken, esAdmin, rechazarReserva);
 router.delete('/:id', verificarToken, cancelarReserva);
 router.get('/:id/comprobante', verificarToken, obtenerComprobante);
+
+// NUEVA RUTA: Obtener auditoría de una reserva
+router.get('/:id/auditoria', verificarToken, esAdmin, obtenerAuditoriaReserva);
 
 module.exports = router;
