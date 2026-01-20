@@ -1,362 +1,255 @@
-    <!-- Login.html-->
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="description"
-      content="Inicia sesión para acceder a tu cuenta y gestionar tus reservas"
-    />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Inicia sesión para acceder a tu cuenta y gestionar tus reservas">
     <title>Hostal - Iniciar Sesión</title>
-    <link rel="stylesheet" href="css/bootstrap.min.css" />
-    <link rel="stylesheet" href="css/style.css" />
-  </head>
-  <body class="bg-light">
-    <!-- Navegación -->
+    <link rel="icon" type="image/png" href="assets/girasol.png">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                        url('assets/Hostal-Principal.jpg') center/cover fixed no-repeat;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <!-- NAVEGACIÓN -->
     <nav class="navbar navbar-expand-lg navbar-light bg-warning">
-      <div class="container">
-        <!-- Logo del hostal (colocar imagen en assets/logo.png) -->
-        <a class="navbar-brand" href="index.html">
-          <img src="assets/girasol.png" alt="Logo Hostal" height="40" />
-          Hostal Los Girasoles
-        </a>
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="index.html">Inicio</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="habitaciones.html">Habitaciones</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active" href="login.html">Iniciar Sesión</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="registro.html">Registrarse</a>
-            </li>
-          </ul>
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <img src="assets/girasol.png" alt="Logo Hostal" height="40">
+                Hostal Los Girasoles
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="habitaciones.html">Habitaciones</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="login.html">Iniciar Sesión</a></li>
+                    <li class="nav-item"><a class="nav-link" href="registro.html">Registrarse</a></li>
+                </ul>
+            </div>
         </div>
-      </div>
     </nav>
 
-    <!-- Formulario de Login -->
+    <!-- LOGIN -->
     <section class="py-5 min-vh-100 d-flex align-items-center">
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-md-5 col-lg-4">
-            <div class="text-center mb-4">
-              <!-- Logo grande (colocar imagen en assets/logo.png) -->
-              <img
-                src="assets/girasol.png"
-                alt="Logo Hostal"
-                height="80"
-                class="mb-3"
-              />
-              <h2 class="fw-bold">Bienvenido de nuevo</h2>
-              <p class="text-muted">
-                Inicia sesión para gestionar tus reservas
-              </p>
-            </div>
-
-            <div class="card shadow-lg border-0">
-              <div class="card-body p-4">
-                <!-- Alerta de errores -->
-                <div
-                  id="alertaLogin"
-                  class="alert alert-danger d-none"
-                  role="alert"
-                >
-                  <strong>⚠️ Error:</strong>
-                  <span id="mensajeErrorLogin"></span>
-                </div>
-
-                <!-- Alerta de éxito (para cuando viene de registro) -->
-                <div
-                  id="alertaExito"
-                  class="alert alert-success d-none"
-                  role="alert"
-                >
-                  <strong>✓ Éxito:</strong> Registro completado. Ya puedes
-                  iniciar sesión.
-                </div>
-
-                <form id="formLogin" novalidate>
-                  <!-- Correo Electrónico -->
-                  <div class="mb-3">
-                    <label for="correoLogin" class="form-label fw-bold">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        class="me-1"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z"
-                        />
-                      </svg>
-                      Correo Electrónico
-                    </label>
-                    <input
-                      type="email"
-                      class="form-control form-control-lg"
-                      id="correoLogin"
-                      name="correo"
-                      placeholder="tu@email.com"
-                      required
-                    />
-                    <div class="invalid-feedback">
-                      Ingrese un correo válido.
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-5 col-lg-4">
+                    <div class="text-center mb-4">
+                        <img src="assets/girasol.png" alt="Logo Hostal" height="80" class="mb-3">
+                        <h2 class="fw-bold text-white">Bienvenido de nuevo</h2>
+                        <p class="text-white">Inicia sesión para gestionar tus reservas</p>
                     </div>
-                  </div>
 
-                  <!-- Contraseña -->
-                  <div class="mb-3">
-                    <label for="passwordLogin" class="form-label fw-bold">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="currentColor"
-                        class="me-1"
-                        viewBox="0 0 16 16"
-                      >
-                        <path
-                          d="M8 1a2 2 0 0 1 2 2v4H6V3a2 2 0 0 1 2-2zm3 6V3a3 3 0 0 0-6 0v4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"
-                        />
-                      </svg>
-                      Contraseña
-                    </label>
-                    <div class="input-group">
-                      <input
-                        type="password"
-                        class="form-control form-control-lg"
-                        id="passwordLogin"
-                        name="password"
-                        placeholder="••••••••"
-                        required
-                      />
-                      <button
-                        class="btn btn-outline-secondary"
-                        type="button"
-                        id="togglePasswordLogin"
-                      >
-                        👁️
-                      </button>
+                    <div class="card shadow-lg border-0">
+                        <div class="card-body p-4">
+                            <!-- ALERTAS -->
+                            <div id="alertaLogin" class="alert alert-danger d-none" role="alert">
+                                <strong>⚠️ Error:</strong>
+                                <span id="mensajeErrorLogin"></span>
+                            </div>
+
+                            <div id="alertaExito" class="alert alert-success d-none" role="alert">
+                                <strong>✓ Éxito:</strong> Registro completado. Ya puedes iniciar sesión.
+                            </div>
+
+                            <form id="formLogin" novalidate>
+                                <!-- EMAIL -->
+                                <div class="mb-3">
+                                    <label for="correoLogin" class="form-label fw-bold">
+                                        📧 Correo Electrónico
+                                    </label>
+                                    <input
+                                        type="email"
+                                        class="form-control form-control-lg"
+                                        id="correoLogin"
+                                        name="correo"
+                                        placeholder="tu@email.com"
+                                        required
+                                    />
+                                    <div class="invalid-feedback">Ingrese un correo válido.</div>
+                                </div>
+
+                                <!-- PASSWORD -->
+                                <div class="mb-3">
+                                    <label for="passwordLogin" class="form-label fw-bold">
+                                        🔒 Contraseña
+                                    </label>
+                                    <div class="input-group">
+                                        <input
+                                            type="password"
+                                            class="form-control form-control-lg"
+                                            id="passwordLogin"
+                                            name="password"
+                                            placeholder="••••••••"
+                                            required
+                                        />
+                                        <button class="btn btn-outline-secondary" type="button" id="togglePasswordLogin">
+                                            👁️
+                                        </button>
+                                    </div>
+                                    <div class="invalid-feedback">Ingrese su contraseña.</div>
+                                </div>
+
+                                <!-- RECORDAR -->
+                                <div class="mb-3 form-check">
+                                    <input type="checkbox" class="form-check-input" id="recordar">
+                                    <label class="form-check-label" for="recordar">
+                                        Recordar mi sesión
+                                    </label>
+                                </div>
+
+                                <!-- BOTÓN -->
+                                <button type="submit" class="btn btn-warning w-100 btn-lg fw-bold mb-3" id="btnLogin">
+                                    Iniciar Sesión
+                                </button>
+
+                                <div class="text-center">
+                                    <a href="#" class="text-decoration-none text-muted small">
+                                        ¿Olvidaste tu contraseña?
+                                    </a>
+                                </div>
+                            </form>
+
+                            <hr class="my-4">
+
+                            <p class="text-center mb-0">
+                                ¿No tienes cuenta?
+                                <a href="registro.html" class="text-warning fw-bold text-decoration-none">
+                                    Regístrate aquí
+                                </a>
+                            </p>
+                        </div>
                     </div>
-                    <div class="invalid-feedback">Ingrese su contraseña.</div>
-                  </div>
-                  <!-- Recordar sesión -->
-                  <div class="mb-3 form-check">
-                    <input
-                      type="checkbox"
-                      class="form-check-input"
-                      id="recordar"
-                    />
-                    <label class="form-check-label" for="recordar">
-                      Recordar mi sesión
-                    </label>
-                  </div>
 
-                  <!-- Botón de Login -->
-                  <button
-                    type="submit"
-                    class="btn btn-warning w-100 btn-lg fw-bold mb-3"
-                    id="btnLogin"
-                  >
-                    Iniciar Sesión
-                  </button>
-
-                  <div class="text-center">
-                    <a href="#" class="text-decoration-none text-muted small">
-                      ¿Olvidaste tu contraseña?
-                    </a>
-                  </div>
-                </form>
-
-                <hr class="my-4" />
-
-                <p class="text-center mb-0">
-                  ¿No tienes cuenta?
-                  <a
-                    href="registro.html"
-                    class="text-warning fw-bold text-decoration-none"
-                  >
-                    Regístrate aquí
-                  </a>
-                </p>
-              </div>
+                    <div class="text-center mt-4">
+                        <small class="text-white">
+                            Al iniciar sesión, aceptas nuestros
+                            <a href="#" class="text-warning">Términos y Condiciones</a>
+                        </small>
+                    </div>
+                </div>
             </div>
-
-            <!-- Información adicional -->
-            <div class="text-center mt-4">
-              <small class="text-muted">
-                Al iniciar sesión, aceptas nuestros
-                <a href="#" class="text-warning">Términos y Condiciones</a>
-              </small>
-            </div>
-          </div>
         </div>
-      </div>
     </section>
 
-    <!-- Footer -->
+    <!-- FOOTER -->
     <footer class="bg-dark text-white py-3">
-      <div class="container text-center">
-        <p class="mb-0">
-          &copy; 2026 Hostal Los Girasoles. Todos los derechos reservados.
-        </p>
-      </div>
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2026 Hostal Los Girasoles. Todos los derechos reservados.</p>
+        </div>
     </footer>
 
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/validaciones.js"></script>
     <script>
-      // Control del formulario de login
-      document.addEventListener("DOMContentLoaded", function () {
-        const formLogin = document.getElementById("formLogin");
-        const btnLogin = document.getElementById("btnLogin");
+        document.addEventListener("DOMContentLoaded", function () {
+            const formLogin = document.getElementById("formLogin");
+            const btnLogin = document.getElementById("btnLogin");
 
-        // Verificar si viene desde registro exitoso
-        const urlParams = new URLSearchParams(window.location.search);
-        if (urlParams.get("registro") === "exitoso") {
-          document.getElementById("alertaExito").classList.remove("d-none");
-          setTimeout(() => {
-            document.getElementById("alertaExito").classList.add("d-none");
-          }, 5000);
-        }
-
-        if (formLogin) {
-          formLogin.addEventListener("submit", async function (e) {
-            e.preventDefault();
-
-            // Deshabilitar botón para evitar múltiples envíos
-            btnLogin.disabled = true;
-            btnLogin.innerHTML =
-              '<span class="spinner-border spinner-border-sm me-2"></span>Iniciando...';
-
-            // Ocultar alertas previas
-            document.getElementById("alertaLogin").classList.add("d-none");
-            document.getElementById("alertaExito").classList.add("d-none");
-
-            const correo = document.getElementById("correoLogin").value.trim();
-            const password = document.getElementById("passwordLogin").value;
-
-            // Validaciones básicas
-            if (!correo || !password) {
-              document.getElementById("mensajeErrorLogin").textContent =
-                "Complete todos los campos.";
-              document.getElementById("alertaLogin").classList.remove("d-none");
-              btnLogin.disabled = false;
-              btnLogin.innerHTML = "Iniciar Sesión";
-              return;
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get("registro") === "exitoso") {
+                document.getElementById("alertaExito").classList.remove("d-none");
+                setTimeout(() => {
+                    document.getElementById("alertaExito").classList.add("d-none");
+                }, 5000);
             }
 
-            if (!validarEmail(correo)) {
-              document.getElementById("mensajeErrorLogin").textContent =
-                "Ingrese un correo válido.";
-              document.getElementById("alertaLogin").classList.remove("d-none");
-              document
-                .getElementById("correoLogin")
-                .classList.add("is-invalid");
-              btnLogin.disabled = false;
-              btnLogin.innerHTML = "Iniciar Sesión";
-              return;
+            if (formLogin) {
+                formLogin.addEventListener("submit", async function (e) {
+                    e.preventDefault();
+
+                    btnLogin.disabled = true;
+                    btnLogin.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Iniciando...';
+
+                    document.getElementById("alertaLogin").classList.add("d-none");
+                    document.getElementById("alertaExito").classList.add("d-none");
+
+                    const correo = document.getElementById("correoLogin").value.trim();
+                    const password = document.getElementById("passwordLogin").value;
+
+                    if (!correo || !password) {
+                        document.getElementById("mensajeErrorLogin").textContent = "Complete todos los campos.";
+                        document.getElementById("alertaLogin").classList.remove("d-none");
+                        btnLogin.disabled = false;
+                        btnLogin.innerHTML = "Iniciar Sesión";
+                        return;
+                    }
+
+                    if (!validarEmail(correo)) {
+                        document.getElementById("mensajeErrorLogin").textContent = "Ingrese un correo válido.";
+                        document.getElementById("alertaLogin").classList.remove("d-none");
+                        document.getElementById("correoLogin").classList.add("is-invalid");
+                        btnLogin.disabled = false;
+                        btnLogin.innerHTML = "Iniciar Sesión";
+                        return;
+                    }
+
+                    const datosLogin = {
+                        correo: correo,
+                        password: password,
+                    };
+
+                    try {
+                        const response = await fetch("http://localhost:3000/api/auth/login", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(datosLogin),
+                        });
+
+                        const resultado = await response.json();
+
+                        if (response.ok) {
+                            sessionStorage.setItem("usuario", JSON.stringify(resultado.usuario));
+                            sessionStorage.setItem("token", resultado.token);
+
+                            if (resultado.usuario.tipoUsuario === "admin") {
+                                window.location.href = "panel_admin.html";
+                            } else {
+                                window.location.href = "panel_cliente.html";
+                            }
+                        } else {
+                            document.getElementById("mensajeErrorLogin").textContent = resultado.mensaje || "Credenciales incorrectas. Verifique su correo y contraseña.";
+                            document.getElementById("alertaLogin").classList.remove("d-none");
+                            btnLogin.disabled = false;
+                            btnLogin.innerHTML = "Iniciar Sesión";
+                        }
+                    } catch (error) {
+                        console.error("Error de conexión:", error);
+                        document.getElementById("mensajeErrorLogin").textContent = "Error de conexión. Inténtelo de nuevo en unos segundos.";
+                        document.getElementById("alertaLogin").classList.remove("d-none");
+                        btnLogin.disabled = false;
+                        btnLogin.innerHTML = "Iniciar Sesión";
+                    }
+                });
+
+                document.getElementById("correoLogin").addEventListener("input", function () {
+                    this.classList.remove("is-invalid");
+                    document.getElementById("alertaLogin").classList.add("d-none");
+                });
+
+                document.getElementById("passwordLogin").addEventListener("input", function () {
+                    this.classList.remove("is-invalid");
+                    document.getElementById("alertaLogin").classList.add("d-none");
+                });
             }
+        });
 
-            // Preparar datos para enviar al backend Node.js
-            const datosLogin = {
-              correo: correo,
-              password: password,
-            };
-
-            try {
-              // Hacer petición al backend Node.js
-              const response = await fetch(
-                "http://localhost:3000/api/auth/login",
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify(datosLogin),
-                }
-              );
-
-              const resultado = await response.json();
-
-              if (response.ok) {
-                // Login exitoso - Guardar datos en sessionStorage
-                sessionStorage.setItem(
-                  "usuario",
-                  JSON.stringify(resultado.usuario)
-                );
-                sessionStorage.setItem("token", resultado.token);
-
-                // Redirigir según el tipo de usuario
-                if (resultado.usuario.tipoUsuario === "admin") {
-                  window.location.href = "panel_admin.html";
-                } else {
-                  window.location.href = "panel_cliente.html";
-                }
-              } else {
-                // Error en login
-                document.getElementById("mensajeErrorLogin").textContent =
-                  resultado.mensaje ||
-                  "Credenciales incorrectas. Verifique su correo y contraseña.";
-                document
-                  .getElementById("alertaLogin")
-                  .classList.remove("d-none");
-                btnLogin.disabled = false;
-                btnLogin.innerHTML = "Iniciar Sesión";
-              }
-            } catch (error) {
-              console.error("Error de conexión:", error);
-              document.getElementById("mensajeErrorLogin").textContent =
-                "Error de conexión. Inténtelo de nuevo en unos segundos.";
-              document.getElementById("alertaLogin").classList.remove("d-none");
-              btnLogin.disabled = false;
-              btnLogin.innerHTML = "Iniciar Sesión";
-            }
-          });
-
-          // Limpiar validaciones al escribir
-          document
-            .getElementById("correoLogin")
-            .addEventListener("input", function () {
-              this.classList.remove("is-invalid");
-              document.getElementById("alertaLogin").classList.add("d-none");
-            });
-
-          document
-            .getElementById("passwordLogin")
-            .addEventListener("input", function () {
-              this.classList.remove("is-invalid");
-              document.getElementById("alertaLogin").classList.add("d-none");
-            });
-        }
-      });
-    </script>
-    <script>
-      // Ver/Ocultar contraseña en login
-      document
-        .getElementById("togglePasswordLogin")
-        .addEventListener("click", function () {
-          const password = document.getElementById("passwordLogin");
-          const type = password.type === "password" ? "text" : "password";
-          password.type = type;
-          this.textContent = type === "password" ? "👁️" : "🙈";
+        document.getElementById("togglePasswordLogin").addEventListener("click", function () {
+            const password = document.getElementById("passwordLogin");
+            const type = password.type === "password" ? "text" : "password";
+            password.type = type;
+            this.textContent = type === "password" ? "👁️" : "🙈";
         });
     </script>
-  </body>
+</body>
 </html>

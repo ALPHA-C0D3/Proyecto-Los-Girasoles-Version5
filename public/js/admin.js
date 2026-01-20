@@ -5,20 +5,14 @@
 
 const API_URL = 'http://localhost:3000/api';
 
-// ==========================================
-// OBTENER TOKEN DE SESIÓN
-// ==========================================
 function obtenerToken() {
     return sessionStorage.getItem('token');
 }
 
-// ==========================================
-// CARGAR ESTADÍSTICAS DEL DASHBOARD
-// ==========================================
+// CARGAR ESTADÍSTICAS
 async function cargarEstadisticas() {
     try {
         const response = await fetch(`${API_URL}/reservas/estadisticas`, {
-            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + obtenerToken()
@@ -34,21 +28,17 @@ async function cargarEstadisticas() {
             document.getElementById('habitacionesDisponibles').textContent = data.disponibles || 0;
         }
     } catch (error) {
-        console.error('Error al cargar estadísticas:', error);
+        console.error('Error estadísticas:', error);
     }
 }
 
-// ==========================================
-// CARGAR TODAS LAS RESERVAS
-// ==========================================
+// CARGAR RESERVAS ADMIN
 async function cargarReservasAdmin() {
-    const tablaReservas = document.getElementById('tablaReservasAdmin');
-    
-    if (!tablaReservas) return;
+    const tabla = document.getElementById('tablaReservasAdmin');
+    if (!tabla) return;
 
     try {
         const response = await fetch(`${API_URL}/reservas/todas`, {
-            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + obtenerToken()
@@ -58,56 +48,41 @@ async function cargarReservasAdmin() {
         const data = await response.json();
 
         if (response.ok && data.reservas && data.reservas.length > 0) {
-            tablaReservas.innerHTML = '';
-            
-            data.reservas.forEach(reserva => {
-                const fila = document.createElement('tr');
-                
-                let estadoClase = 'estado-pendiente';
-                if (reserva.estado === 'aprobado') {
-                    estadoClase = 'estado-aprobado';
-                } else if (reserva.estado === 'rechazado') {
-                    estadoClase = 'estado-rechazado';
-                }
-
-                const botones = reserva.estado === 'pendiente'
-                    ? `<button class="btn btn-sm btn-success" onclick="aprobarReserva('${reserva.id}')">Aprobar</button>
-                       <button class="btn btn-sm btn-danger" onclick="rechazarReserva('${reserva.id}')">Rechazar</button>`
+            tabla.innerHTML = data.reservas.map(r => {
+                const botones = r.estado === 'pendiente'
+                    ? `<button class="btn btn-sm btn-success" onclick="aprobarReserva(${r.id})">Aprobar</button>
+                       <button class="btn btn-sm btn-danger" onclick="rechazarReserva(${r.id})">Rechazar</button>`
                     : '-';
 
-                fila.innerHTML = `
-                    <td>${reserva.id}</td>
-                    <td>${reserva.nombreCliente}</td>
-                    <td>${reserva.tipoHabitacion}</td>
-                    <td>${reserva.fechaEntrada}</td>
-                    <td>${reserva.fechaSalida}</td>
-                    <td>$${reserva.total}</td>
-                    <td><button class="btn btn-sm btn-info" onclick="verComprobante('${reserva.id}')">Ver</button></td>
-                    <td><span class="${estadoClase}">${reserva.estado}</span></td>
-                    <td>${botones}</td>
+                return `
+                    <tr>
+                        <td>${r.id}</td>
+                        <td>${r.nombreCliente}</td>
+                        <td>${r.tipoHabitacion}</td>
+                        <td>${r.fechaEntrada}</td>
+                        <td>${r.fechaSalida}</td>
+                        <td>$${r.total}</td>
+                        <td><button class="btn btn-sm btn-info" onclick="verComprobante(${r.id})">Ver</button></td>
+                        <td><span class="estado-${r.estado}">${r.estado}</span></td>
+                        <td>${botones}</td>
+                    </tr>
                 `;
-                
-                tablaReservas.appendChild(fila);
-            });
+            }).join('');
         } else {
-            tablaReservas.innerHTML = '<tr><td colspan="9" class="text-center text-muted">No hay reservas registradas</td></tr>';
+            tabla.innerHTML = '<tr><td colspan="9" class="text-center">No hay reservas</td></tr>';
         }
     } catch (error) {
-        console.error('Error al cargar reservas:', error);
-        tablaReservas.innerHTML = '<tr><td colspan="9" class="text-center text-danger">Error al cargar reservas</td></tr>';
+        console.error('Error reservas:', error);
+        tabla.innerHTML = '<tr><td colspan="9" class="text-center text-danger">Error al cargar</td></tr>';
     }
 }
 
-// ==========================================
 // APROBAR RESERVA
-// ==========================================
-async function aprobarReserva(idReserva) {
-    const confirmar = confirm('¿Está seguro que desea aprobar esta reserva?');
-    
-    if (!confirmar) return;
+async function aprobarReserva(id) {
+    if (!confirm('¿Aprobar esta reserva?')) return;
 
     try {
-        const response = await fetch(`${API_URL}/reservas/${idReserva}/aprobar`, {
+        const response = await fetch(`${API_URL}/reservas/${id}/aprobar`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -115,182 +90,298 @@ async function aprobarReserva(idReserva) {
             }
         });
 
-        const resultado = await response.json();
+        const data = await response.json();
 
         if (response.ok) {
-            mostrarExito('alertaAdmin', 'Reserva aprobada exitosamente.');
-            document.getElementById('alertaAdmin').classList.remove('d-none');
-            
-            setTimeout(() => {
-                cargarReservasAdmin();
-                cargarEstadisticas();
-                ocultarAlerta('alertaAdmin');
-            }, 2000);
+            alert('Reserva aprobada exitosamente');
+            cargarReservasAdmin();
+            cargarEstadisticas();
         } else {
-            mostrarError('alertaAdmin', resultado.mensaje || 'Error al aprobar la reserva.');
-            document.getElementById('alertaAdmin').classList.remove('d-none');
+            alert(data.mensaje || 'Error al aprobar');
         }
     } catch (error) {
-        console.error('Error de conexión:', error);
-        mostrarError('alertaAdmin', 'Error de conexión. Inténtelo de nuevo en unos segundos.');
-        document.getElementById('alertaAdmin').classList.remove('d-none');
+        console.error('Error:', error);
+        alert('Error de conexión');
     }
 }
 
-// ==========================================
 // RECHAZAR RESERVA
-// ==========================================
-async function rechazarReserva(idReserva) {
-    const motivo = prompt('Ingrese el motivo del rechazo (opcional):');
-    
+async function rechazarReserva(id) {
+    const motivo = prompt('Motivo del rechazo (opcional):');
     if (motivo === null) return;
 
     try {
-        const response = await fetch(`${API_URL}/reservas/${idReserva}/rechazar`, {
+        const response = await fetch(`${API_URL}/reservas/${id}/rechazar`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + obtenerToken()
             },
-            body: JSON.stringify({ motivo })
+            body: JSON.stringify({ motivo: motivo || 'No especificado' })
         });
 
-        const resultado = await response.json();
+        const data = await response.json();
 
         if (response.ok) {
-            mostrarExito('alertaAdmin', 'Reserva rechazada.');
-            document.getElementById('alertaAdmin').classList.remove('d-none');
-            
-            setTimeout(() => {
-                cargarReservasAdmin();
-                cargarEstadisticas();
-                ocultarAlerta('alertaAdmin');
-            }, 2000);
+            alert('Reserva rechazada');
+            cargarReservasAdmin();
+            cargarEstadisticas();
         } else {
-            mostrarError('alertaAdmin', resultado.mensaje || 'Error al rechazar la reserva.');
-            document.getElementById('alertaAdmin').classList.remove('d-none');
+            alert(data.mensaje || 'Error al rechazar');
         }
     } catch (error) {
-        console.error('Error de conexión:', error);
-        mostrarError('alertaAdmin', 'Error de conexión. Inténtelo de nuevo en unos segundos.');
-        document.getElementById('alertaAdmin').classList.remove('d-none');
+        console.error('Error:', error);
+        alert('Error de conexión');
     }
 }
 
-// ==========================================
 // VER COMPROBANTE
-// ==========================================
-async function verComprobante(idReserva) {
+async function verComprobante(id) {
     try {
-        const response = await fetch(`${API_URL}/reservas/${idReserva}/comprobante`, {
-            method: 'GET',
-            headers: {
-                'Authorization': 'Bearer ' + obtenerToken()
-            }
+        const response = await fetch(`${API_URL}/reservas/${id}/comprobante`, {
+            headers: { 'Authorization': 'Bearer ' + obtenerToken() }
         });
 
         if (response.ok) {
             const blob = await response.blob();
             const url = URL.createObjectURL(blob);
-            
             document.getElementById('imagenComprobante').src = url;
-            const modal = new bootstrap.Modal(document.getElementById('modalComprobante'));
-            modal.show();
+            new bootstrap.Modal(document.getElementById('modalComprobante')).show();
         } else {
-            alert('No se pudo cargar el comprobante.');
+            alert('No se pudo cargar el comprobante');
         }
     } catch (error) {
-        console.error('Error al cargar comprobante:', error);
-        alert('Error al cargar el comprobante.');
+        console.error('Error:', error);
+        alert('Error al cargar comprobante');
     }
 }
 
-// ==========================================
 // CARGAR HABITACIONES
-// ==========================================
 async function cargarHabitaciones() {
-    const tablaHabitaciones = document.getElementById('tablaHabitaciones');
-    
-    if (!tablaHabitaciones) return;
+    const tabla = document.getElementById('tablaHabitaciones');
+    if (!tabla) return;
 
     try {
         const response = await fetch(`${API_URL}/habitaciones`, {
-            method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + obtenerToken()
             }
         });
 
-        const habitaciones = await response.json();
+        const data = await response.json();
 
-        if (response.ok && habitaciones.length > 0) {
-            tablaHabitaciones.innerHTML = '';
-            
-            habitaciones.forEach(habitacion => {
-                const fila = document.createElement('tr');
-                
-                const estadoBadge = habitacion.disponible 
-                    ? '<span class="badge bg-success">Disponible</span>'
-                    : '<span class="badge bg-danger">Ocupada</span>';
-
-                fila.innerHTML = `
-                    <td>${habitacion.id}</td>
-                    <td>${habitacion.tipo}</td>
-                    <td>${habitacion.capacidad} persona(s)</td>
-                    <td>$${habitacion.precio}</td>
-                    <td>${estadoBadge}</td>
+        if (response.ok && data.success && data.habitaciones && data.habitaciones.length > 0) {
+            tabla.innerHTML = data.habitaciones.map(h => `
+                <tr>
+                    <td>${h.id}</td>
+                    <td>${h.tipo}</td>
+                    <td>${h.capacidad}</td>
+                    <td>$${h.precio}</td>
                     <td>
-                        <button class="btn btn-sm btn-primary" onclick="editarHabitacion('${habitacion.id}')">Editar</button>
-                        <button class="btn btn-sm btn-danger" onclick="eliminarHabitacion('${habitacion.id}')">Eliminar</button>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="toggle${h.id}" 
+                                   ${h.disponible ? 'checked' : ''} 
+                                   onchange="toggleDisponibilidad(${h.id}, this.checked)">
+                            <label class="form-check-label fw-bold" for="toggle${h.id}">
+                                ${h.disponible ? '<span class="text-success">Disponible</span>' : '<span class="text-danger">Ocupada</span>'}
+                            </label>
+                        </div>
                     </td>
-                `;
-                
-                tablaHabitaciones.appendChild(fila);
-            });
+                    <td>
+                        <button class="btn btn-sm btn-primary" onclick="abrirModalEditar(${h.id})">✏️</button>
+                        <button class="btn btn-sm btn-danger" onclick="eliminarHabitacion(${h.id})">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        } else {
+            tabla.innerHTML = '<tr><td colspan="6" class="text-center">No hay habitaciones</td></tr>';
         }
     } catch (error) {
-        console.error('Error al cargar habitaciones:', error);
+        console.error('Error habitaciones:', error);
+        tabla.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error al cargar</td></tr>';
     }
 }
 
-// ==========================================
-// FUNCIONES AUXILIARES PARA ALERTAS
-// ==========================================
-function mostrarExito(idAlerta, mensaje) {
-    const alerta = document.getElementById(idAlerta);
-    alerta.textContent = mensaje;
-    alerta.className = 'alert alert-success';
+// TOGGLE DISPONIBILIDAD
+async function toggleDisponibilidad(id, disponible) {
+    try {
+        const response = await fetch(`${API_URL}/habitaciones/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + obtenerToken()
+            },
+            body: JSON.stringify({ disponible })
+        });
+
+        if (response.ok) {
+            const label = document.querySelector(`label[for="toggle${id}"]`);
+            label.innerHTML = disponible
+                ? '<span class="text-success">Disponible</span>'
+                : '<span class="text-danger">Ocupada</span>';
+            cargarEstadisticas();
+        } else {
+            alert('Error al cambiar disponibilidad');
+            document.getElementById(`toggle${id}`).checked = !disponible;
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error de conexión');
+        document.getElementById(`toggle${id}`).checked = !disponible;
+    }
 }
 
-function mostrarError(idAlerta, mensaje) {
-    const alerta = document.getElementById(idAlerta);
-    alerta.textContent = mensaje;
-    alerta.className = 'alert alert-danger';
-}
+// CREAR HABITACIÓN
+async function crearHabitacion() {
+    const tipo = document.getElementById('nuevoTipo').value.trim();
+    const capacidad = document.getElementById('nuevaCapacidad').value;
+    const precio = document.getElementById('nuevoPrecio').value;
+    const descripcion = document.getElementById('nuevaDescripcion').value.trim();
+    const disponible = document.getElementById('nuevaDisponible').checked;
+    const alerta = document.getElementById('alertaNuevaHabitacion');
 
-function ocultarAlerta(idAlerta) {
-    const alerta = document.getElementById(idAlerta);
-    alerta.classList.add('d-none');
-}
-
-// ==========================================
-// EDITAR HABITACIÓN
-// ==========================================
-async function editarHabitacion(idHabitacion) {
-    alert('Función de edición: Implementar según necesidades del backend');
-}
-
-// ==========================================
-// ELIMINAR HABITACIÓN
-// ==========================================
-async function eliminarHabitacion(idHabitacion) {
-    const confirmar = confirm('¿Está seguro que desea eliminar esta habitación?');
-    
-    if (!confirmar) return;
+    if (!tipo || !capacidad || !precio) {
+        alerta.textContent = 'Complete todos los campos obligatorios';
+        alerta.className = 'alert alert-danger';
+        alerta.classList.remove('d-none');
+        return;
+    }
 
     try {
-        const response = await fetch(`${API_URL}/habitaciones/${idHabitacion}`, {
+        const response = await fetch(`${API_URL}/habitaciones`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + obtenerToken()
+            },
+            body: JSON.stringify({
+                tipo,
+                capacidad: parseInt(capacidad),
+                precio: parseFloat(precio),
+                descripcion,
+                disponible
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alerta.textContent = '✅ Habitación creada exitosamente';
+            alerta.className = 'alert alert-success';
+            alerta.classList.remove('d-none');
+
+            document.getElementById('formNuevaHabitacion').reset();
+
+            setTimeout(() => {
+                bootstrap.Modal.getInstance(document.getElementById('modalNuevaHabitacion')).hide();
+                alerta.classList.add('d-none');
+                cargarHabitaciones();
+                cargarEstadisticas();
+            }, 1500);
+        } else {
+            alerta.textContent = data.mensaje || 'Error al crear habitación';
+            alerta.className = 'alert alert-danger';
+            alerta.classList.remove('d-none');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alerta.textContent = 'Error de conexión';
+        alerta.className = 'alert alert-danger';
+        alerta.classList.remove('d-none');
+    }
+}
+
+// ABRIR MODAL EDITAR
+async function abrirModalEditar(id) {
+    try {
+        const response = await fetch(`${API_URL}/habitaciones/${id}`, {
+            headers: { 'Authorization': 'Bearer ' + obtenerToken() }
+        });
+        const data = await response.json();
+
+        if (response.ok && data.habitacion) {
+            const h = data.habitacion;
+            document.getElementById('editarId').value = h.id;
+            document.getElementById('editarTipo').value = h.tipo;
+            document.getElementById('editarCapacidad').value = h.capacidad;
+            document.getElementById('editarPrecio').value = h.precio;
+            document.getElementById('editarDescripcion').value = h.descripcion || '';
+            document.getElementById('editarDisponible').checked = h.disponible == 1;
+
+            new bootstrap.Modal(document.getElementById('modalEditarHabitacion')).show();
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error de conexión');
+    }
+}
+
+// GUARDAR EDICIÓN
+async function guardarEdicionHabitacion() {
+    const id = document.getElementById('editarId').value;
+    const tipo = document.getElementById('editarTipo').value.trim();
+    const capacidad = document.getElementById('editarCapacidad').value;
+    const precio = document.getElementById('editarPrecio').value;
+    const descripcion = document.getElementById('editarDescripcion').value.trim();
+    const disponible = document.getElementById('editarDisponible').checked;
+    const alerta = document.getElementById('alertaEditarHabitacion');
+
+    if (!tipo || !capacidad || !precio) {
+        alerta.textContent = 'Complete todos los campos obligatorios';
+        alerta.className = 'alert alert-danger';
+        alerta.classList.remove('d-none');
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/habitaciones/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + obtenerToken()
+            },
+            body: JSON.stringify({
+                tipo,
+                capacidad: parseInt(capacidad),
+                precio: parseFloat(precio),
+                descripcion,
+                disponible
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alerta.textContent = '✅ Habitación actualizada exitosamente';
+            alerta.className = 'alert alert-success';
+            alerta.classList.remove('d-none');
+
+            setTimeout(() => {
+                bootstrap.Modal.getInstance(document.getElementById('modalEditarHabitacion')).hide();
+                alerta.classList.add('d-none');
+                cargarHabitaciones();
+                cargarEstadisticas();
+            }, 1500);
+        } else {
+            alerta.textContent = data.mensaje || 'Error al actualizar';
+            alerta.className = 'alert alert-danger';
+            alerta.classList.remove('d-none');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alerta.textContent = 'Error de conexión';
+        alerta.className = 'alert alert-danger';
+        alerta.classList.remove('d-none');
+    }
+}
+
+// ELIMINAR HABITACIÓN
+async function eliminarHabitacion(id) {
+    if (!confirm('¿Eliminar esta habitación? No se puede deshacer.')) return;
+
+    try {
+        const response = await fetch(`${API_URL}/habitaciones/${id}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -299,36 +390,43 @@ async function eliminarHabitacion(idHabitacion) {
         });
 
         if (response.ok) {
-            alert('Habitación eliminada exitosamente.');
+            alert('Habitación eliminada');
             cargarHabitaciones();
+            cargarEstadisticas();
         } else {
-            const resultado = await response.json();
-            alert(resultado.mensaje || 'Error al eliminar la habitación.');
+            const data = await response.json();
+            alert(data.mensaje || 'Error al eliminar');
         }
     } catch (error) {
-        console.error('Error de conexión:', error);
-        alert('Error de conexión. Inténtelo de nuevo en unos segundos.');
+        console.error('Error:', error);
+        alert('Error de conexión');
     }
 }
 
-// ==========================================
 // INICIALIZACIÓN
-// ==========================================
 document.addEventListener('DOMContentLoaded', function() {
     if (window.location.pathname.includes('panel_admin.html')) {
         cargarEstadisticas();
         cargarReservasAdmin();
         cargarHabitaciones();
-        
+
         setInterval(() => {
             cargarEstadisticas();
             cargarReservasAdmin();
+            cargarHabitaciones();
         }, 30000);
     }
 });
 
+// EXPORTAR AL SCOPE GLOBAL
 window.aprobarReserva = aprobarReserva;
 window.rechazarReserva = rechazarReserva;
 window.verComprobante = verComprobante;
-window.editarHabitacion = editarHabitacion;
+window.cargarReservasAdmin = cargarReservasAdmin;
+window.cargarEstadisticas = cargarEstadisticas;
+window.cargarHabitaciones = cargarHabitaciones;
+window.toggleDisponibilidad = toggleDisponibilidad;
 window.eliminarHabitacion = eliminarHabitacion;
+window.crearHabitacion = crearHabitacion;
+window.abrirModalEditar = abrirModalEditar;
+window.guardarEdicionHabitacion = guardarEdicionHabitacion;

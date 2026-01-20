@@ -1,294 +1,208 @@
-# 🏨 Sistema Frontend - Hostal El Refugio
+# 🏨 Sistema Full Stack - Hostal Los Girasoles
 
-Sistema de gestión frontend para hostal con temática amarilla/naranja. Incluye 6 vistas HTML, estilos personalizados con Bootstrap y lógica JavaScript completa.
+Sistema integral de gestión para hostal con temática visual amarilla/naranja. Esta solución combina un **Frontend** responsivo basado en Bootstrap con un **Backend** robusto en Node.js, incluyendo persistencia en base de datos SQLite y gestión de archivos.
 
 ---
 
 ## 📁 Estructura del Proyecto
 
-```
-hostal-frontend/
+Según la disposición actual de archivos y carpetas:
+
+HOSTAL-APP/
+├── BackEnd/                        # --- NÚCLEO DEL SERVIDOR ---
+│   ├── config/                     # Configuraciones de conexión y globales
+│   ├── controllers/                # Lógica de procesamiento de datos
+│   │   ├── authController.js       # Registro y login de usuarios
+│   │   ├── habitacionesController.js # CRUD y catálogo de habitaciones
+│   │   └── reservasController.js   # Gestión de solicitudes y pagos
+│   ├── middlewares/                # Filtros de seguridad y procesos intermedios
+│   │   ├── auth.js                 # Verificación de JWT y roles (Admin/Cliente)
+│   │   └── upload.js               # Configuración de Multer para imágenes/PDFs
+│   ├── routes/                     # Definición de Endpoints API
+│   │   ├── auth.routes.js          # Rutas de autenticación
+│   │   ├── habitaciones.routes.js  # Rutas de inventario
+│   │   └── reservas.routes.js      # Rutas de transacciones
+│   ├── uploads/                    # Almacenamiento de comprobantes subidos
+│   ├── .env                        # Variables de entorno (Privado)
+│   ├── crearAdmin.js               # Script para inicializar el administrador
+│   ├── hostal.db                   # Base de datos SQLite (Archivo local)
+│   ├── package.json                # Dependencias del servidor
+│   ├── resetAdmin.js               # Script para resetear credenciales
+│   ├── server.js                   # Punto de entrada principal (Express)
+│   └── verDatos.js                 # Script para auditar la DB por consola
 │
-└── public/
-    ├── css/
-    │   ├── bootstrap.min.css          (Descargar de Bootstrap)
-    │   └── custom.css                 (Estilos personalizados)
-    │
-    ├── js/
-    │   ├── bootstrap.bundle.min.js    (Descargar de Bootstrap)
-    │   ├── validaciones.js            (Validaciones de formularios)
-    │   ├── reservas.js                (Lógica de reservas)
-    │   ├── admin.js                   (Panel administrativo)
-    │   └── auth.js                    (Autenticación)
-    │
-    ├── assets/
-    │   ├── logo.png                   (Colocar manualmente)
-    │   ├── hostal-exterior.jpg        (Colocar manualmente)
-    │   ├── habitacion-individual.jpg  (Colocar manualmente)
-    │   ├── habitacion-doble.jpg       (Colocar manualmente)
-    │   ├── habitacion-familiar.jpg    (Colocar manualmente)
-    │   ├── habitacion-suite.jpg       (Colocar manualmente)
-    │   ├── habitacion-triple.jpg      (Colocar manualmente)
-    │   └── habitacion-economica.jpg   (Colocar manualmente)
-    │
-    ├── index.html                     (Página de inicio)
-    ├── habitaciones.html              (Catálogo)
-    ├── registro.html                  (Registro de usuarios)
-    ├── login.html                     (Inicio de sesión)
-    ├── panel_cliente.html             (Panel del cliente)
-    └── panel_admin.html               (Panel administrativo)
+├── public/                         # --- INTERFAZ DE USUARIO ---
+│   ├── assets/                     # Imágenes del hostal y habitaciones
+│   ├── css/                        
+│   │   ├── bootstrap.min.css       # Estilos base de Bootstrap
+│   │   └── style.css               # Estilos personalizados (Amarillo/Naranja)
+│   ├── js/                         
+│   │   ├── auth.js                 # Comunicación con API de identidad
+│   │   ├── reservas.js             # Lógica de envío de reservas y totales
+│   │   ├── admin.js                # Lógica de gestión para el administrador
+│   │   └── validaciones.js         # Validaciones generales de formularios
+│   ├── habitaciones.html           # Catálogo de cuartos
+│   ├── index.html                  # Página principal (Landing)
+│   ├── login.html                  # Acceso de usuarios
+│   ├── panel_admin.html            # Dashboard administrativo
+│   ├── panel_cliente.html          # Dashboard de cliente
+│   ├── registro.html               # Creación de cuentas
+│   └── package.json                # Dependencias del lado cliente
+│
+└── README.md                       # Documentación técnica
+
 ```
 
 ---
 
-## 🚀 Instalación
+## 🚀 Instalación y Puesta en Marcha
 
-### 1. Descargar Bootstrap
+### 1. Requisitos
 
-Descarga los siguientes archivos de [Bootstrap 5.3](https://getbootstrap.com/):
+* Node.js instalado (v16 o superior).
+* Un navegador moderno.
 
-- **CSS**: `bootstrap.min.css` → Colocar en `public/css/`
-- **JS**: `bootstrap.bundle.min.js` → Colocar en `public/js/`
+### 2. Configuración del Backend
 
-### 2. Agregar Imágenes
+Accede a la carpeta `BackEnd/` e instala las dependencias:
 
-Coloca manualmente las siguientes imágenes en `public/assets/`:
+```bash
+cd BackEnd
+npm install
 
-- `logo.png` - Logo del hostal
-- `hostal-exterior.jpg` - Foto exterior del hostal
-- `habitacion-individual.jpg`
-- `habitacion-doble.jpg`
-- `habitacion-familiar.jpg`
-- `habitacion-suite.jpg`
-- `habitacion-triple.jpg`
-- `habitacion-economica.jpg`
-
-**Nota**: Los archivos HTML tienen comentarios indicando dónde se usan las imágenes.
-
-### 3. Configurar el Backend
-
-En los archivos JavaScript (`auth.js`, `reservas.js`, `admin.js`), modifica la URL del backend:
-
-```javascript
-const API_URL = 'http://localhost:3000/api'; // Cambiar por tu URL
 ```
+
+### 3. Preparación de la Base de Datos
+
+Para configurar el sistema por primera vez, utiliza los scripts incluidos:
+
+* **Crear Administrador**: `node BackEnd/crearAdmin.js` (Crea el usuario raíz).
+* **Resetear Datos**: `node BackEnd/resetAdmin.js` (En caso de pérdida de acceso).
+
+### 4. Lanzamiento del Servidor
+
+Desde la raíz o la carpeta BackEnd, ejecuta:
+
+```bash
+node server.js
+
+```
+
+El sistema estará disponible por defecto en `http://localhost:3000`.
 
 ---
 
 ## 🎨 Características del Diseño
 
 ### Paleta de Colores
-- **Primario**: `#ffc107` (Amarillo)
-- **Secundario**: `#ff9800` (Naranja)
-- **Acento**: `#ff6f00` (Naranja oscuro)
+
+* **Primario**: `#ffc107` (Amarillo) - Calidez y luz.
+* **Secundario**: `#ff9800` (Naranja) - Energía y acción.
+* **Acento**: `#ff6f00` (Naranja oscuro) - Botones y énfasis.
 
 ### Estados de Reservas
-- 🟢 **Aprobado**: Verde
-- 🔴 **Rechazado**: Rojo
-- 🟠 **Pendiente**: Naranja
 
-### Responsive Design
-- Totalmente adaptable a móviles, tablets y escritorio
-- Sistema de rejilla Bootstrap
-- Navegación colapsable
+* 🟢 **Aprobado**: El administrador ha confirmado el pago.
+* 🔴 **Rechazado**: El pago no es válido o hay conflicto de fechas.
+* 🟠 **Pendiente**: Esperando revisión del comprobante.
 
 ---
 
 ## 📄 Páginas y Funcionalidades
 
 ### 1. **index.html** - Página de Inicio
-- Sección de bienvenida con hero banner
-- Información rápida (ubicación, Wi-Fi, desayuno)
-- Sección "Sobre Nosotros"
-- Navegación a otras secciones
+
+* Hero banner con fotos del hostal.
+* Información de servicios: Wi-Fi, Desayuno, Ubicación.
+* Sección "Sobre Nosotros".
 
 ### 2. **habitaciones.html** - Catálogo
-- 6 tipos de habitaciones con fotos y descripciones
-- Filtro dinámico por precio
-- Ordenamiento por precio/capacidad
-- Tarjetas (cards) con información completa
 
-### 3. **registro.html** - Registro de Usuario
-- Campos: Nombre, Apellido, Teléfono, Correo, Contraseña
-- Selección de tipo de usuario (Cliente/Admin)
-- Validaciones en tiempo real
-- Confirmación de contraseña
+* Listado dinámico de habitaciones cargadas desde la base de datos.
+* Filtros por precio y capacidad.
+* Tarjetas informativas con descripción detallada.
 
-### 4. **login.html** - Inicio de Sesión
-- Autenticación con correo y contraseña
-- Redirección según rol (Cliente/Admin)
-- Opción "Recordar sesión"
+### 3. **registro.html** / **login.html**
 
-### 5. **panel_cliente.html** - Panel del Cliente
-- **Nueva Reserva**: Formulario completo con validaciones
-- **Mis Reservas**: Historial con estados
-- Cálculo automático del total
-- Subida de comprobante de pago
+* Creación de cuenta con validación de roles.
+* Autenticación segura y persistencia de sesión.
 
-### 6. **panel_admin.html** - Panel Administrativo
-- **Dashboard**: Estadísticas en tiempo real
-- **Gestión de Reservas**: Aprobar/Rechazar pagos
-- **Inventario**: CRUD de habitaciones
-- Vista de comprobantes
+### 4. **panel_cliente.html** - Panel del Cliente
+
+* **Formulario de Reserva**: Cálculo automático de noches y total.
+* **Subida de Comprobante**: Carga de imagen para validación administrativa.
+* **Historial**: Vista clara de estancias pasadas y futuras.
+
+### 5. **panel_admin.html** - Panel Administrativo
+
+* **Dashboard**: Estadísticas de ocupación y ganancias.
+* **Gestión**: Lista de reservas para aprobar o rechazar con un clic.
+* **Inventario**: CRUD completo para añadir o quitar habitaciones.
 
 ---
 
 ## ✅ Validaciones Implementadas
 
-### Formularios de Registro/Login
-- ❌ Campos vacíos resaltados en rojo
-- ❌ Formato de email inválido
-- ❌ Teléfono: solo números (7-15 dígitos)
-- ❌ Contraseñas que no coinciden
-- ❌ Contraseña menor a 6 caracteres
+### Formularios de Usuario
+
+* ❌ **Campos vacíos**: No permite envío si faltan datos.
+* ❌ **Email**: Validación de formato `@dominio.com`.
+* ❌ **Seguridad**: Contraseñas con longitud mínima de 6 caracteres.
 
 ### Módulo de Reservas
-- ❌ Fecha de salida anterior a entrada
-- ❌ Fecha de entrada anterior a hoy
-- ❌ Reserva sin comprobante
-- ❌ Formato de archivo no válido (solo JPG, PNG, PDF)
-- ❌ Archivo mayor a 5MB
 
-### Control de Acceso
-- ❌ Acceso denegado a panel admin sin permisos
-- ❌ Redirección automática a login
-- ❌ Alertas de "Error de conexión" si falla el servidor
+* ❌ **Fechas**: La fecha de salida no puede ser menor a la de entrada.
+* ❌ **Pasado**: No se pueden realizar reservas en fechas anteriores al día actual.
+* ❌ **Archivos**: Filtro de subida para aceptar únicamente JPG, PNG o PDF de máximo 5MB.
 
 ---
 
-## 🔧 Archivos JavaScript
+## 🔧 Detalles del Backend y API
 
-### **validaciones.js**
-Funciones de validación reutilizables:
-- `validarCamposVacios()`
-- `validarEmail()`
-- `validarTelefono()`
-- `validarFechasReserva()`
-- `validarComprobante()`
-- `mostrarError()` / `mostrarExito()`
+### **Controladores (`controllers/`)**
 
-### **auth.js**
-Gestión de autenticación:
-- Registro de usuarios
-- Inicio de sesión
-- Control de acceso por rol
-- Cerrar sesión
-- Almacenamiento en memoria (NO localStorage)
+* `authController.js`: Procesa el hashing de contraseñas y creación de tokens.
+* `habitacionesController.js`: Conecta con `hostal.db` para traer el inventario en tiempo real.
+* `reservasController.js`: Gestiona los estados de las transacciones.
 
-### **reservas.js**
-Lógica del cliente:
-- Calcular total de reserva
-- Enviar reserva al backend
-- Cargar historial de reservas
-- Cancelar reservas
+### **Middlewares**
 
-### **admin.js**
-Gestión administrativa:
-- Cargar estadísticas del dashboard
-- Aprobar/Rechazar reservas
-- Ver comprobantes de pago
-- CRUD de habitaciones
+* `auth.js`: Protege los endpoints del backend para que solo el admin pueda ver todas las reservas.
+* `upload.js`: Maneja el almacenamiento físico de archivos en la carpeta `/uploads`.
 
----
+### **Rutas Principales**
 
-## 🌐 Integración con Backend
-
-Los archivos JavaScript hacen peticiones `fetch()` a un backend RESTful. Endpoints esperados:
-
-### Autenticación
-- `POST /api/registro` - Registrar usuario
-- `POST /api/login` - Iniciar sesión
-
-### Reservas
-- `POST /api/reservas` - Crear reserva
-- `GET /api/reservas/cliente` - Obtener reservas del cliente
-- `GET /api/reservas/todas` - Obtener todas (admin)
-- `PUT /api/reservas/:id/aprobar` - Aprobar reserva
-- `PUT /api/reservas/:id/rechazar` - Rechazar reserva
-- `DELETE /api/reservas/:id` - Cancelar reserva
-
-### Habitaciones
-- `GET /api/habitaciones` - Listar habitaciones
-- `DELETE /api/habitaciones/:id` - Eliminar habitación
-
-### Estadísticas
-- `GET /api/estadisticas` - Obtener números del dashboard
-
----
-
-## 🎯 Características Principales
-
-### ✨ UX/UI
-- Diseño moderno con gradientes amarillo/naranja
-- Animaciones suaves en hover
-- Iconos SVG para mejor rendimiento
-- Mensajes de error/éxito claros
-
-### ⚡ Rendimiento
-- CSS optimizado (< 50KB)
-- Carga en menos de 3 segundos
-- Imágenes optimizadas recomendadas
-- JavaScript modular
-
-### 🔒 Seguridad
-- Validaciones del lado cliente
-- Sanitización de entradas
-- Control de acceso por rol
-- Sin almacenamiento de contraseñas en cliente
-
-### 📱 Responsive
-- Mobile-first design
-- Breakpoints: 768px, 992px, 1200px
-- Menú hamburguesa en móviles
-- Tablas con scroll horizontal
+* `POST /api/auth/login`: Inicio de sesión.
+* `GET /api/habitaciones`: Catálogo público.
+* `POST /api/reservas`: Envío de nueva solicitud con comprobante.
+* `PUT /api/reservas/:id`: Actualización de estado (Solo Admin).
 
 ---
 
 ## 🐛 Resolución de Problemas
 
-### Las imágenes no se muestran
-- Verifica que las rutas sean correctas: `assets/nombre-imagen.jpg`
-- Asegúrate de que las imágenes estén en la carpeta `public/assets/`
+### Error de Conexión a Base de Datos
 
-### Bootstrap no funciona
-- Descarga `bootstrap.min.css` y `bootstrap.bundle.min.js`
-- Colócalos en las carpetas correspondientes
-- Verifica las rutas en los `<link>` y `<script>`
+* Asegúrate de que el archivo `hostal.db` tenga permisos de lectura y escritura.
+* Verifica que el script `crearAdmin.js` se haya ejecutado correctamente.
 
-### Los formularios no envían datos
-- Verifica que el backend esté corriendo
-- Cambia la URL en `API_URL` de los archivos JS
-- Revisa la consola del navegador (F12) para errores
+### Las imágenes no cargan
 
-### No puedo acceder al panel admin
-- Asegúrate de registrarte con tipo "Administrador"
-- El sistema valida el rol antes de permitir acceso
+* Revisa que las fotos estén en `public/assets/` o en `BackEnd/uploads/` según corresponda.
+* Verifica las rutas en los archivos HTML (deben ser relativas al servidor).
+
+### El servidor no inicia
+
+* Ejecuta `npm install` en la carpeta `BackEnd` para asegurar que todas las librerías (Express, SQLite3, Multer) estén instaladas.
 
 ---
 
-## 📝 Notas Importantes
+## 🎓 Créditos e Integración
 
-1. **No usar localStorage**: El código usa almacenamiento en memoria para cumplir con las restricciones de Claude.ai
+Desarrollado como solución Full Stack para el **Hostal El Refugio**.
 
-2. **Imágenes**: Todos los archivos HTML tienen comentarios `<!-- Foto de... -->` indicando dónde colocar imágenes
-
-3. **API REST**: El frontend está diseñado para consumir una API REST. Ajusta los endpoints según tu backend
-
-4. **Bootstrap**: Se requiere Bootstrap 5.3 o superior
-
-5. **Navegadores**: Compatible con Chrome, Firefox, Safari, Edge (últimas versiones)
+* **Frontend**: HTML5, CSS3, JS Vanilla.
+* **Backend**: Node.js, Express, SQLite.
+* **Estilos**: Bootstrap 5.3.
 
 ---
-
-## 🎓 Créditos
-
-Proyecto desarrollado para sistema de gestión hotelera.
-Frontend: HTML5, CSS3 (Bootstrap 5), JavaScript (Vanilla)
-
----
-
-## 📧 Soporte
-
-Para modificaciones o consultas sobre el código, revisa los comentarios en cada archivo.
-
-**¡Listo para usar!** 🚀

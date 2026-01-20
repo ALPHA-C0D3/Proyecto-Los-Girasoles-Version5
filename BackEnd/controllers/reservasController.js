@@ -41,29 +41,34 @@ const crearReserva = async (req, res) => {
             [usuarioId, tipoHabitacion, numPersonas, fechaEntrada, fechaSalida, total, req.file.filename]
         );
 
-        // Obtener datos del usuario
-        const usuario = await getOne('SELECT nombre, apellido, tipoUsuario FROM usuarios WHERE id = ?', [usuarioId]);
-
-        // REGISTRAR EN AUDITORÍA
-        await registrarAuditoria({
-            reservaId: resultado.id,
-            accion: 'CREAR_RESERVA',
-            estadoAnterior: null,
-            estadoNuevo: 'pendiente',
-            usuarioId: usuarioId,
-            usuarioNombre: `${usuario.nombre} ${usuario.apellido}`,
-            usuarioTipo: usuario.tipoUsuario,
-            datosReserva: {
-                tipoHabitacion,
-                numPersonas,
-                fechaEntrada,
-                fechaSalida,
-                total
-            },
-            comprobanteRespaldo: req.file.filename,
-            observaciones: 'Reserva creada por el cliente',
-            ipAddress: req.ip || req.connection.remoteAddress
-        });
+        // Obtener datos del usuario para auditoría
+        try {
+            const usuario = await getOne('SELECT nombre, apellido, tipoUsuario FROM usuarios WHERE id = ?', [usuarioId]);
+            
+            if (usuario) {
+                await registrarAuditoria({
+                    reservaId: resultado.id,
+                    accion: 'CREAR_RESERVA',
+                    estadoAnterior: null,
+                    estadoNuevo: 'pendiente',
+                    usuarioId: usuarioId,
+                    usuarioNombre: `${usuario.nombre} ${usuario.apellido}`,
+                    usuarioTipo: usuario.tipoUsuario,
+                    datosReserva: {
+                        tipoHabitacion,
+                        numPersonas,
+                        fechaEntrada,
+                        fechaSalida,
+                        total
+                    },
+                    comprobanteRespaldo: req.file.filename,
+                    observaciones: 'Reserva creada por el cliente',
+                    ipAddress: req.ip || req.connection.remoteAddress
+                });
+            }
+        } catch (auditoriaError) {
+            console.error('Error en auditoría (no crítico):', auditoriaError);
+        }
 
         res.status(201).json({
             success: true,
@@ -160,12 +165,15 @@ const obtenerTodasReservas = async (req, res) => {
     }
 };
 
-// Aprobar reserva
+// Aprobar reserva - VERSIÓN CORREGIDA
 const aprobarReserva = async (req, res) => {
     try {
         const { id } = req.params;
         const adminId = req.usuario.id;
 
+        console.log('Intentando aprobar reserva:', id, 'por admin:', adminId);
+
+        // Verificar que la reserva existe
         const reserva = await getOne('SELECT * FROM reservas WHERE id = ?', [id]);
 
         if (!reserva) {
@@ -182,32 +190,40 @@ const aprobarReserva = async (req, res) => {
             });
         }
 
-        // Actualizar estado
-        await runQuery('UPDATE reservas SET estado = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?', ['aprobado', id]);
+        // Actualizar estado de la reserva
+        await runQuery(
+            'UPDATE reservas SET estado = ? WHERE id = ?',
+            ['aprobado', id]
+        );
 
-        // Obtener datos del admin
-        const admin = await getOne('SELECT nombre, apellido FROM usuarios WHERE id = ?', [adminId]);
-
-        // REGISTRAR EN AUDITORÍA
-        await registrarAuditoria({
-            reservaId: parseInt(id),
-            accion: 'APROBAR_RESERVA',
-            estadoAnterior: 'pendiente',
-            estadoNuevo: 'aprobado',
-            usuarioId: adminId,
-            usuarioNombre: `${admin.nombre} ${admin.apellido}`,
-            usuarioTipo: 'admin',
-            datosReserva: {
-                tipoHabitacion: reserva.tipoHabitacion,
-                numPersonas: reserva.numPersonas,
-                fechaEntrada: reserva.fechaEntrada,
-                fechaSalida: reserva.fechaSalida,
-                total: reserva.total
-            },
-            comprobanteRespaldo: reserva.comprobante,
-            observaciones: 'Reserva aprobada por el administrador',
-            ipAddress: req.ip || req.connection.remoteAddress
-        });
+        // Registrar auditoría (sin bloquear si falla)
+        try {
+            const admin = await getOne('SELECT nombre, apellido FROM usuarios WHERE id = ?', [adminId]);
+            
+            if (admin) {
+                await registrarAuditoria({
+                    reservaId: parseInt(id),
+                    accion: 'APROBAR_RESERVA',
+                    estadoAnterior: 'pendiente',
+                    estadoNuevo: 'aprobado',
+                    usuarioId: adminId,
+                    usuarioNombre: `${admin.nombre} ${admin.apellido}`,
+                    usuarioTipo: 'admin',
+                    datosReserva: {
+                        tipoHabitacion: reserva.tipoHabitacion,
+                        numPersonas: reserva.numPersonas,
+                        fechaEntrada: reserva.fechaEntrada,
+                        fechaSalida: reserva.fechaSalida,
+                        total: reserva.total
+                    },
+                    comprobanteRespaldo: reserva.comprobante,
+                    observaciones: 'Reserva aprobada por el administrador',
+                    ipAddress: req.ip || req.connection.remoteAddress
+                });
+            }
+        } catch (auditoriaError) {
+            console.error('Error en auditoría (no crítico):', auditoriaError);
+        }
 
         res.json({
             success: true,
@@ -224,12 +240,14 @@ const aprobarReserva = async (req, res) => {
     }
 };
 
-// Rechazar reserva
+// Rechazar reserva - VERSIÓN CORREGIDA
 const rechazarReserva = async (req, res) => {
     try {
         const { id } = req.params;
         const { motivo } = req.body;
         const adminId = req.usuario.id;
+
+        console.log('Intentando rechazar reserva:', id, 'por admin:', adminId);
 
         const reserva = await getOne('SELECT * FROM reservas WHERE id = ?', [id]);
 
@@ -249,33 +267,38 @@ const rechazarReserva = async (req, res) => {
 
         // Actualizar estado
         await runQuery(
-            'UPDATE reservas SET estado = ?, motivoRechazo = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?',
+            'UPDATE reservas SET estado = ?, motivoRechazo = ? WHERE id = ?',
             ['rechazado', motivo || 'No especificado', id]
         );
 
-        // Obtener datos del admin
-        const admin = await getOne('SELECT nombre, apellido FROM usuarios WHERE id = ?', [adminId]);
-
-        // REGISTRAR EN AUDITORÍA
-        await registrarAuditoria({
-            reservaId: parseInt(id),
-            accion: 'RECHAZAR_RESERVA',
-            estadoAnterior: 'pendiente',
-            estadoNuevo: 'rechazado',
-            usuarioId: adminId,
-            usuarioNombre: `${admin.nombre} ${admin.apellido}`,
-            usuarioTipo: 'admin',
-            datosReserva: {
-                tipoHabitacion: reserva.tipoHabitacion,
-                numPersonas: reserva.numPersonas,
-                fechaEntrada: reserva.fechaEntrada,
-                fechaSalida: reserva.fechaSalida,
-                total: reserva.total
-            },
-            comprobanteRespaldo: reserva.comprobante,
-            observaciones: `Rechazado. Motivo: ${motivo || 'No especificado'}`,
-            ipAddress: req.ip || req.connection.remoteAddress
-        });
+        // Registrar auditoría (sin bloquear si falla)
+        try {
+            const admin = await getOne('SELECT nombre, apellido FROM usuarios WHERE id = ?', [adminId]);
+            
+            if (admin) {
+                await registrarAuditoria({
+                    reservaId: parseInt(id),
+                    accion: 'RECHAZAR_RESERVA',
+                    estadoAnterior: 'pendiente',
+                    estadoNuevo: 'rechazado',
+                    usuarioId: adminId,
+                    usuarioNombre: `${admin.nombre} ${admin.apellido}`,
+                    usuarioTipo: 'admin',
+                    datosReserva: {
+                        tipoHabitacion: reserva.tipoHabitacion,
+                        numPersonas: reserva.numPersonas,
+                        fechaEntrada: reserva.fechaEntrada,
+                        fechaSalida: reserva.fechaSalida,
+                        total: reserva.total
+                    },
+                    comprobanteRespaldo: reserva.comprobante,
+                    observaciones: `Rechazado. Motivo: ${motivo || 'No especificado'}`,
+                    ipAddress: req.ip || req.connection.remoteAddress
+                });
+            }
+        } catch (auditoriaError) {
+            console.error('Error en auditoría (no crítico):', auditoriaError);
+        }
 
         res.json({
             success: true,
@@ -317,29 +340,34 @@ const cancelarReserva = async (req, res) => {
             });
         }
 
-        // Obtener datos del usuario
-        const usuario = await getOne('SELECT nombre, apellido FROM usuarios WHERE id = ?', [usuarioId]);
-
-        // REGISTRAR EN AUDITORÍA ANTES DE ELIMINAR
-        await registrarAuditoria({
-            reservaId: parseInt(id),
-            accion: 'CANCELAR_RESERVA',
-            estadoAnterior: 'pendiente',
-            estadoNuevo: 'cancelado',
-            usuarioId: usuarioId,
-            usuarioNombre: `${usuario.nombre} ${usuario.apellido}`,
-            usuarioTipo: 'cliente',
-            datosReserva: {
-                tipoHabitacion: reserva.tipoHabitacion,
-                numPersonas: reserva.numPersonas,
-                fechaEntrada: reserva.fechaEntrada,
-                fechaSalida: reserva.fechaSalida,
-                total: reserva.total
-            },
-            comprobanteRespaldo: reserva.comprobante,
-            observaciones: 'Reserva cancelada por el cliente',
-            ipAddress: req.ip || req.connection.remoteAddress
-        });
+        // Registrar auditoría antes de eliminar (sin bloquear)
+        try {
+            const usuario = await getOne('SELECT nombre, apellido FROM usuarios WHERE id = ?', [usuarioId]);
+            
+            if (usuario) {
+                await registrarAuditoria({
+                    reservaId: parseInt(id),
+                    accion: 'CANCELAR_RESERVA',
+                    estadoAnterior: 'pendiente',
+                    estadoNuevo: 'cancelado',
+                    usuarioId: usuarioId,
+                    usuarioNombre: `${usuario.nombre} ${usuario.apellido}`,
+                    usuarioTipo: 'cliente',
+                    datosReserva: {
+                        tipoHabitacion: reserva.tipoHabitacion,
+                        numPersonas: reserva.numPersonas,
+                        fechaEntrada: reserva.fechaEntrada,
+                        fechaSalida: reserva.fechaSalida,
+                        total: reserva.total
+                    },
+                    comprobanteRespaldo: reserva.comprobante,
+                    observaciones: 'Reserva cancelada por el cliente',
+                    ipAddress: req.ip || req.connection.remoteAddress
+                });
+            }
+        } catch (auditoriaError) {
+            console.error('Error en auditoría (no crítico):', auditoriaError);
+        }
 
         // Eliminar comprobante y reserva
         if (reserva.comprobante) {
@@ -416,7 +444,7 @@ const obtenerEstadisticas = async (req, res) => {
     }
 };
 
-// NUEVA FUNCIÓN: Obtener auditoría de una reserva
+// Obtener auditoría de una reserva
 const obtenerAuditoriaReserva = async (req, res) => {
     try {
         const { id } = req.params;

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Admin - Hostal Los Girasoles</title>
+    <link rel="icon" type="image/png" href="assets/girasol.png">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
@@ -11,6 +12,23 @@
         .estado-aprobado { background-color: #28a745; color: #fff; padding: 5px 10px; border-radius: 5px; font-weight: bold; display: inline-block; }
         .estado-rechazado { background-color: #dc3545; color: #fff; padding: 5px 10px; border-radius: 5px; font-weight: bold; display: inline-block; }
         .sidebar { min-height: 100vh; }
+        
+        /* Toggle Switch Mejorado */
+        .form-switch .form-check-input {
+            width: 3rem;
+            height: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .form-switch .form-check-input:checked {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        
+        .form-switch .form-check-input:not(:checked) {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
     </style>
 </head>
 <body>
@@ -23,11 +41,6 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item me-3">
                         <span class="navbar-text text-warning">👤 <strong id="nombreAdmin">Admin</strong></span>
-                    </li>
-                    <li class="nav-item me-2">
-                        <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#modalCambiarPassword">
-                            🔐 Cambiar Contraseña
-                        </button>
                     </li>
                     <li class="nav-item">
                         <button class="btn btn-outline-warning btn-sm" onclick="cerrarSesion()">Cerrar Sesión</button>
@@ -103,7 +116,7 @@
                         
                         <div class="card">
                             <div class="card-body">
-                                <table class="table">
+                                <table class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -136,7 +149,7 @@
                         
                         <div class="card">
                             <div class="card-body">
-                                <table class="table">
+                                <table class="table table-hover">
                                     <thead>
                                         <tr>
                                             <th>ID</th>
@@ -169,40 +182,6 @@
                 </div>
                 <div class="modal-body text-center">
                     <img id="imagenComprobante" src="" class="img-fluid" alt="Comprobante">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Cambiar Contraseña -->
-    <div class="modal fade" id="modalCambiarPassword" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h5>🔐 Cambiar Contraseña</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="alertaPassword" class="alert d-none"></div>
-                    
-                    <form id="formCambiarPassword">
-                        <div class="mb-3">
-                            <label class="form-label">Contraseña Actual *</label>
-                            <input type="password" class="form-control" id="passwordActual" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Nueva Contraseña *</label>
-                            <input type="password" class="form-control" id="passwordNueva" minlength="6" required>
-                        </div>
-                        <div class="mb-3">
-                            <label class="form-label">Confirmar Nueva Contraseña *</label>
-                            <input type="password" class="form-control" id="passwordConfirmar" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-warning" onclick="cambiarPassword()">Cambiar Contraseña</button>
                 </div>
             </div>
         </div>
@@ -305,8 +284,6 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script>
         const API = 'http://localhost:3000/api';
-        
-        // VERIFICAR SESIÓN
         const usuario = JSON.parse(sessionStorage.getItem('usuario') || 'null');
         const token = sessionStorage.getItem('token');
         
@@ -371,11 +348,10 @@
                 }
             } catch (err) {
                 console.error('Error reservas:', err);
-                document.getElementById('tablaReservasAdmin').innerHTML = '<tr><td colspan="9" class="text-center text-danger">Error al cargar</td></tr>';
             }
         }
         
-        // CARGAR HABITACIONES
+        // CARGAR HABITACIONES CON TOGGLE
         async function cargarHabitaciones() {
             try {
                 const res = await fetch(`${API}/habitaciones`, {
@@ -384,17 +360,26 @@
                 const data = await res.json();
                 const tbody = document.getElementById('tablaHabitaciones');
                 
-                if (res.ok && data.habitaciones && data.habitaciones.length > 0) {
+                if (res.ok && data.success && data.habitaciones && data.habitaciones.length > 0) {
                     tbody.innerHTML = data.habitaciones.map(h => `
                         <tr>
                             <td>${h.id}</td>
                             <td>${h.tipo}</td>
                             <td>${h.capacidad}</td>
                             <td>$${h.precio}</td>
-                            <td>${h.disponible ? '<span class="badge bg-success">Disponible</span>' : '<span class="badge bg-danger">Ocupada</span>'}</td>
                             <td>
-                                <button class="btn btn-sm btn-primary" onclick="abrirModalEditar(${h.id})">✏️ Editar</button>
-                                <button class="btn btn-sm btn-danger" onclick="eliminarHabitacion(${h.id})">🗑️ Eliminar</button>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="toggle${h.id}" 
+                                           ${h.disponible ? 'checked' : ''} 
+                                           onchange="toggleDisponibilidad(${h.id}, this.checked)">
+                                    <label class="form-check-label fw-bold" for="toggle${h.id}">
+                                        ${h.disponible ? '<span class="text-success">Disponible</span>' : '<span class="text-danger">Ocupada</span>'}
+                                    </label>
+                                </div>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-primary" onclick="abrirModalEditar(${h.id})">✏️</button>
+                                <button class="btn btn-sm btn-danger" onclick="eliminarHabitacion(${h.id})">🗑️</button>
                             </td>
                         </tr>
                     `).join('');
@@ -403,7 +388,36 @@
                 }
             } catch (err) {
                 console.error('Error habitaciones:', err);
-                document.getElementById('tablaHabitaciones').innerHTML = '<tr><td colspan="6" class="text-center text-danger">Error al cargar</td></tr>';
+            }
+        }
+        
+        // TOGGLE RÁPIDO DE DISPONIBILIDAD
+        async function toggleDisponibilidad(id, disponible) {
+            try {
+                const res = await fetch(`${API}/habitaciones/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ disponible })
+                });
+                
+                if (res.ok) {
+                    // Actualizar label del toggle
+                    const label = document.querySelector(`label[for="toggle${id}"]`);
+                    label.innerHTML = disponible 
+                        ? '<span class="text-success">Disponible</span>' 
+                        : '<span class="text-danger">Ocupada</span>';
+                    
+                    cargarEstadisticas();
+                } else {
+                    alert('Error al cambiar disponibilidad');
+                    document.getElementById(`toggle${id}`).checked = !disponible;
+                }
+            } catch (err) {
+                alert('Error de conexión');
+                document.getElementById(`toggle${id}`).checked = !disponible;
             }
         }
         
@@ -460,7 +474,7 @@
             }
         }
         
-        // ABRIR MODAL EDITAR (cargar datos existentes)
+        // ABRIR MODAL EDITAR
         async function abrirModalEditar(id) {
             try {
                 const res = await fetch(`${API}/habitaciones/${id}`, {
@@ -478,8 +492,6 @@
                     document.getElementById('editarDisponible').checked = h.disponible == 1;
                     
                     new bootstrap.Modal(document.getElementById('modalEditarHabitacion')).show();
-                } else {
-                    alert('Error al cargar datos de la habitación');
                 }
             } catch (err) {
                 alert('Error de conexión');
@@ -526,10 +538,6 @@
                         cargarHabitaciones();
                         cargarEstadisticas();
                     }, 1500);
-                } else {
-                    alerta.textContent = data.mensaje || 'Error al actualizar habitación';
-                    alerta.className = 'alert alert-danger';
-                    alerta.classList.remove('d-none');
                 }
             } catch (err) {
                 alerta.textContent = 'Error de conexión';
@@ -538,33 +546,27 @@
             }
         }
         
-        // APROBAR RESERVA
+        // APROBAR/RECHAZAR RESERVA
         async function aprobarReserva(id) {
             if (!confirm('¿Aprobar esta reserva?')) return;
-            
             try {
                 const res = await fetch(`${API}/reservas/${id}/aprobar`, {
                     method: 'PUT',
                     headers: {'Authorization': 'Bearer ' + token}
                 });
-                
                 if (res.ok) {
                     alert('Reserva aprobada');
                     cargarReservasAdmin();
                     cargarEstadisticas();
-                } else {
-                    alert('Error al aprobar');
                 }
             } catch (err) {
                 alert('Error de conexión');
             }
         }
         
-        // RECHAZAR RESERVA
         async function rechazarReserva(id) {
             const motivo = prompt('Motivo del rechazo (opcional):');
             if (motivo === null) return;
-            
             try {
                 const res = await fetch(`${API}/reservas/${id}/rechazar`, {
                     method: 'PUT',
@@ -574,122 +576,46 @@
                     },
                     body: JSON.stringify({motivo})
                 });
-                
                 if (res.ok) {
                     alert('Reserva rechazada');
                     cargarReservasAdmin();
                     cargarEstadisticas();
-                } else {
-                    alert('Error al rechazar');
                 }
             } catch (err) {
                 alert('Error de conexión');
             }
         }
         
-        // VER COMPROBANTE
         async function verComprobante(id) {
             try {
                 const res = await fetch(`${API}/reservas/${id}/comprobante`, {
                     headers: {'Authorization': 'Bearer ' + token}
                 });
-                
                 if (res.ok) {
                     const blob = await res.blob();
                     const url = URL.createObjectURL(blob);
                     document.getElementById('imagenComprobante').src = url;
                     new bootstrap.Modal(document.getElementById('modalComprobante')).show();
-                } else {
-                    alert('No se pudo cargar el comprobante');
                 }
             } catch (err) {
                 alert('Error al cargar comprobante');
             }
         }
         
-        // ELIMINAR HABITACIÓN
         async function eliminarHabitacion(id) {
             if (!confirm('¿Eliminar esta habitación? Esta acción no se puede deshacer.')) return;
-            
             try {
                 const res = await fetch(`${API}/habitaciones/${id}`, {
                     method: 'DELETE',
                     headers: {'Authorization': 'Bearer ' + token}
                 });
-                
-                const data = await res.json();
-                
                 if (res.ok) {
                     alert('Habitación eliminada');
                     cargarHabitaciones();
                     cargarEstadisticas();
-                } else {
-                    alert(data.mensaje || 'Error al eliminar');
                 }
             } catch (err) {
                 alert('Error de conexión');
-            }
-        }
-        
-        // CAMBIAR CONTRASEÑA
-        async function cambiarPassword() {
-            const actual = document.getElementById('passwordActual').value;
-            const nueva = document.getElementById('passwordNueva').value;
-            const confirmar = document.getElementById('passwordConfirmar').value;
-            const alerta = document.getElementById('alertaPassword');
-            
-            if (!actual || !nueva || !confirmar) {
-                alerta.textContent = 'Todos los campos son obligatorios';
-                alerta.className = 'alert alert-danger';
-                alerta.classList.remove('d-none');
-                return;
-            }
-            
-            if (nueva !== confirmar) {
-                alerta.textContent = 'Las contraseñas nuevas no coinciden';
-                alerta.className = 'alert alert-danger';
-                alerta.classList.remove('d-none');
-                return;
-            }
-            
-            if (nueva.length < 6) {
-                alerta.textContent = 'La contraseña debe tener al menos 6 caracteres';
-                alerta.className = 'alert alert-danger';
-                alerta.classList.remove('d-none');
-                return;
-            }
-            
-            try {
-                const res = await fetch(`${API}/auth/cambiar-password`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + token
-                    },
-                    body: JSON.stringify({passwordActual: actual, passwordNueva: nueva})
-                });
-                
-                const data = await res.json();
-                
-                if (res.ok) {
-                    alerta.textContent = '✅ Contraseña cambiada exitosamente';
-                    alerta.className = 'alert alert-success';
-                    alerta.classList.remove('d-none');
-                    document.getElementById('formCambiarPassword').reset();
-                    
-                    setTimeout(() => {
-                        bootstrap.Modal.getInstance(document.getElementById('modalCambiarPassword')).hide();
-                        alerta.classList.add('d-none');
-                    }, 2000);
-                } else {
-                    alerta.textContent = data.mensaje || 'Error al cambiar contraseña';
-                    alerta.className = 'alert alert-danger';
-                    alerta.classList.remove('d-none');
-                }
-            } catch (err) {
-                alerta.textContent = 'Error de conexión';
-                alerta.className = 'alert alert-danger';
-                alerta.classList.remove('d-none');
             }
         }
         
@@ -700,13 +626,11 @@
             }
         }
         
-        // CARGAR TODO AL INICIO
-        console.log('Cargando datos del panel admin...');
+        // INICIALIZAR
         cargarEstadisticas();
         cargarReservasAdmin();
         cargarHabitaciones();
         
-        // Auto-actualizar cada 30 segundos
         setInterval(() => {
             cargarEstadisticas();
             cargarReservasAdmin();

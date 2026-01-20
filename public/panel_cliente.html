@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel Cliente - Hostal Los Girasoles</title>
+    <link rel="icon" type="image/png" href="assets/girasol.png">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
@@ -63,17 +64,19 @@
                                             <label class="form-label">Tipo de Habitación *</label>
                                             <select class="form-select" id="tipoHabitacion" required>
                                                 <option value="">Seleccione...</option>
-                                                <option value="economica">Económica - $25/noche</option>
-                                                <option value="individual">Individual - $30/noche</option>
-                                                <option value="doble">Doble - $50/noche</option>
-                                                <option value="triple">Triple - $65/noche</option>
-                                                <option value="familiar">Familiar - $80/noche</option>
-                                                <option value="suite">Suite - $120/noche</option>
+                                                <option value="Sol Naciente" data-precio="35">Sol Naciente - $35/noche</option>
+                                                <option value="Amanecer Dorado" data-precio="35">Amanecer Dorado - $35/noche</option>
+                                                <option value="Rayos de Luz" data-precio="35">Rayos de Luz - $35/noche</option>
+                                                <option value="Pétalos de Oro" data-precio="35">Pétalos de Oro - $35/noche</option>
+                                                <option value="Girasol Brillante" data-precio="35">Girasol Brillante - $35/noche</option>
+                                                <option value="Luz del Día" data-precio="35">Luz del Día - $35/noche</option>
+                                                <option value="Resplandor" data-precio="25">Resplandor - $25/noche</option>
+                                                <option value="Aurora" data-precio="25">Aurora - $25/noche</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Número de Personas *</label>
-                                            <input type="number" class="form-control" id="numPersonas" min="1" max="6" required>
+                                            <input type="number" class="form-control" id="numPersonas" min="1" max="2" required>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Fecha Entrada *</label>
@@ -195,9 +198,7 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script>
         const API = 'http://localhost:3000/api';
-        const PRECIOS = {economica:25,individual:30,doble:50,triple:65,familiar:80,suite:120};
         
-        // VERIFICAR SESIÓN
         const usuario = JSON.parse(sessionStorage.getItem('usuario') || 'null');
         const token = sessionStorage.getItem('token');
         
@@ -211,19 +212,31 @@
         document.getElementById('perfilCorreo').textContent = usuario.correo;
         document.getElementById('perfilTelefono').textContent = usuario.telefono;
         
-        // CALCULAR TOTAL
+        // CALCULAR TOTAL - CORREGIDO
         function calcularTotal() {
-            const tipo = document.getElementById('tipoHabitacion').value;
-            const entrada = new Date(document.getElementById('fechaEntrada').value);
-            const salida = new Date(document.getElementById('fechaSalida').value);
+            const selectHab = document.getElementById('tipoHabitacion');
+            const opcionSeleccionada = selectHab.options[selectHab.selectedIndex];
+            const fechaEntrada = document.getElementById('fechaEntrada').value;
+            const fechaSalida = document.getElementById('fechaSalida').value;
             
-            if (tipo && entrada && salida && salida > entrada) {
-                const dias = Math.ceil((salida - entrada) / (1000*60*60*24));
-                const total = dias * PRECIOS[tipo];
-                document.getElementById('totalEstimado').textContent = total;
-            } else {
+            if (!opcionSeleccionada.value || !fechaEntrada || !fechaSalida) {
                 document.getElementById('totalEstimado').textContent = '0';
+                return;
             }
+            
+            const entrada = new Date(fechaEntrada);
+            const salida = new Date(fechaSalida);
+            
+            if (salida <= entrada) {
+                document.getElementById('totalEstimado').textContent = '0';
+                return;
+            }
+            
+            const dias = Math.ceil((salida - entrada) / (1000 * 60 * 60 * 24));
+            const precioPorNoche = parseInt(opcionSeleccionada.getAttribute('data-precio')) || 0;
+            const total = dias * precioPorNoche;
+            
+            document.getElementById('totalEstimado').textContent = total;
         }
         
         document.getElementById('tipoHabitacion').addEventListener('change', calcularTotal);
@@ -252,7 +265,7 @@
                 const data = await res.json();
                 
                 if (res.ok) {
-                    document.getElementById('mensajeModal').textContent = 'Reserva enviada exitosamente';
+                    document.getElementById('mensajeModal').textContent = 'Reserva enviada exitosamente. Pendiente de aprobación.';
                     new bootstrap.Modal(document.getElementById('modalConfirmacion')).show();
                     document.getElementById('formReserva').reset();
                     document.getElementById('totalEstimado').textContent = '0';
@@ -381,10 +394,8 @@
             }
         }
         
-        // CARGAR AL INICIO
         cargarMisReservas();
         
-        // Fecha mínima hoy
         const hoy = new Date().toISOString().split('T')[0];
         document.getElementById('fechaEntrada').min = hoy;
         document.getElementById('fechaSalida').min = hoy;
