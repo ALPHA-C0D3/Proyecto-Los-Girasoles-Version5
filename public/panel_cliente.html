@@ -12,6 +12,15 @@
         .estado-aprobado { background-color: #28a745; color: #fff; padding: 5px 10px; border-radius: 5px; font-weight: bold; display: inline-block; }
         .estado-rechazado { background-color: #dc3545; color: #fff; padding: 5px 10px; border-radius: 5px; font-weight: bold; display: inline-block; }
         .sidebar { min-height: 100vh; }
+        .precio-info {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: #000;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -56,27 +65,33 @@
                         <h2>📝 Nueva Reserva</h2>
                         <div id="alertaReserva" class="alert d-none"></div>
                         
+                        <!-- INFO DE PRECIO -->
+                        <div class="precio-info">
+                            💰 TARIFA: $10 por persona por noche | Capacidad máxima: 2 personas por habitación
+                        </div>
+                        
                         <div class="card">
                             <div class="card-body">
                                 <form id="formReserva">
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
-                                            <label class="form-label">Tipo de Habitación *</label>
+                                            <label class="form-label">Habitación Disponible *</label>
                                             <select class="form-select" id="tipoHabitacion" required>
-                                                <option value="">Seleccione...</option>
-                                                <option value="Sol Naciente" data-precio="35">Sol Naciente - $35/noche</option>
-                                                <option value="Amanecer Dorado" data-precio="35">Amanecer Dorado - $35/noche</option>
-                                                <option value="Rayos de Luz" data-precio="35">Rayos de Luz - $35/noche</option>
-                                                <option value="Pétalos de Oro" data-precio="35">Pétalos de Oro - $35/noche</option>
-                                                <option value="Girasol Brillante" data-precio="35">Girasol Brillante - $35/noche</option>
-                                                <option value="Luz del Día" data-precio="35">Luz del Día - $35/noche</option>
-                                                <option value="Resplandor" data-precio="25">Resplandor - $25/noche</option>
-                                                <option value="Aurora" data-precio="25">Aurora - $25/noche</option>
+                                                <option value="">Seleccione una habitación...</option>
+                                                <option value="Sol Naciente">Sol Naciente (Capacidad: 2 personas)</option>
+                                                <option value="Amanecer Dorado">Amanecer Dorado (Capacidad: 2 personas)</option>
+                                                <option value="Rayos de Luz">Rayos de Luz (Capacidad: 2 personas)</option>
+                                                <option value="Pétalos de Oro">Pétalos de Oro (Capacidad: 2 personas)</option>
+                                                <option value="Girasol Brillante">Girasol Brillante (Capacidad: 2 personas)</option>
+                                                <option value="Luz del Día">Luz del Día (Capacidad: 2 personas)</option>
+                                                <option value="Resplandor">Resplandor (Capacidad: 2 personas)</option>
+                                                <option value="Aurora">Aurora (Capacidad: 2 personas)</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Número de Personas *</label>
                                             <input type="number" class="form-control" id="numPersonas" min="1" max="2" required>
+                                            <small class="text-muted">Máximo 2 personas por habitación</small>
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <label class="form-label">Fecha Entrada *</label>
@@ -89,10 +104,30 @@
                                         <div class="col-12 mb-3">
                                             <label class="form-label">Comprobante de Pago *</label>
                                             <input type="file" class="form-control" id="comprobante" accept=".jpg,.jpeg,.png,.pdf" required>
+                                            <small class="text-muted">Realiza el pago del total calculado y adjunta el comprobante</small>
                                         </div>
+                                        
+                                        <!-- DESGLOSE DEL CÁLCULO -->
                                         <div class="col-12 mb-3">
-                                            <div class="alert alert-warning">
-                                                <strong>TOTAL: $<span id="totalEstimado">0</span></strong>
+                                            <div class="card bg-light">
+                                                <div class="card-body">
+                                                    <h5 class="card-title">📊 Cálculo de la Reserva</h5>
+                                                    <div class="row">
+                                                        <div class="col-md-4">
+                                                            <p class="mb-1"><strong>Personas:</strong> <span id="detallePersonas">-</span></p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <p class="mb-1"><strong>Noches:</strong> <span id="detalleNoches">-</span></p>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <p class="mb-1"><strong>Tarifa:</strong> $10/persona/noche</p>
+                                                        </div>
+                                                    </div>
+                                                    <hr>
+                                                    <h4 class="text-warning mb-0">
+                                                        TOTAL A PAGAR: $<span id="totalEstimado">0</span>
+                                                    </h4>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -114,6 +149,7 @@
                                         <tr>
                                             <th>ID</th>
                                             <th>Habitación</th>
+                                            <th>Personas</th>
                                             <th>Entrada</th>
                                             <th>Salida</th>
                                             <th>Total</th>
@@ -122,7 +158,7 @@
                                         </tr>
                                     </thead>
                                     <tbody id="tablaReservas">
-                                        <tr><td colspan="7" class="text-center">Cargando...</td></tr>
+                                        <tr><td colspan="8" class="text-center">Cargando...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -198,6 +234,7 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script>
         const API = 'http://localhost:3000/api';
+        const PRECIO_POR_PERSONA_NOCHE = 10;
         
         const usuario = JSON.parse(sessionStorage.getItem('usuario') || 'null');
         const token = sessionStorage.getItem('token');
@@ -212,15 +249,18 @@
         document.getElementById('perfilCorreo').textContent = usuario.correo;
         document.getElementById('perfilTelefono').textContent = usuario.telefono;
         
-        // CALCULAR TOTAL - CORREGIDO
+        // CALCULAR TOTAL - NUEVO SISTEMA POR PERSONA
         function calcularTotal() {
-            const selectHab = document.getElementById('tipoHabitacion');
-            const opcionSeleccionada = selectHab.options[selectHab.selectedIndex];
+            const numPersonas = parseInt(document.getElementById('numPersonas').value) || 0;
             const fechaEntrada = document.getElementById('fechaEntrada').value;
             const fechaSalida = document.getElementById('fechaSalida').value;
             
-            if (!opcionSeleccionada.value || !fechaEntrada || !fechaSalida) {
+            // Actualizar detalle de personas
+            document.getElementById('detallePersonas').textContent = numPersonas || '-';
+            
+            if (!fechaEntrada || !fechaSalida || numPersonas === 0) {
                 document.getElementById('totalEstimado').textContent = '0';
+                document.getElementById('detalleNoches').textContent = '-';
                 return;
             }
             
@@ -229,17 +269,19 @@
             
             if (salida <= entrada) {
                 document.getElementById('totalEstimado').textContent = '0';
+                document.getElementById('detalleNoches').textContent = '-';
                 return;
             }
             
-            const dias = Math.ceil((salida - entrada) / (1000 * 60 * 60 * 24));
-            const precioPorNoche = parseInt(opcionSeleccionada.getAttribute('data-precio')) || 0;
-            const total = dias * precioPorNoche;
+            const noches = Math.ceil((salida - entrada) / (1000 * 60 * 60 * 24));
+            const total = PRECIO_POR_PERSONA_NOCHE * numPersonas * noches;
             
+            document.getElementById('detalleNoches').textContent = noches;
             document.getElementById('totalEstimado').textContent = total;
         }
         
-        document.getElementById('tipoHabitacion').addEventListener('change', calcularTotal);
+        // Listeners para recalcular
+        document.getElementById('numPersonas').addEventListener('input', calcularTotal);
         document.getElementById('fechaEntrada').addEventListener('change', calcularTotal);
         document.getElementById('fechaSalida').addEventListener('change', calcularTotal);
         
@@ -247,9 +289,16 @@
         document.getElementById('formReserva').addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            const numPersonas = parseInt(document.getElementById('numPersonas').value);
+            
+            if (numPersonas > 2) {
+                alert('La capacidad máxima por habitación es de 2 personas');
+                return;
+            }
+            
             const formData = new FormData();
             formData.append('tipoHabitacion', document.getElementById('tipoHabitacion').value);
-            formData.append('numPersonas', document.getElementById('numPersonas').value);
+            formData.append('numPersonas', numPersonas);
             formData.append('fechaEntrada', document.getElementById('fechaEntrada').value);
             formData.append('fechaSalida', document.getElementById('fechaSalida').value);
             formData.append('total', document.getElementById('totalEstimado').textContent);
@@ -269,6 +318,8 @@
                     new bootstrap.Modal(document.getElementById('modalConfirmacion')).show();
                     document.getElementById('formReserva').reset();
                     document.getElementById('totalEstimado').textContent = '0';
+                    document.getElementById('detallePersonas').textContent = '-';
+                    document.getElementById('detalleNoches').textContent = '-';
                     setTimeout(() => cargarMisReservas(), 2000);
                 } else {
                     alert(data.mensaje || 'Error al crear reserva');
@@ -294,6 +345,7 @@
                         <tr>
                             <td>${r.id}</td>
                             <td>${r.tipoHabitacion}</td>
+                            <td>${r.numPersonas} persona(s)</td>
                             <td>${r.fechaEntrada}</td>
                             <td>${r.fechaSalida}</td>
                             <td>$${r.total}</td>
@@ -302,11 +354,11 @@
                         </tr>
                     `).join('');
                 } else {
-                    tbody.innerHTML = '<tr><td colspan="7" class="text-center">No tienes reservas</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="8" class="text-center">No tienes reservas</td></tr>';
                 }
             } catch (err) {
                 console.error(err);
-                document.getElementById('tablaReservas').innerHTML = '<tr><td colspan="7" class="text-center text-danger">Error al cargar</td></tr>';
+                document.getElementById('tablaReservas').innerHTML = '<tr><td colspan="8" class="text-center text-danger">Error al cargar</td></tr>';
             }
         }
         

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Descubre nuestras habitaciones disponibles con diferentes capacidades y precios">
+    <meta name="description" content="Descubre nuestras habitaciones disponibles - $10 por persona por noche">
     <title>Hostal - Habitaciones Disponibles</title>
     <link rel="icon" type="image/png" href="assets/girasol.png">
     <link rel="stylesheet" href="css/bootstrap.min.css">
@@ -71,6 +71,16 @@
             0% { background-position: -200% 0; }
             100% { background-position: 200% 0; }
         }
+
+        /* BANNER DE PRECIO */
+        .precio-banner {
+            background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+            color: #000;
+            font-weight: bold;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 
@@ -100,31 +110,45 @@
     <header class="hero-habitaciones text-white d-flex align-items-center">
         <div class="container text-center position-relative" style="z-index: 2;">
             <h1 class="display-3 fw-bold mb-3">Nuestras Habitaciones</h1>
-            <p class="lead fs-4 mb-0">Encuentra la habitación perfecta para tu estadía</p>
+            <p class="lead fs-4 mb-3">Encuentra la habitación perfecta para tu estadía</p>
+            <div class="badge bg-warning text-dark fs-5 px-4 py-2">
+                💰 $10 por persona por noche
+            </div>
             <div class="divider mx-auto mt-4" style="max-width: 200px; background: rgba(255,255,255,0.4);"></div>
         </div>
     </header>
+
+    <!-- BANNER DE PRECIO -->
+    <div class="precio-banner">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h4 class="mb-0">💡 Todas las habitaciones: <span class="fs-3">$10 por persona por noche</span></h4>
+                </div>
+                <div class="col-md-4 text-end">
+                    <small>Capacidad máxima: 2 personas por habitación</small>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- FILTROS -->
     <section class="py-4 bg-light">
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-md-6 mb-3">
-                    <label for="filtroPrecio" class="form-label fw-bold">Filtrar por precio máximo:</label>
-                    <div class="d-flex align-items-center gap-3">
-                        <input type="range" class="form-range" id="filtroPrecio" min="20" max="150" value="150" step="5">
-                        <span id="precioActual" class="text-warning fw-bold fs-5">$150</span>
-                    </div>
-                </div>
-                <div class="col-md-6 mb-3">
                     <label for="ordenar" class="form-label fw-bold">Ordenar por:</label>
                     <select class="form-select" id="ordenar">
                         <option value="defecto">Por defecto</option>
-                        <option value="precio-asc">Precio: Menor a Mayor</option>
-                        <option value="precio-desc">Precio: Mayor a Menor</option>
                         <option value="capacidad">Capacidad</option>
                         <option value="disponibilidad">Disponibilidad</option>
+                        <option value="nombre">Nombre (A-Z)</option>
                     </select>
+                </div>
+                <div class="col-md-6 mb-3 text-end">
+                    <div class="alert alert-info mb-0 d-inline-block">
+                        <strong>ℹ️ Ejemplo:</strong> 2 personas × 3 noches = $60 total
+                    </div>
                 </div>
             </div>
         </div>
@@ -142,8 +166,8 @@
 
             <!-- SIN RESULTADOS -->
             <div id="mensajeSinResultados" class="text-center py-5 d-none">
-                <h4 class="text-muted">No se encontraron habitaciones con ese precio</h4>
-                <p>Intenta ajustar el filtro de precio</p>
+                <h4 class="text-muted">No se encontraron habitaciones disponibles</h4>
+                <p>Por favor, intenta más tarde</p>
             </div>
 
             <!-- ERROR AL CARGAR -->
@@ -168,9 +192,10 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script>
         const API_URL = 'http://localhost:3000/api';
+        const PRECIO_POR_PERSONA_NOCHE = 10;
         let todasLasHabitaciones = [];
 
-        // MAPEO DE IMÁGENES (ajusta según tus imágenes reales)
+        // MAPEO DE IMÁGENES (EXACTAMENTE COMO ESTABAN)
         const imagenesHabitaciones = {
             'Sol Naciente': 'assets/Habitacion1.png',
             'Amanecer Dorado': 'assets/Habitacion5.png',
@@ -180,7 +205,6 @@
             'Luz del Día': 'assets/Habitacion6.png',
             'Resplandor': 'assets/Habitacion3.png',
             'Aurora': 'assets/Habitacion7.png',
-            // Valores por defecto
             'default': 'assets/Habitacion6.png'
         };
 
@@ -207,7 +231,7 @@
                 const data = await response.json();
 
                 if (response.ok && data.success && data.habitaciones) {
-                    todasLasHabitaciones = data.habitaciones.sort((a, b) => b.precio - a.precio);
+                    todasLasHabitaciones = data.habitaciones;
                     renderizarHabitaciones(todasLasHabitaciones);
                     mensajeError.classList.add('d-none');
                 } else {
@@ -236,12 +260,15 @@
                 const estaOcupada = hab.disponible === 0 || hab.disponible === false;
                 const imagenSrc = imagenesHabitaciones[hab.tipo] || imagenesHabitaciones['default'];
                 const emoji = emojisHabitaciones[hab.tipo] || emojisHabitaciones['default'];
+                
+                // Calcular ejemplo de precio (asumiendo 2 personas, 1 noche)
+                const ejemploPrecio1Noche = PRECIO_POR_PERSONA_NOCHE * hab.capacidad;
 
                 const col = document.createElement('div');
                 col.className = 'col-md-6 col-lg-4 habitacion-card';
-                col.setAttribute('data-precio', hab.precio);
                 col.setAttribute('data-capacidad', hab.capacidad);
                 col.setAttribute('data-disponible', hab.disponible ? '1' : '0');
+                col.setAttribute('data-nombre', hab.tipo);
 
                 col.innerHTML = `
                     <div class="card h-100 shadow-sm ${estaOcupada ? 'habitacion-ocupada' : ''}">
@@ -253,17 +280,24 @@
                             <h5 class="card-title text-warning fw-bold">${emoji} ${hab.tipo}</h5>
                             <p class="card-text">${hab.descripcion || 'Habitación cómoda con todas las comodidades'}</p>
                             <ul class="list-unstyled small">
-                                <li><strong>👥 Capacidad:</strong> ${hab.capacidad} ${hab.capacidad === 1 ? 'persona' : 'personas'}</li>
-                                <li><strong>🛏️ Tipo:</strong> ${hab.capacidad === 1 ? 'Personal' : 'Matrimonial'}</li>
+                                <li><strong>👥 Capacidad:</strong> ${hab.capacidad} ${hab.capacidad === 1 ? 'persona' : 'personas'} máximo</li>
+                                <li><strong>💰 Tarifa:</strong> $${PRECIO_POR_PERSONA_NOCHE} por persona/noche</li>
                                 <li><strong>📶 Servicios:</strong> Wi-Fi, TV, Garage</li>
                             </ul>
+                            
+                            <div class="alert alert-info py-2 px-3 mt-3 mb-0">
+                                <small><strong>Ejemplo:</strong> ${hab.capacidad} ${hab.capacidad === 1 ? 'persona' : 'personas'} × 1 noche = $${ejemploPrecio1Noche}</small>
+                            </div>
                         </div>
                         
                         <div class="card-footer bg-warning border-0">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
-                                    ${estaOcupada ? '<small class="text-danger fw-bold">No disponible</small>' : '<small class="text-muted">Desde</small>'}
-                                    <div class="fs-4 fw-bold text-dark">$${hab.precio}<small class="fs-6">/noche</small></div>
+                                    ${estaOcupada 
+                                        ? '<small class="text-danger fw-bold">No disponible</small>' 
+                                        : '<small class="text-success fw-bold">✓ Disponible</small>'
+                                    }
+                                    <div class="fs-5 fw-bold text-dark">$${PRECIO_POR_PERSONA_NOCHE}<small class="fs-6">/persona/noche</small></div>
                                 </div>
                                 ${estaOcupada 
                                     ? '<button class="btn btn-secondary" disabled>🔒 Ocupada</button>'
@@ -276,51 +310,12 @@
 
                 contenedor.appendChild(col);
             });
-
-            // Reactivar filtros
-            aplicarFiltros();
         }
-
-        // FILTRAR POR PRECIO
-        const filtroPrecio = document.getElementById('filtroPrecio');
-        const precioActual = document.getElementById('precioActual');
-
-        filtroPrecio.addEventListener('input', function() {
-            precioActual.textContent = `$${this.value}`;
-            aplicarFiltros();
-        });
 
         // ORDENAR
         document.getElementById('ordenar').addEventListener('change', function() {
             ordenarHabitaciones(this.value);
         });
-
-        function aplicarFiltros() {
-            const precioMaximo = parseInt(filtroPrecio.value);
-            const habitaciones = document.querySelectorAll('.habitacion-card');
-            const mensajeSinResultados = document.getElementById('mensajeSinResultados');
-            const contenedor = document.getElementById('contenedorHabitaciones');
-            
-            let habitacionesVisibles = 0;
-
-            habitaciones.forEach(hab => {
-                const precio = parseInt(hab.getAttribute('data-precio'));
-                if (precio <= precioMaximo) {
-                    hab.style.display = 'block';
-                    habitacionesVisibles++;
-                } else {
-                    hab.style.display = 'none';
-                }
-            });
-
-            if (habitacionesVisibles === 0) {
-                mensajeSinResultados.classList.remove('d-none');
-                contenedor.classList.add('d-none');
-            } else {
-                mensajeSinResultados.classList.add('d-none');
-                contenedor.classList.remove('d-none');
-            }
-        }
 
         function ordenarHabitaciones(criterio) {
             const habitaciones = Array.from(document.querySelectorAll('.habitacion-card'));
@@ -328,14 +323,12 @@
 
             habitaciones.sort((a, b) => {
                 switch(criterio) {
-                    case 'precio-asc':
-                        return parseInt(a.getAttribute('data-precio')) - parseInt(b.getAttribute('data-precio'));
-                    case 'precio-desc':
-                        return parseInt(b.getAttribute('data-precio')) - parseInt(a.getAttribute('data-precio'));
                     case 'capacidad':
                         return parseInt(b.getAttribute('data-capacidad')) - parseInt(a.getAttribute('data-capacidad'));
                     case 'disponibilidad':
                         return parseInt(b.getAttribute('data-disponible')) - parseInt(a.getAttribute('data-disponible'));
+                    case 'nombre':
+                        return a.getAttribute('data-nombre').localeCompare(b.getAttribute('data-nombre'));
                     default:
                         return 0;
                 }
