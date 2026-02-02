@@ -48,6 +48,13 @@
                     <li class="nav-item me-3">
                         <span class="navbar-text text-warning">👤 <strong id="nombreAdmin">Admin</strong></span>
                     </li>
+                    <li class="nav-item me-2">
+                    <button class="btn btn-outline-warning btn-sm"
+                        data-bs-toggle="modal"
+                        data-bs-target="#modalCambiarPassword">
+                        🔐 Cambiar Contraseña
+                    </button>
+                    </li>
                     <li class="nav-item">
                         <button class="btn btn-outline-warning btn-sm" onclick="cerrarSesion()">Cerrar Sesión</button>
                     </li>
@@ -295,7 +302,48 @@
         </div>
     </div>
 
+    <!-- Modal Cambiar Contraseña -->
+<div class="modal fade" id="modalCambiarPassword" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5>🔐 Cambiar Contraseña</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <div id="alertaPassword" class="alert d-none"></div>
+
+                <form id="formCambiarPassword">
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña actual</label>
+                        <input type="password" class="form-control" id="passwordActual" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Nueva contraseña</label>
+                        <input type="password" class="form-control" id="passwordNueva" minlength="6" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Confirmar nueva contraseña</label>
+                        <input type="password" class="form-control" id="passwordConfirmar" required>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-warning" onclick="cambiarPassword()">Cambiar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
     <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
     <script>
         const API = 'http://localhost:3000/api';
         const usuario = JSON.parse(sessionStorage.getItem('usuario') || 'null');
@@ -639,6 +687,76 @@
                 window.location.href = 'index.html';
             }
         }
+        // CAMBIAR CONTRASEÑA (ADMIN)
+async function cambiarPassword() {
+    const actual = document.getElementById('passwordActual').value;
+    const nueva = document.getElementById('passwordNueva').value;
+    const confirmar = document.getElementById('passwordConfirmar').value;
+    const alerta = document.getElementById('alertaPassword');
+
+    alerta.classList.add('d-none');
+
+    if (!actual || !nueva || !confirmar) {
+        alerta.textContent = 'Todos los campos son obligatorios';
+        alerta.className = 'alert alert-danger';
+        alerta.classList.remove('d-none');
+        return;
+    }
+
+    if (nueva !== confirmar) {
+        alerta.textContent = 'Las contraseñas nuevas no coinciden';
+        alerta.className = 'alert alert-danger';
+        alerta.classList.remove('d-none');
+        return;
+    }
+
+    if (nueva.length < 6) {
+        alerta.textContent = 'La contraseña debe tener al menos 6 caracteres';
+        alerta.className = 'alert alert-danger';
+        alerta.classList.remove('d-none');
+        return;
+    }
+
+    try {
+        const res = await fetch(`${API}/auth/cambiar-password`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({
+                passwordActual: actual,
+                passwordNueva: nueva
+            })
+        });
+
+        const data = await res.json();
+
+        if (res.ok) {
+            alerta.textContent = '✅ Contraseña cambiada correctamente';
+            alerta.className = 'alert alert-success';
+            alerta.classList.remove('d-none');
+
+            document.getElementById('formCambiarPassword').reset();
+
+            setTimeout(() => {
+                bootstrap.Modal.getInstance(
+                    document.getElementById('modalCambiarPassword')
+                ).hide();
+                alerta.classList.add('d-none');
+            }, 2000);
+        } else {
+            alerta.textContent = data.mensaje || 'Error al cambiar contraseña';
+            alerta.className = 'alert alert-danger';
+            alerta.classList.remove('d-none');
+        }
+    } catch (err) {
+        alerta.textContent = 'Error de conexión con el servidor';
+        alerta.className = 'alert alert-danger';
+        alerta.classList.remove('d-none');
+    }
+}
+
         
         // INICIALIZAR
         cargarEstadisticas();

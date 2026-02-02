@@ -13,11 +13,25 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
-app.use(cors({
-    origin: [
+// CORS dinámico: funciona en local y en Railway
+const allowedOrigins = process.env.FRONTEND_URL 
+    ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
+    : [
         'http://localhost:5500',
         'http://127.0.0.1:5500'
-    ],
+    ];
+
+app.use(cors({
+    origin: function(origin, callback) {
+        // Permitir requests sin origin (como Postman o apps móviles)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+            callback(null, true);
+        } else {
+            callback(new Error('No permitido por CORS'));
+        }
+    },
     credentials: true
 }));
 
@@ -34,7 +48,7 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => {
     res.json({
         mensaje: 'API del Hostal - Backend funcionando correctamente',
-        version: '1.0.0',
+        version: '5.0.0',
         endpoints: {
             auth: '/api/auth',
             reservas: '/api/reservas',
@@ -46,6 +60,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/reservas', reservasRoutes);
 app.use('/api/habitaciones', habitacionesRoutes);
+
 
 app.use((req, res) => {
     res.status(404).json({

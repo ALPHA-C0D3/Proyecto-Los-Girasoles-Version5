@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Inicia sesión para acceder a tu cuenta y gestionar tus reservas">
-    <title>Hostal - Iniciar Sesión</title>
+    <title>Iniciar Sesión - Hostal Los Girasoles</title>
     <link rel="icon" type="image/png" href="assets/girasol.png">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
@@ -14,15 +13,33 @@
                         url('assets/Hostal-Principal.jpg') center/cover fixed no-repeat;
             min-height: 100vh;
         }
+        
+        .intentos-restantes {
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .advertencia-critica {
+            animation: pulso 1s infinite;
+        }
+        
+        @keyframes pulso {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .bloqueado-timer {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #dc3545;
+        }
     </style>
 </head>
-
-<body class="bg-light">
-    <!-- NAVEGACIÓN -->
+<body>
     <nav class="navbar navbar-expand-lg navbar-light bg-warning">
         <div class="container">
             <a class="navbar-brand" href="index.html">
-                <img src="assets/girasol.png" alt="Logo Hostal" height="40">
+                <img src="assets/girasol.png" alt="Logo" height="40">
                 Hostal Los Girasoles
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -39,82 +56,78 @@
         </div>
     </nav>
 
-    <!-- LOGIN -->
     <section class="py-5 min-vh-100 d-flex align-items-center">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-5 col-lg-4">
                     <div class="text-center mb-4">
-                        <img src="assets/girasol.png" alt="Logo Hostal" height="80" class="mb-3">
+                        <img src="assets/girasol.png" alt="Logo" height="80" class="mb-3">
                         <h2 class="fw-bold text-white">Bienvenido de nuevo</h2>
                         <p class="text-white">Inicia sesión para gestionar tus reservas</p>
                     </div>
 
                     <div class="card shadow-lg border-0">
                         <div class="card-body p-4">
-                            <!-- ALERTAS -->
-                            <div id="alertaLogin" class="alert alert-danger d-none" role="alert">
+                            <!-- ALERTA DE BLOQUEO -->
+                            <div id="alertaBloqueado" class="alert alert-danger d-none">
+                                <h5 class="alert-heading">🔒 Cuenta Bloqueada</h5>
+                                <p class="mb-2">Has excedido el número máximo de intentos.</p>
+                                <hr>
+                                <p class="mb-0">
+                                    <strong>Tiempo restante:</strong><br>
+                                    <span class="bloqueado-timer" id="timerBloqueo">--:--</span>
+                                </p>
+                            </div>
+
+                            <!-- ALERTAS NORMALES -->
+                            <div id="alertaLogin" class="alert alert-danger d-none">
                                 <strong>⚠️ Error:</strong>
                                 <span id="mensajeErrorLogin"></span>
                             </div>
 
-                            <div id="alertaExito" class="alert alert-success d-none" role="alert">
-                                <strong>✓ Éxito:</strong> Registro completado. Ya puedes iniciar sesión.
+                            <!-- CONTADOR DE INTENTOS -->
+                            <div id="contadorIntentos" class="alert alert-warning d-none">
+                                <span id="textoIntentos"></span>
                             </div>
 
-                            <form id="formLogin" novalidate>
-                                <!-- EMAIL -->
+                            <div id="alertaExito" class="alert alert-success d-none">
+                                <strong>✓</strong> Registro completado. Ya puedes iniciar sesión.
+                            </div>
+
+                            <form id="formLogin">
                                 <div class="mb-3">
-                                    <label for="correoLogin" class="form-label fw-bold">
-                                        📧 Correo Electrónico
-                                    </label>
+                                    <label class="form-label fw-bold">📧 Correo Electrónico</label>
                                     <input
                                         type="email"
                                         class="form-control form-control-lg"
                                         id="correoLogin"
-                                        name="correo"
                                         placeholder="tu@email.com"
                                         required
                                     />
-                                    <div class="invalid-feedback">Ingrese un correo válido.</div>
                                 </div>
 
-                                <!-- PASSWORD -->
                                 <div class="mb-3">
-                                    <label for="passwordLogin" class="form-label fw-bold">
-                                        🔒 Contraseña
-                                    </label>
+                                    <label class="form-label fw-bold">🔒 Contraseña</label>
                                     <div class="input-group">
                                         <input
                                             type="password"
                                             class="form-control form-control-lg"
                                             id="passwordLogin"
-                                            name="password"
                                             placeholder="••••••••"
                                             required
                                         />
-                                        <button class="btn btn-outline-secondary" type="button" id="togglePasswordLogin">
+                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                             👁️
                                         </button>
                                     </div>
-                                    <div class="invalid-feedback">Ingrese su contraseña.</div>
                                 </div>
 
-                                <!-- RECORDAR -->
-                                <div class="mb-3 form-check">
-                                    <input type="checkbox" class="form-check-input" id="recordar">
-                                    <label class="form-check-label" for="recordar">
-                                        Recordar mi sesión
-                                    </label>
-                                </div>
-
-                                <!-- BOTÓN -->
                                 <button type="submit" class="btn btn-warning w-100 btn-lg fw-bold mb-3" id="btnLogin">
                                     Iniciar Sesión
                                 </button>
 
                                 <div class="text-center">
-                                    <a href="#" class="text-decoration-none text-muted small">
+                                    <a href="solicitar-recuperacion.html" class="text-decoration-none text-warning fw-bold">
                                         ¿Olvidaste tu contraseña?
                                     </a>
                                 </div>
@@ -130,126 +143,123 @@
                             </p>
                         </div>
                     </div>
-
-                    <div class="text-center mt-4">
-                        <small class="text-white">
-                            Al iniciar sesión, aceptas nuestros
-                            <a href="#" class="text-warning">Términos y Condiciones</a>
-                        </small>
-                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER -->
-    <footer class="bg-dark text-white py-3">
-        <div class="container text-center">
-            <p class="mb-0">&copy; 2026 Hostal Los Girasoles. Todos los derechos reservados.</p>
-        </div>
-    </footer>
-
+    <!-- SCRIPTS -->
     <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/config.js"></script>
     <script src="js/validaciones.js"></script>
+    <script src="js/auth.js"></script>
+    
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const formLogin = document.getElementById("formLogin");
-            const btnLogin = document.getElementById("btnLogin");
+        console.log('🎬 LOGIN.HTML cargado');
+        
+        let bloqueadoHasta = null;
+        let intervaloTimer = null;
 
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get("registro") === "exitoso") {
-                document.getElementById("alertaExito").classList.remove("d-none");
-                setTimeout(() => {
-                    document.getElementById("alertaExito").classList.add("d-none");
-                }, 5000);
-            }
+        // VERIFICAR SI VIENE DE REGISTRO EXITOSO
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get("registro") === "exitoso") {
+            document.getElementById("alertaExito").classList.remove("d-none");
+            setTimeout(() => {
+                document.getElementById("alertaExito").classList.add("d-none");
+            }, 5000);
+        }
 
-            if (formLogin) {
-                formLogin.addEventListener("submit", async function (e) {
-                    e.preventDefault();
+        // TOGGLE VER CONTRASEÑA
+        document.getElementById("togglePassword").addEventListener("click", function() {
+            const input = document.getElementById("passwordLogin");
+            input.type = input.type === "password" ? "text" : "password";
+            this.textContent = input.type === "password" ? "👁️" : "🙈";
+        });
 
-                    btnLogin.disabled = true;
-                    btnLogin.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Iniciando...';
+        // TIMER DE BLOQUEO
+        function iniciarTimer(minutosRestantes) {
+            bloqueadoHasta = Date.now() + (minutosRestantes * 60 * 1000);
+            
+            if (intervaloTimer) clearInterval(intervaloTimer);
+            
+            intervaloTimer = setInterval(() => {
+                const ahora = Date.now();
+                const diferencia = bloqueadoHasta - ahora;
+                
+                if (diferencia <= 0) {
+                    clearInterval(intervaloTimer);
+                    document.getElementById('alertaBloqueado').classList.add('d-none');
+                    document.getElementById('btnLogin').disabled = false;
+                    location.reload();
+                    return;
+                }
+                
+                const mins = Math.floor(diferencia / 60000);
+                const segs = Math.floor((diferencia % 60000) / 1000);
+                document.getElementById('timerBloqueo').textContent = 
+                    `${mins.toString().padStart(2, '0')}:${segs.toString().padStart(2, '0')}`;
+            }, 1000);
+        }
 
-                    document.getElementById("alertaLogin").classList.add("d-none");
-                    document.getElementById("alertaExito").classList.add("d-none");
+        // LOGIN
+        document.getElementById('formLogin').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btnLogin = document.getElementById('btnLogin');
+            btnLogin.disabled = true;
+            btnLogin.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Iniciando...';
 
-                    const correo = document.getElementById("correoLogin").value.trim();
-                    const password = document.getElementById("passwordLogin").value;
+            const correo = document.getElementById('correoLogin').value.trim();
+            const password = document.getElementById('passwordLogin').value;
 
-                    if (!correo || !password) {
-                        document.getElementById("mensajeErrorLogin").textContent = "Complete todos los campos.";
-                        document.getElementById("alertaLogin").classList.remove("d-none");
-                        btnLogin.disabled = false;
-                        btnLogin.innerHTML = "Iniciar Sesión";
-                        return;
+            console.log('🔐 Intentando login con:', correo);
+            const resultado = await iniciarSesion(correo, password);
+
+            if (resultado.success) {
+                console.log('✅ Login exitoso');
+                const usuario = obtenerUsuarioActual();
+                location.href = usuario.tipoUsuario === 'admin' ? 'panel_admin.html' : 'panel_cliente.html';
+            } else if (resultado.status === 429 && resultado.data.bloqueado) {
+                console.log('🔒 Cuenta bloqueada');
+                document.getElementById('alertaBloqueado').classList.remove('d-none');
+                document.getElementById('alertaLogin').classList.add('d-none');
+                document.getElementById('contadorIntentos').classList.add('d-none');
+                iniciarTimer(resultado.data.minutosRestantes);
+                btnLogin.disabled = true;
+            } else {
+                console.log('❌ Error en login:', resultado.data.mensaje);
+                document.getElementById('mensajeErrorLogin').textContent = resultado.data.mensaje;
+                document.getElementById('alertaLogin').classList.remove('d-none');
+                
+                if (resultado.data.intentosRestantes !== undefined) {
+                    const contador = document.getElementById('contadorIntentos');
+                    const texto = document.getElementById('textoIntentos');
+                    
+                    if (resultado.data.intentosRestantes === 0) {
+                        contador.classList.remove('alert-warning');
+                        contador.classList.add('alert-danger', 'advertencia-critica');
+                        texto.innerHTML = '🚨 <strong>CUENTA BLOQUEADA</strong>';
+                    } else if (resultado.data.intentosRestantes === 1) {
+                        contador.classList.remove('alert-warning');
+                        contador.classList.add('alert-danger', 'advertencia-critica');
+                        texto.innerHTML = `⚠️ <strong>ÚLTIMO INTENTO</strong>`;
+                    } else if (resultado.data.intentosRestantes === 2) {
+                        contador.classList.add('alert-warning');
+                        texto.innerHTML = `⚠️ Quedan <strong>${resultado.data.intentosRestantes} intentos</strong>`;
+                    } else {
+                        contador.classList.add('alert-info');
+                        texto.innerHTML = `ℹ️ Intentos restantes: <strong>${resultado.data.intentosRestantes}</strong>`;
                     }
-
-                    if (!validarEmail(correo)) {
-                        document.getElementById("mensajeErrorLogin").textContent = "Ingrese un correo válido.";
-                        document.getElementById("alertaLogin").classList.remove("d-none");
-                        document.getElementById("correoLogin").classList.add("is-invalid");
-                        btnLogin.disabled = false;
-                        btnLogin.innerHTML = "Iniciar Sesión";
-                        return;
-                    }
-
-                    const datosLogin = {
-                        correo: correo,
-                        password: password,
-                    };
-
-                    try {
-                        const response = await fetch("http://localhost:3000/api/auth/login", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(datosLogin),
-                        });
-
-                        const resultado = await response.json();
-
-                        if (response.ok) {
-                            sessionStorage.setItem("usuario", JSON.stringify(resultado.usuario));
-                            sessionStorage.setItem("token", resultado.token);
-
-                            if (resultado.usuario.tipoUsuario === "admin") {
-                                window.location.href = "panel_admin.html";
-                            } else {
-                                window.location.href = "panel_cliente.html";
-                            }
-                        } else {
-                            document.getElementById("mensajeErrorLogin").textContent = resultado.mensaje || "Credenciales incorrectas. Verifique su correo y contraseña.";
-                            document.getElementById("alertaLogin").classList.remove("d-none");
-                            btnLogin.disabled = false;
-                            btnLogin.innerHTML = "Iniciar Sesión";
-                        }
-                    } catch (error) {
-                        console.error("Error de conexión:", error);
-                        document.getElementById("mensajeErrorLogin").textContent = "Error de conexión. Inténtelo de nuevo en unos segundos.";
-                        document.getElementById("alertaLogin").classList.remove("d-none");
-                        btnLogin.disabled = false;
-                        btnLogin.innerHTML = "Iniciar Sesión";
-                    }
-                });
-
-                document.getElementById("correoLogin").addEventListener("input", function () {
-                    this.classList.remove("is-invalid");
-                    document.getElementById("alertaLogin").classList.add("d-none");
-                });
-
-                document.getElementById("passwordLogin").addEventListener("input", function () {
-                    this.classList.remove("is-invalid");
-                    document.getElementById("alertaLogin").classList.add("d-none");
-                });
+                    
+                    contador.classList.remove('d-none');
+                }
+                
+                btnLogin.disabled = false;
+                btnLogin.innerHTML = 'Iniciar Sesión';
             }
         });
 
-        document.getElementById("togglePasswordLogin").addEventListener("click", function () {
-            const password = document.getElementById("passwordLogin");
-            const type = password.type === "password" ? "text" : "password";
-            password.type = type;
-            this.textContent = type === "password" ? "👁️" : "🙈";
-        });
+        console.log('✅ LOGIN.HTML inicializado completamente');
     </script>
 </body>
 </html>
