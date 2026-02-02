@@ -3,55 +3,42 @@
 // Gestión de reservas del cliente
 // ==========================================
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = (typeof CONFIG !== 'undefined' && CONFIG.getApiUrl) 
+    ? CONFIG.getApiUrl() 
+    : 'http://localhost:3000/api';
 
-const PRECIOS_HABITACIONES = {
-    'Sol Naciente': 35,
-    'Amanecer Dorado': 35,
-    'Rayos de Luz': 35,
-    'Pétalos de Oro': 35,
-    'Girasol Brillante': 35,
-    'Luz del Día': 35,
-    'Resplandor': 25,
-    'Aurora': 25
-};
+const PRECIO_POR_PERSONA_NOCHE = 10;
 
 function obtenerToken() {
     return sessionStorage.getItem('token');
 }
 
-// CALCULAR TOTAL
+// CALCULAR TOTAL - SISTEMA POR PERSONA ($10)
 function calcularTotalReserva() {
-    const selectHab = document.getElementById('tipoHabitacion');
-    const fechaEntrada = document.getElementById('fechaEntrada');
-    const fechaSalida = document.getElementById('fechaSalida');
+    const numPersonas = parseInt(document.getElementById('numPersonas')?.value) || 0;
+    const fechaEntrada = document.getElementById('fechaEntrada')?.value;
+    const fechaSalida = document.getElementById('fechaSalida')?.value;
     const totalEstimado = document.getElementById('totalEstimado');
 
-    if (!selectHab || !fechaEntrada || !fechaSalida || !totalEstimado) return;
-
-    const tipoHabitacion = selectHab.value;
-    const entrada = fechaEntrada.value;
-    const salida = fechaSalida.value;
-
-    if (!tipoHabitacion || !entrada || !salida) {
-        totalEstimado.textContent = '0';
+    if (!fechaEntrada || !fechaSalida || numPersonas === 0) {
+        if (totalEstimado) totalEstimado.textContent = '0';
         return;
     }
 
-    const fechaIni = new Date(entrada);
-    const fechaFin = new Date(salida);
+    const entrada = new Date(fechaEntrada);
+    const salida = new Date(fechaSalida);
 
-    if (fechaFin <= fechaIni) {
-        totalEstimado.textContent = '0';
+    if (salida <= entrada) {
+        if (totalEstimado) totalEstimado.textContent = '0';
         return;
     }
 
-    const diferenciaTiempo = fechaFin - fechaIni;
-    const noches = Math.ceil(diferenciaTiempo / (1000 * 60 * 60 * 24));
-    const precioPorNoche = PRECIOS_HABITACIONES[tipoHabitacion] || 0;
-    const total = noches * precioPorNoche;
+    const noches = Math.ceil((salida - entrada) / (1000 * 60 * 60 * 24));
+    const total = numPersonas * PRECIO_POR_PERSONA_NOCHE * noches;
 
-    totalEstimado.textContent = total;
+    if (totalEstimado) {
+        totalEstimado.textContent = total;
+    }
 }
 
 // CARGAR RESERVAS CLIENTE

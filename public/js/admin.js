@@ -3,7 +3,9 @@
 // Gestión administrativa del hostal
 // ==========================================
 
-const API_URL = 'http://localhost:3000/api';
+const API_URL = (typeof CONFIG !== 'undefined' && CONFIG.getApiUrl) 
+    ? CONFIG.getApiUrl() 
+    : 'http://localhost:3000/api';
 
 function obtenerToken() {
     return sessionStorage.getItem('token');

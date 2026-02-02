@@ -3,7 +3,7 @@
 
 const CONFIG = {
     // Cambiar según el entorno
-    ENVIRONMENT: 'production', // 'development' o 'production'
+    ENVIRONMENT: 'development', // 'development' o 'production'
     
     // URLs del Backend
     API_URL: {

@@ -1,13 +1,16 @@
 // config/database.js
 const sqlite3 = require('sqlite3').verbose();
+const path = require('path'); // Importante para manejar rutas
 
-const DB_PATH = process.env.DB_PATH || './hostal.db';
+// Esto hace que la DB se guarde en la carpeta de arriba de "config" (o sea, en la raíz de BackEnd)
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, '..', 'hostal.db');
 
 const db = new sqlite3.Database(DB_PATH, (err) => {
     if (err) {
         console.error('Error al conectar con la base de datos:', err.message);
     } else {
-        console.log('Conectado a la base de datos SQLite: hostal.db');
+        // Imprimimos la ruta completa para estar 100% seguros de dónde se creó
+        console.log('Conectado a la base de datos en:', DB_PATH);
     }
 });
 
@@ -105,29 +108,43 @@ const insertarHabitacionesIniciales = () => {
         }
 
         if (row.count === 0) {
+            console.log('Iniciando inserción de 8 habitaciones...');
+            
             const habitaciones = [
-                ['Economica', 1, 25, 1, 'Habitacion sencilla con bano compartido'],
-                ['Individual', 1, 30, 1, 'Habitacion individual con bano privado'],
-                ['Doble', 2, 50, 1, 'Habitacion con cama matrimonial o dos individuales'],
-                ['Triple', 3, 65, 1, 'Habitacion con tres camas individuales'],
-                ['Familiar', 4, 80, 1, 'Habitacion amplia con dos camas matrimoniales'],
-                ['Suite Premium', 2, 120, 1, 'Suite de lujo con jacuzzi y sala de estar']
+                ['Sol Naciente', 2, 10, 1, 'Habitación con cama matrimonial, TV, cable, ducha, wifi, garage'],
+                ['Amanecer Dorado', 2, 10, 1, 'Habitación con cama matrimonial, TV, cable, ducha, wifi, garage'],
+                ['Rayos de Luz', 2, 10, 1, 'Habitación con cama matrimonial, TV, cable, ducha, wifi, garage'],
+                ['Pétalos de Oro', 2, 10, 1, 'Habitación con cama matrimonial, TV, cable, ducha, wifi, garage'],
+                ['Girasol Brillante', 2, 10, 1, 'Habitación con cama matrimonial, TV, cable, ducha, wifi, garage'],
+                ['Luz del Día', 2, 10, 1, 'Habitación con cama matrimonial, TV, cable, ducha, wifi, garage'],
+                ['Resplandor', 2, 10, 1, 'Habitación con cama matrimonial, TV, cable, ducha, wifi, garage'],
+                ['Aurora', 2, 10, 1, 'Habitación con cama matrimonial, TV, cable, ducha, wifi, garage']
             ];
 
             const stmt = db.prepare(`
-                INSERT INTO habitaciones (tipo, capacidad, precio, disponible, descripcion)
+                INSERT INTO habitaciones (tipo, capacidad, precio, disponible, descripcion) 
                 VALUES (?, ?, ?, ?, ?)
             `);
 
+            let completados = 0;
+
             habitaciones.forEach(hab => {
                 stmt.run(hab, (err) => {
-                    if (err) console.error('Error al insertar habitacion:', err.message);
+                    if (err) {
+                        console.error('Error al insertar habitación:', err.message);
+                    }
+                    completados++;
+                    
+                    // Solo cerramos el statement cuando terminamos el último
+                    if (completados === habitaciones.length) {
+                        stmt.finalize(() => {
+                            console.log('✅ Éxito: Las 8 habitaciones han sido insertadas.');
+                        });
+                    }
                 });
             });
-
-            stmt.finalize(() => {
-                console.log('Habitaciones iniciales insertadas');
-            });
+        } else {
+            console.log(`La tabla ya tiene ${row.count} habitaciones. No se insertaron duplicados.`);
         }
     });
 };
@@ -199,7 +216,7 @@ const registrarAuditoria = async (datos) => {
         console.error('Error al registrar auditoría:', error);
     }
 };
-
+inicializarTablas();
 module.exports = { 
     db, 
     inicializarTablas, 
