@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "Backend del sistema de reservas para Hostal El Refugio",
   "main": "server.js",
-  "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "init-admin": "node crearAdmin.js",
-    "reset-admin": "node resetAdmin.js",
-    "view-data": "node verDatos.js",
-    "migrate": "node agregarcampos.js"
-  },
+"scripts": {
+  "start": "node config/database.js && node setup.js && node agregarcampos.js && node crearAdmin.js && node server.js",
+  "dev": "nodemon server.js",
+  "init-admin": "node crearAdmin.js",
+  "reset-admin": "node resetAdmin.js",
+  "view-data": "node verDatos.js",
+  "migrate": "node agregarcampos.js"
+},
   "keywords": [
     "hostal",
     "reservas",
