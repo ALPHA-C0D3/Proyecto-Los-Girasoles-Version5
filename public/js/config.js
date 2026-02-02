@@ -3,12 +3,12 @@
 
 const CONFIG = {
     // Cambiar según el entorno
-    ENVIRONMENT: 'development', // 'development' o 'production'
+    ENVIRONMENT: 'production', // 'development' o 'production'
     
     // URLs del Backend
     API_URL: {
         development: 'http://localhost:3000/api',
-        production: 'https://TU-PROYECTO.up.railway.app/api' // Cambiar por tu URL de Railway
+        production: 'https://proyecto-los-girasoles-version5-production.up.railway.app/api' // Cambiar por tu URL de Railway
     },
     
     // Obtener URL según el entorno
