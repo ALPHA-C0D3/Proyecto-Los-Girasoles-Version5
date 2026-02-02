@@ -1,4 +1,3 @@
-// server.js
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -13,7 +12,6 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Middlewares
-// CORS dinámico: funciona en local y en Railway
 const allowedOrigins = process.env.FRONTEND_URL 
     ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
     : [
@@ -23,10 +21,12 @@ const allowedOrigins = process.env.FRONTEND_URL
 
 app.use(cors({
     origin: function(origin, callback) {
-        // Permitir requests sin origin (como Postman o apps móviles)
         if (!origin) return callback(null, true);
         
-        if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+        // CORRECCIÓN: Permitir la URL de Railway explícitamente si existe
+        if (allowedOrigins.indexOf(origin) !== -1 || 
+            (origin && origin.includes('railway.app')) || 
+            process.env.NODE_ENV === 'development') {
             callback(null, true);
         } else {
             callback(new Error('No permitido por CORS'));
@@ -37,6 +37,10 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// LÍNEA VITAL: Servir los archivos de la carpeta public (frontend)
+app.use(express.static(path.join(__dirname, '../public')));
+
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.use((req, res, next) => {
@@ -46,21 +50,25 @@ app.use((req, res, next) => {
 
 // Rutas
 app.get('/', (req, res) => {
-    res.json({
-        mensaje: 'API del Hostal - Backend funcionando correctamente',
-        version: '5.0.0',
-        endpoints: {
-            auth: '/api/auth',
-            reservas: '/api/reservas',
-            habitaciones: '/api/habitaciones'
-        }
-    });
+    // CORRECCIÓN: En lugar de enviar solo JSON, enviamos el index.html
+    // pero mantenemos tu lógica si es que alguien pide específicamente JSON
+    if (req.headers.accept && req.headers.accept.includes('application/json')) {
+        return res.json({
+            mensaje: 'API del Hostal - Backend funcionando correctamente',
+            version: '5.0.0',
+            endpoints: {
+                auth: '/api/auth',
+                reservas: '/api/reservas',
+                habitaciones: '/api/habitaciones'
+            }
+        });
+    }
+    res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 app.use('/api/auth', authRoutes);
 app.use('/api/reservas', reservasRoutes);
 app.use('/api/habitaciones', habitacionesRoutes);
-
 
 app.use((req, res) => {
     res.status(404).json({
@@ -72,7 +80,6 @@ app.use((req, res) => {
 // Manejo de errores
 app.use((err, req, res, next) => {
     console.error('Error:', err);
-    
     res.status(err.status || 500).json({
         success: false,
         mensaje: err.message || 'Error interno del servidor',
