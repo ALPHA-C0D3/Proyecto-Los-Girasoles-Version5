@@ -3,14 +3,14 @@
   "version": "1.0.0",
   "description": "Backend del sistema de reservas para Hostal El Refugio",
   "main": "server.js",
-"scripts": {
-  "start": "node BackEnd/config/database.js && node BackEnd/setup.js && node BackEnd/agregarcampos.js && node BackEnd/crearAdmin.js && node BackEnd/server.js",
-  "dev": "nodemon server.js",
-  "init-admin": "node crearAdmin.js",
-  "reset-admin": "node resetAdmin.js",
-  "view-data": "node verDatos.js",
-  "migrate": "node agregarcampos.js"
-},
+  "scripts": {
+    "start": "node BackEnd/config/database.js && node BackEnd/setup.js && node BackEnd/agregarcampos.js && node BackEnd/crearAdmin.js && node BackEnd/server.js",
+    "dev": "nodemon server.js",
+    "init-admin": "node crearAdmin.js",
+    "reset-admin": "node resetAdmin.js",
+    "view-data": "node verDatos.js",
+    "migrate": "node agregarcampos.js"
+  },
   "keywords": [
     "hostal",
     "reservas",
@@ -30,6 +30,7 @@
     "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.8",
+    "resend": "^6.9.1",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {

@@ -1,44 +1,32 @@
 // config/email.js
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 
-// Configuración de Resend (Recomendado para producción)
-const transporter = nodemailer.createTransport({
-    host: 'smtp.resend.com',
-    port: 465,
-    secure: true,
-    auth: {
-        user: 'resend',
-        pass: process.env.RESEND_API_KEY
-    }
-});
-
-// Verificar configuración
-transporter.verify((error, success) => {
-    if (error) {
-        console.error('❌ Error en configuración de email:', error);
-    } else {
-        console.log('✅ Servidor de email listo');
-    }
-});
+// Inicializar Resend con la API Key
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 /**
- * Enviar email genérico
+ * Enviar email genérico usando Resend
  */
 const enviarEmail = async ({ para, asunto, html, texto }) => {
     try {
-        const info = await transporter.sendMail({
-            from: `"${process.env.EMAIL_FROM_NAME || 'Hostal El Refugio'}" <${process.env.EMAIL_FROM || 'noreply@tudominio.com'}>`,
+        const { data, error } = await resend.emails.send({
+            from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
             to: para,
             subject: asunto,
-            text: texto,
-            html: html
+            html: html,
+            text: texto
         });
 
-        console.log(`✅ Email enviado a ${para}: ${info.messageId}`);
-        return { success: true, messageId: info.messageId };
-    } catch (error) {
-        console.error('❌ Error al enviar email:', error);
-        return { success: false, error: error.message };
+        if (error) {
+            console.error('❌ Error al enviar email:', error);
+            return { success: false, error };
+        }
+
+        console.log(`✅ Email enviado a ${para}`);
+        return { success: true, data };
+    } catch (err) {
+        console.error('❌ Error fatal al enviar email:', err);
+        return { success: false, error: err.message };
     }
 };
 
@@ -338,99 +326,191 @@ const enviarCodigoRecuperacion = async (correo, nombre, codigo) => {
     });
 };
 
-async function enviarEmailRecuperacionConLink(destinatario, nombreUsuario, resetLink) {
+/**
+ * Enviar email de recuperación con link (NUEVO - con diseño bonito y funcionalidad Resend)
+ */
+const enviarEmailRecuperacionConLink = async (correo, nombre, resetLink) => {
     try {
-        console.log(`📧 Enviando email de recuperación a: ${destinatario}`);
+        console.log(`📧 Enviando email de recuperación a: ${correo}`);
         console.log(`🔗 Link: ${resetLink}`);
 
-        const htmlEmail = `
+        const html = `
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4; }
-        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
-        .header { background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%); padding: 40px; text-align: center; }
-        .header h1 { color: #000; margin: 0; font-size: 28px; }
-        .body { padding: 40px; }
-        .button { display: inline-block; background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%); color: #000; text-decoration: none; padding: 15px 40px; border-radius: 5px; font-size: 18px; font-weight: bold; margin: 20px 0; }
-        .footer { background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 12px; color: #666; }
-        .warning { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .header {
+            background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 600;
+            color: #000;
+        }
+        .content {
+            padding: 40px 30px;
+        }
+        .greeting {
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .button {
+            display: inline-block;
+            background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%);
+            color: #000;
+            text-decoration: none;
+            padding: 15px 40px;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 20px 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .instructions {
+            color: #666;
+            line-height: 1.6;
+            margin: 20px 0;
+            font-size: 15px;
+        }
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #FFC107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            color: #856404;
+        }
+        .link-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            word-break: break-all;
+            font-size: 12px;
+            color: #007bff;
+        }
+        .footer {
+            background: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
             <h1>🔒 Recuperar Contraseña</h1>
-            <p style="color: #333; margin-top: 10px;">Hostal Los Girasoles</p>
+            <p style="margin: 10px 0 0 0; font-size: 16px; color: #333;">Hostal Los Girasoles</p>
         </div>
         
-        <div class="body">
-            <p>Hola <strong>${nombreUsuario}</strong>,</p>
-            
-            <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta.</p>
-            
-            <p>Haz click en el siguiente botón para crear tu nueva contraseña:</p>
-            
-            <div style="text-align: center;">
-                <a href="${resetLink}" class="button">Cambiar mi Contraseña</a>
+        <div class="content">
+            <div class="greeting">
+                Hola, <strong>${nombre}</strong>
             </div>
             
-            <p style="font-size: 14px; color: #666; margin-top: 30px;">
-                Si el botón no funciona, copia y pega este enlace en tu navegador:
-            </p>
-            <p style="font-size: 12px; color: #007bff; word-break: break-all;">
-                ${resetLink}
+            <p class="instructions">
+                Recibimos una solicitud para restablecer la contraseña de tu cuenta en <strong>Hostal Los Girasoles</strong>.
             </p>
             
+            <p class="instructions">
+                Haz clic en el siguiente botón para crear tu nueva contraseña:
+            </p>
+            
+            <div style="text-align: center; margin: 30px 0;">
+                <a href="${resetLink}" class="button">CAMBIAR MI CONTRASEÑA</a>
+            </div>
+            
+            <p class="instructions" style="font-size: 14px; color: #888;">
+                Si el botón no funciona, copia y pega este enlace en tu navegador:
+            </p>
+            
+            <div class="link-box">
+                ${resetLink}
+            </div>
+            
             <div class="warning">
-                <p style="margin: 0; font-size: 14px; color: #856404;">
-                    <strong>⚠️ Importante:</strong>
-                </p>
-                <ul style="margin: 10px 0 0 0; padding-left: 20px; color: #856404; font-size: 14px;">
+                <strong>⚠️ Importante:</strong>
+                <ul style="margin: 10px 0; padding-left: 20px; font-size: 14px;">
                     <li>Este enlace expira en <strong>30 minutos</strong></li>
-                    <li>Si no solicitaste este cambio, ignora este email</li>
+                    <li>Si no solicitaste este cambio, ignora este mensaje</li>
+                    <li>Tu contraseña actual seguirá siendo válida</li>
                 </ul>
             </div>
         </div>
         
         <div class="footer">
-            <p>Este es un email automático, por favor no respondas.</p>
-            <p>© ${new Date().getFullYear()} Hostal Los Girasoles</p>
+            <p>Este es un mensaje automático, por favor no respondas a este correo.</p>
+            <p>© ${new Date().getFullYear()} Hostal Los Girasoles. Todos los derechos reservados.</p>
         </div>
     </div>
 </body>
 </html>
         `;
 
-        const resultado = await transporter.sendMail({
-            from: `"${process.env.EMAIL_FROM_NAME || 'Hostal Los Girasoles'}" <${process.env.EMAIL_FROM}>`,
-            to: destinatario,
+        const texto = `
+Hola ${nombre},
+
+Recibimos una solicitud para restablecer tu contraseña en Hostal Los Girasoles.
+
+Para crear tu nueva contraseña, visita el siguiente enlace:
+${resetLink}
+
+Este enlace expira en 30 minutos.
+
+Si no solicitaste este cambio, ignora este mensaje.
+
+Gracias,
+Hostal Los Girasoles
+        `;
+
+        const { data, error } = await resend.emails.send({
+            from: process.env.EMAIL_FROM || 'onboarding@resend.dev',
+            to: correo,
             subject: '🔒 Recupera tu contraseña - Hostal Los Girasoles',
-            html: htmlEmail
+            html: html,
+            text: texto
         });
 
-        console.log(`✅ Email enviado exitosamente a ${destinatario}`);
+        if (error) {
+            console.error(`❌ Error al enviar email a ${correo}:`, error);
+            return { success: false, error };
+        }
 
-        return {
-            success: true,
-            messageId: resultado.messageId
-        };
+        console.log(`✅ Email enviado exitosamente a ${correo}`);
+        return { success: true, data };
 
-    } catch (error) {
-        console.error(`❌ Error al enviar email a ${destinatario}:`, error);
-        return {
-            success: false,
-            error: error.message
-        };
+    } catch (err) {
+        console.error(`❌ Error fatal al enviar email a ${correo}:`, err);
+        return { success: false, error: err.message };
     }
-}
+};
 
-// AGREGAR a las exportaciones (modificar la línea module.exports):
 module.exports = {
     enviarEmail,
     enviarCodigoVerificacion,
     enviarCodigoRecuperacion,
-    enviarEmailRecuperacionConLink  // ← AGREGAR ESTA
+    enviarEmailRecuperacionConLink
 };

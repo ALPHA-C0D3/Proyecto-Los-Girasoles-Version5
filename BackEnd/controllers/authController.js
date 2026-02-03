@@ -233,8 +233,11 @@ const login = async (req, res) => {
 // ============================================
 // SOLICITAR RECUPERACIÓN CON TOKEN
 // ============================================
-const solicitarRecuperacion = async (req, res) => {
-    const { correo } = req.body;
+// En solicitarRecuperacion, cambia la línea del envío por esto:
+enviarEmailRecuperacionConLink(correo, usuario.nombre, resetLink)
+    .catch(err => console.error("Error asíncrono de mail:", err));
+
+return res.json(respuestaSegura); // Responde de inmediato
 
     try {
         // Buscar usuario
