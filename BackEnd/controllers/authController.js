@@ -544,6 +544,7 @@ const cambiarPassword = async (req, res) => {
     }
 };
 
+
 module.exports = { 
     registro, 
     login, 
@@ -552,5 +553,5 @@ module.exports = {
     solicitarRecuperacion,
     verificarCodigoRecuperacion,
     resetearPassword,
-    resetearPasswordConToken  // ← NUEVA FUNCIÓN
+    resetearPasswordConToken // Verifica que este nombre sea el mismo que usaste en la línea 226 aprox.
 };
