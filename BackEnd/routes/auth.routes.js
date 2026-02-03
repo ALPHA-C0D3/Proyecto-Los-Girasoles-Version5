@@ -18,7 +18,7 @@ router.post('/registro', registro);
 router.post('/login', login);
 
 // Recuperación de contraseña
-router.post('/recuperar-password', solicitarRecuperacion);
+router.post('/solicitar-recuperacion', solicitarRecuperacion);
 router.post('/verificar-codigo', verificarCodigoRecuperacion);
 router.post('/resetear-password', resetearPassword);
 router.post('/resetear-password-token', resetearPasswordConToken);  // ← NUEVA RUTA

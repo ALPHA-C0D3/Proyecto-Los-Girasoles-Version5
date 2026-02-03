@@ -18,11 +18,6 @@ console.log('╚═════════════════════�
 
 const preguntas = [
     {
-        key: 'RESEND_API_KEY',
-        pregunta: '🔑 Ingresa tu API key de Resend (o deja vacío para usar demo): ',
-        default: 're_demo_key'
-    },
-    {
         key: 'EMAIL_FROM',
         pregunta: '📧 Email remitente (o deja vacío para usar onboarding@resend.dev): ',
         default: 'onboarding@resend.dev'

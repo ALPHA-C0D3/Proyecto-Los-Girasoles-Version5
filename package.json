@@ -4,7 +4,7 @@
   "description": "Backend del sistema de reservas para Hostal El Refugio",
   "main": "server.js",
   "scripts": {
-    "start": "node BackEnd/config/database.js && node BackEnd/setup.js && node BackEnd/agregarcampos.js && node BackEnd/crearAdmin.js && node BackEnd/server.js",
+    "start": "node BackEnd/config/database.js && node BackEnd/agregarcampos.js && node BackEnd/crearAdmin.js && node BackEnd/server.js",
     "dev": "nodemon server.js",
     "init-admin": "node crearAdmin.js",
     "reset-admin": "node resetAdmin.js",

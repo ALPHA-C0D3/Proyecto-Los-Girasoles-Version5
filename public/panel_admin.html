@@ -652,17 +652,25 @@
         
         async function verComprobante(id) {
             try {
-                const res = await fetch(`${API}/reservas/${id}/comprobante`, {
-                    headers: {'Authorization': 'Bearer ' + token}
-                });
-                if (res.ok) {
-                    const blob = await res.blob();
-                    const url = URL.createObjectURL(blob);
-                    document.getElementById('imagenComprobante').src = url;
-                    new bootstrap.Modal(document.getElementById('modalComprobante')).show();
+            // 1. Primero obtenemos los datos de la reserva para saber el nombre del archivo
+            const res = await fetch(`${API}/reservas/todas`, {
+            headers: {'Authorization': 'Bearer ' + token}
+            });
+            const data = await res.json();
+            const reserva = data.reservas.find(r => r.id === id);
+
+            if (reserva && reserva.comprobante) {
+            // 2. Cargamos la imagen directamente desde la carpeta pública de uploads
+            // Quitamos 'BackEnd/' si el nombre ya lo trae o ajustamos la ruta
+                const nombreLimpio = reserva.comprobante.replace('BackEnd/uploads/', '');
+                document.getElementById('imagenComprobante').src = `/uploads/${nombreLimpio}`;
+                new bootstrap.Modal(document.getElementById('modalComprobante')).show();
+                } else {
+                    alert('No hay nombre de archivo registrado para esta reserva');
                 }
             } catch (err) {
-                alert('Error al cargar comprobante');
+            console.error(err);
+            alert('Error al cargar la imagen del comprobante');
             }
         }
         
