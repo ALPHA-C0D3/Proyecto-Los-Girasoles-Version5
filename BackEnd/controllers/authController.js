@@ -233,14 +233,10 @@ const login = async (req, res) => {
 // ============================================
 // SOLICITAR RECUPERACIÓN CON TOKEN
 // ============================================
-// En solicitarRecuperacion, cambia la línea del envío por esto:
-enviarEmailRecuperacionConLink(correo, usuario.nombre, resetLink)
-    .catch(err => console.error("Error asíncrono de mail:", err));
-
-return res.json(respuestaSegura); // Responde de inmediato
+const solicitarRecuperacion = async (req, res) => {
+    const { correo } = req.body;
 
     try {
-        // Buscar usuario
         const usuario = await getOne(
             'SELECT * FROM usuarios WHERE correo = ?',
             [correo]
@@ -251,55 +247,29 @@ return res.json(respuestaSegura); // Responde de inmediato
             mensaje: 'Si el correo existe, recibirás un enlace para restablecer tu contraseña'
         };
 
-        if (!usuario) {
-            console.log(`[RECUPERACIÓN] Email no encontrado: ${correo}`);
-            return res.json(respuestaSegura);
-        }
+        if (!usuario) return res.json(respuestaSegura);
 
-        // Generar token único
         const resetToken = crypto.randomBytes(32).toString('hex');
-        const expiracion = new Date(Date.now() + 30 * 60 * 1000); // 30 minutos
+        const expiracion = new Date(Date.now() + 30 * 60 * 1000);
 
-        console.log(`[RECUPERACIÓN] Token generado para ${correo}: ${resetToken}`);
-
-        // Guardar en DB
         await runQuery(
-            `UPDATE usuarios 
-             SET resetToken = ?, resetTokenExpira = ?
-             WHERE correo = ?`,
+            `UPDATE usuarios SET resetToken = ?, resetTokenExpira = ? WHERE correo = ?`,
             [resetToken, expiracion.toISOString(), correo]
         );
 
-        // Crear link
         const FRONTEND_URL = process.env.FRONTEND_URL || 'http://127.0.0.1:5500';
         const resetLink = `${FRONTEND_URL}/public/cambiar-password.html?token=${resetToken}`;
 
-        // Enviar email con link
-        const resultadoEmail = await enviarEmailRecuperacionConLink(
-            correo,
-            usuario.nombre,
-            resetLink
-        );
+        // LLAMADA SIN AWAIT (Para evitar el Timeout de Railway)
+        enviarEmailRecuperacionConLink(correo, usuario.nombre, resetLink)
+            .catch(err => console.error('[EMAIL ERROR]:', err));
 
-        if (resultadoEmail.success) {
-            console.log(`[EMAIL] Link enviado a ${correo}`);
-        } else {
-            console.error(`[EMAIL] Error al enviar:`, resultadoEmail.error);
-        }
-
-        // En desarrollo, incluir link
-        if (process.env.NODE_ENV === 'development') {
-            respuestaSegura.link = resetLink;
-        }
-
-        res.json(respuestaSegura);
+        // Respondemos de inmediato
+        return res.json(respuestaSegura);
 
     } catch (error) {
-        console.error('[ERROR] Error en recuperación:', error);
-        res.status(500).json({ 
-            success: false, 
-            mensaje: 'Error al procesar la solicitud' 
-        });
+        console.error('[ERROR]:', error);
+        return res.status(500).json({ success: false, mensaje: 'Error interno' });
     }
 };
 
@@ -378,7 +348,7 @@ const resetearPasswordConToken = async (req, res) => {
 };
 
 // ============================================
-// VERIFICAR CÓDIGO (LEGACY - Mantener por compatibilidad)
+// VERIFICAR CÓDIGO (Asegúrate de que diga async)
 // ============================================
 const verificarCodigoRecuperacion = async (req, res) => {
     try {
