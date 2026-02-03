@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 const { inicializarTablas } = require('./config/database');
 
 const authRoutes = require('./routes/auth.routes');
@@ -37,6 +38,21 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// ============================================================
+// 🛠️ BLOQUE DE CORRECCIÓN PARA LA EXPO (AGREGAR ESTO)
+// ============================================================
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+    console.log('✅ Carpeta uploads creada en:', uploadDir);
+}
+
+// Log para ver en tiempo real si Railway encuentra la imagen
+app.use('/uploads', (req, res, next) => {
+    console.log(`📸 Solicitando imagen: ${req.url}`);
+    next();
+}, express.static(uploadDir));
+// ============================================================
 
 // LÍNEA VITAL: Servir los archivos de la carpeta public (frontend)
 app.use(express.static(path.join(__dirname, '../public')));

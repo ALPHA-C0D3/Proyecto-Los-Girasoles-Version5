@@ -98,78 +98,63 @@
     </div>
 
     <script src="js/bootstrap.bundle.min.js"></script>
-    <script>
-        const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-         ? 'http://localhost:3000/api'
-         : window.location.origin + '/api';
+<script>
+    // 1. CORRECCIÓN DE VARIABLE (Usamos API_URL para que coincida abajo)
+    const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:3000/api'
+        : window.location.origin + '/api';
 
-        document.getElementById('formRecuperar').addEventListener('submit', async function(e) {
-            e.preventDefault();
+    document.getElementById('formRecuperar').addEventListener('submit', async function(e) {
+        e.preventDefault();
 
-            const correo = document.getElementById('correo').value.trim();
-            const btnEnviar = document.getElementById('btnEnviar');
-            const alerta = document.getElementById('alerta');
+        const correo = document.getElementById('correo').value.trim();
+        const btnEnviar = document.getElementById('btnEnviar');
+        const alerta = document.getElementById('alerta');
 
-            // Limpiar alerta
-            alerta.classList.add('d-none');
+        alerta.classList.add('d-none');
 
-            // Validar email
-            if (!correo) {
-                alerta.textContent = 'Ingresa tu correo electrónico';
-                alerta.classList.remove('d-none');
-                return;
-            }
+        if (!correo) {
+            alerta.textContent = 'Ingresa tu correo electrónico';
+            alerta.classList.remove('d-none');
+            return;
+        }
 
-            // Deshabilitar botón
-            btnEnviar.disabled = true;
-            btnEnviar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
+        btnEnviar.disabled = true;
+        btnEnviar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
 
-            try {
-                console.log('📧 Solicitando recuperación para:', correo);
+        try {
+            console.log('📧 Solicitando recuperación para:', correo);
 
-                const response = await fetch(`${API_URL}/auth/recuperar-password`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ correo })
-                });
+            // 2. CORRECCIÓN DE RUTA: Tu controlador usa 'solicitar-recuperacion' no 'recuperar-password'
+            const response = await fetch(`${API_URL}/auth/solicitar-recuperacion`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ correo })
+            });
 
-                const data = await response.json();
-                console.log('📥 Respuesta:', data);
+            const data = await response.json();
+            console.log('📥 Respuesta del servidor:', data);
 
-                if (response.ok && data.success) {
-                    console.log('✅ Email enviado exitosamente');
-
-                    // Ocultar formulario
-                    document.getElementById('formRecuperar').classList.add('d-none');
-
-                    // Mostrar mensaje de éxito
-                    document.getElementById('mensajeExito').classList.remove('d-none');
-
-                    // Si estamos en desarrollo y hay link, mostrarlo
-                    if (data.link) {
-                        console.log('🔗 Link de desarrollo:', data.link);
-                        document.getElementById('linkDesarrollo').classList.remove('d-none');
-                        document.getElementById('linkRecuperacion').href = data.link;
-                    }
-
-                } else {
-                    console.error('❌ Error:', data.mensaje);
-                    alerta.textContent = data.mensaje || 'Error al enviar el correo';
-                    alerta.classList.remove('d-none');
-                    btnEnviar.disabled = false;
-                    btnEnviar.textContent = 'Enviar Enlace de Recuperación';
-                }
-
-            } catch (error) {
-                console.error('❌ Error de conexión:', error);
-                alerta.textContent = 'Error de conexión con el servidor';
+            if (response.ok && data.success) {
+                document.getElementById('formRecuperar').classList.add('d-none');
+                document.getElementById('mensajeExito').classList.remove('d-none');
+            } else {
+                alerta.textContent = data.mensaje || 'Error al enviar el correo';
                 alerta.classList.remove('d-none');
                 btnEnviar.disabled = false;
                 btnEnviar.textContent = 'Enviar Enlace de Recuperación';
             }
-        });
-    </script>
+
+        } catch (error) {
+            console.error('❌ Error de conexión:', error);
+            alerta.textContent = 'Error de conexión con el servidor. Verifica tu internet.';
+            alerta.classList.remove('d-none');
+            btnEnviar.disabled = false;
+            btnEnviar.textContent = 'Enviar Enlace de Recuperación';
+        }
+    });
+</script>
 </body>
 </html>
