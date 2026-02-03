@@ -257,8 +257,8 @@ const solicitarRecuperacion = async (req, res) => {
             [resetToken, expiracion.toISOString(), correo]
         );
 
-        const FRONTEND_URL = process.env.FRONTEND_URL || 'http://127.0.0.1:5500';
-        const resetLink = `${FRONTEND_URL}/public/cambiar-password.html?token=${resetToken}`;
+       const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:3000';
+       const resetLink = `${FRONTEND_URL}/cambiar-password.html?token=${resetToken}`;
 
         // LLAMADA SIN AWAIT (Para evitar el Timeout de Railway)
         enviarEmailRecuperacionConLink(correo, usuario.nombre, resetLink)

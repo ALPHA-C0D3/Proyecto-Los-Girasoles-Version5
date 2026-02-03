@@ -651,28 +651,30 @@
         }
         
         async function verComprobante(id) {
-            try {
-            // 1. Primero obtenemos los datos de la reserva para saber el nombre del archivo
-            const res = await fetch(`${API}/reservas/todas`, {
+    try {
+        const res = await fetch(`${API}/reservas/todas`, {
             headers: {'Authorization': 'Bearer ' + token}
-            });
-            const data = await res.json();
-            const reserva = data.reservas.find(r => r.id === id);
+        });
+        const data = await res.json();
+        const reserva = data.reservas.find(r => r.id === id);
 
-            if (reserva && reserva.comprobante) {
-            // 2. Cargamos la imagen directamente desde la carpeta pública de uploads
-            // Quitamos 'BackEnd/' si el nombre ya lo trae o ajustamos la ruta
-                const nombreLimpio = reserva.comprobante.replace('BackEnd/uploads/', '');
-                document.getElementById('imagenComprobante').src = `/uploads/${nombreLimpio}`;
-                new bootstrap.Modal(document.getElementById('modalComprobante')).show();
-                } else {
-                    alert('No hay nombre de archivo registrado para esta reserva');
-                }
-            } catch (err) {
-            console.error(err);
-            alert('Error al cargar la imagen del comprobante');
-            }
+        if (reserva && reserva.comprobante) {
+            // Esta línea extrae SOLO el nombre del archivo, ignorando carpetas
+            const nombreArchivo = reserva.comprobante.split('/').pop().split('\\').pop();
+            
+            // Forzamos que se vea como imagen
+            const imgElement = document.getElementById('imagenComprobante');
+            imgElement.src = `/uploads/${nombreArchivo}`;
+            
+            // Truco para debug: si falla, ver en consola la ruta exacta
+            imgElement.onerror = () => console.error("No se encontró en: " + imgElement.src);
+            
+            new bootstrap.Modal(document.getElementById('modalComprobante')).show();
         }
+    } catch (err) {
+        alert('Error al procesar la imagen');
+    }
+}
         
         async function eliminarHabitacion(id) {
             if (!confirm('¿Eliminar esta habitación? Esta acción no se puede deshacer.')) return;
