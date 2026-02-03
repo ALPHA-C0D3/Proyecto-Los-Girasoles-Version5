@@ -284,7 +284,9 @@
     <script src="js/config.js"></script>
     <script src="js/auth.js"></script>
     <script>
-        const API = 'http://localhost:3000/api';
+        const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:3000/api'
+            : window.location.origin + '/api';
         const PRECIO_POR_PERSONA_NOCHE = 10;
         
         const usuario = JSON.parse(sessionStorage.getItem('usuario') || 'null');

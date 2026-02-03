@@ -1,22 +1,17 @@
-// config.js - Configuración del Frontend
-// Este archivo permite cambiar fácilmente entre desarrollo y producción
-
+// config.js - Configuración del Frontend Inteligente
 const CONFIG = {
-    // Cambiar según el entorno
-    ENVIRONMENT: 'production', // 'development' o 'production'
-    
-    // URLs del Backend
-    API_URL: {
-        development: 'http://localhost:3000/api',
-        production: 'https://proyecto-los-girasoles-version5-production.up.railway.app/api' // Cambiar por tu URL de Railway
-    },
-    
-    // Obtener URL según el entorno
+    // Detecta automáticamente si estás en Local (PC) o en Railway (Nube)
     getApiUrl() {
-        return this.API_URL[this.ENVIRONMENT];
+        const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        
+        if (isLocal) {
+            return 'http://localhost:3000/api';
+        } else {
+            // En Railway, usa la dirección actual del navegador
+            return window.location.origin + '/api';
+        }
     }
 };
-
 // Exportar para uso en otros archivos
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = CONFIG;

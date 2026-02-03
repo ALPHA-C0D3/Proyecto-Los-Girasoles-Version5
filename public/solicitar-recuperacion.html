@@ -99,7 +99,9 @@
 
     <script src="js/bootstrap.bundle.min.js"></script>
     <script>
-        const API_URL = 'http://localhost:3000/api';
+        const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+         ? 'http://localhost:3000/api'
+         : window.location.origin + '/api';
 
         document.getElementById('formRecuperar').addEventListener('submit', async function(e) {
             e.preventDefault();
