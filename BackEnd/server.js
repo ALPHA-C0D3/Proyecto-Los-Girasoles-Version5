@@ -15,16 +15,11 @@ const PORT = process.env.PORT || 3000;
 // Middlewares
 const allowedOrigins = process.env.FRONTEND_URL 
     ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
-    : [
-        'http://localhost:5500',
-        'http://127.0.0.1:5500'
-    ];
+    : ['http://localhost:5500', 'http://127.0.0.1:5500'];
 
 app.use(cors({
     origin: function(origin, callback) {
         if (!origin) return callback(null, true);
-        
-        // CORRECCIÓN: Permitir la URL de Railway explícitamente si existe
         if (allowedOrigins.indexOf(origin) !== -1 || 
             (origin && origin.includes('railway.app')) || 
             process.env.NODE_ENV === 'development') {
@@ -38,46 +33,38 @@ app.use(cors({
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 // ============================================================
-// 🛠️ BLOQUE DE CORRECCIÓN PARA LA EXPO (AGREGAR ESTO)
+// 🛠️ BLOQUE DE CORRECCIÓN FINAL PARA LAS IMÁGENES
 // ============================================================
-const uploadDir = path.join(__dirname, 'uploads');
+// Usamos process.cwd() para asegurar que encuentre la carpeta en la raíz de Railway
+const uploadDir = path.join(process.cwd(), 'uploads'); 
+
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
-    console.log('✅ Carpeta uploads creada en:', uploadDir);
+    console.log('✅ Carpeta uploads verificada en:', uploadDir);
 }
 
-// Log para ver en tiempo real si Railway encuentra la imagen
+// Servir imágenes con Log para debug
 app.use('/uploads', (req, res, next) => {
-    console.log(`📸 Solicitando imagen: ${req.url}`);
+    console.log(`📸 Solicitud de imagen: ${req.url}`);
     next();
 }, express.static(uploadDir));
 // ============================================================
 
-// LÍNEA VITAL: Servir los archivos de la carpeta public (frontend)
+// Servir los archivos del frontend
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
+// Log de peticiones
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.url} - ${new Date().toISOString()}`);
     next();
 });
 
-// Rutas
+// Rutas API
 app.get('/', (req, res) => {
-    // CORRECCIÓN: En lugar de enviar solo JSON, enviamos el index.html
-    // pero mantenemos tu lógica si es que alguien pide específicamente JSON
     if (req.headers.accept && req.headers.accept.includes('application/json')) {
-        return res.json({
-            mensaje: 'API del Hostal - Backend funcionando correctamente',
-            version: '5.0.0',
-            endpoints: {
-                auth: '/api/auth',
-                reservas: '/api/reservas',
-                habitaciones: '/api/habitaciones'
-            }
-        });
+        return res.json({ mensaje: 'API del Hostal funcionando' });
     }
     res.sendFile(path.join(__dirname, '../public/index.html'));
 });
@@ -86,20 +73,17 @@ app.use('/api/auth', authRoutes);
 app.use('/api/reservas', reservasRoutes);
 app.use('/api/habitaciones', habitacionesRoutes);
 
+// Manejo de errores 404
 app.use((req, res) => {
-    res.status(404).json({
-        success: false,
-        mensaje: 'Ruta no encontrada'
-    });
+    res.status(404).json({ success: false, mensaje: 'Ruta no encontrada' });
 });
 
-// Manejo de errores
+// Manejo de errores generales
 app.use((err, req, res, next) => {
     console.error('Error:', err);
     res.status(err.status || 500).json({
         success: false,
-        mensaje: err.message || 'Error interno del servidor',
-        error: process.env.NODE_ENV === 'development' ? err : {}
+        mensaje: err.message || 'Error interno del servidor'
     });
 });
 
@@ -107,29 +91,11 @@ app.use((err, req, res, next) => {
 inicializarTablas();
 
 app.listen(PORT, () => {
-    console.log('');
-    console.log('╔═══════════════════════════════════════════╗');
-    console.log('║   🏨  SERVIDOR HOSTAL - BACKEND          ║');
-    console.log('╚═══════════════════════════════════════════╝');
-    console.log('');
-    console.log(`🚀 Servidor corriendo en: http://localhost:${PORT}`);
-    console.log(`📁 Base de datos: ${process.env.DB_PATH || './hostal.db'}`);
-    console.log(`🌐 Frontend permitido: ${process.env.FRONTEND_URL || 'http://localhost:5500'}`);
-    console.log('');
-    console.log('📌 Endpoints disponibles:');
-    console.log(`   - POST /api/auth/registro`);
-    console.log(`   - POST /api/auth/login`);
-    console.log(`   - GET  /api/auth/perfil`);
-    console.log(`   - PUT  /api/auth/cambiar-password`);
-    console.log(`   - GET  /api/habitaciones`);
-    console.log(`   - POST /api/reservas`);
-    console.log('');
-    console.log('⏳ Presiona Ctrl+C para detener el servidor');
-    console.log('');
+    console.log(`🚀 Servidor en puerto: ${PORT}`);
+    console.log(`📁 Directorio uploads: ${uploadDir}`);
 });
 
 process.on('SIGINT', () => {
-    console.log('\n\n👋 Cerrando servidor...');
     process.exit(0);
 });
 

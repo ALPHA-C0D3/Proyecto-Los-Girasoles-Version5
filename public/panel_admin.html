@@ -650,29 +650,42 @@
             }
         }
         
-        async function verComprobante(id) {
+        async function verComprobante(reservaId) {
     try {
         const res = await fetch(`${API}/reservas/todas`, {
-            headers: {'Authorization': 'Bearer ' + token}
+            headers: { 'Authorization': 'Bearer ' + token }
         });
         const data = await res.json();
-        const reserva = data.reservas.find(r => r.id === id);
+        const reserva = data.reservas.find(r => r.id === reservaId);
 
         if (reserva && reserva.comprobante) {
-            // Esta línea extrae SOLO el nombre del archivo, ignorando carpetas
+            const imgElement = document.getElementById('imagenComprobante');
+            
+            // 1. Extraemos SOLO el nombre del archivo (ej: comprobante-123.png)
+            // Esto elimina rutas viejas como "C:\usuarios..." o "BackEnd/uploads/"
             const nombreArchivo = reserva.comprobante.split('/').pop().split('\\').pop();
             
-            // Forzamos que se vea como imagen
-            const imgElement = document.getElementById('imagenComprobante');
+            // 2. Intentamos la ruta que Railway entiende
             imgElement.src = `/uploads/${nombreArchivo}`;
             
-            // Truco para debug: si falla, ver en consola la ruta exacta
-            imgElement.onerror = () => console.error("No se encontró en: " + imgElement.src);
-            
-            new bootstrap.Modal(document.getElementById('modalComprobante')).show();
+            // 3. Si falla la primera, intentamos sin el folder /uploads/
+            imgElement.onerror = function() {
+                if (!this.dataset.intentado) {
+                    this.dataset.intentado = "true";
+                    this.src = `/${nombreArchivo}`; 
+                } else {
+                    console.error("No se encontró la imagen en ninguna ruta conocida.");
+                }
+            };
+
+            // Mostrar el modal
+            const modal = new bootstrap.Modal(document.getElementById('modalComprobante'));
+            modal.show();
+        } else {
+            alert("Esta reserva no tiene comprobante adjunto.");
         }
     } catch (err) {
-        alert('Error al procesar la imagen');
+        console.error("Error al cargar comprobante:", err);
     }
 }
         
